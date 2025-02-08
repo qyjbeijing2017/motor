@@ -1,9 +1,7 @@
-import { ELMemory } from "./memory";
-import { ELFloat } from "./type/float";
+import { MotorFloat } from "./types/float";
+import { MotorPointer } from "./types/pointer";
 
-const storage = new ELMemory();
-const f1 = new ELFloat(1.0, storage);
-console.log(f1.value);
-f1.value = 2.0;
-console.log(f1.value);
-console.log(f1.equals(new ELFloat(2.0, storage)));
+const f1 = MotorFloat.new(2.3);
+const p1 = new MotorPointer(MotorFloat).new(f1.address);
+console.log(p1.value); // 0
+console.log(p1.raw.value); // 2.3

@@ -1,13 +1,13 @@
 import { VERSION } from "./global";
 
-export interface ELMemoryOptions {
+export interface MotorMemoryOptions {
     version: VERSION;
     name: string;
     defaultSize: number;
     getBuffer: (size: number, before?: Uint8Array) => Uint8Array;
 }
 
-const defaultOptions: ELMemoryOptions = {
+const defaultOptions: MotorMemoryOptions = {
     version: VERSION.V1,
     name: 'ELS',
     defaultSize: 1024 * 10,
@@ -20,14 +20,14 @@ const defaultOptions: ELMemoryOptions = {
     },
 };
 
-export interface ELBlock {
+export interface MotorBlock {
     readonly start: number;
     readonly length: number;
 }
 
-export class ELMemory {
+export class MotorMemory {
     private _buffer: Uint8Array;
-    private _emptyBlocks: ELBlock[];
+    private _emptyBlocks: MotorBlock[];
     private _dataView: DataView;
     private _getBuffer: (size: number, before?: Uint8Array) => Uint8Array;
     get buffer(): Uint8Array {
@@ -36,7 +36,7 @@ export class ELMemory {
     get dataView(): DataView {
         return this._dataView;
     }
-    constructor(options: Partial<ELMemoryOptions> = {}) {
+    constructor(options: Partial<MotorMemoryOptions> = {}) {
         const currentOptions = { ...defaultOptions, ...options };
         this._getBuffer = currentOptions.getBuffer;
         this._buffer = this._getBuffer(currentOptions.defaultSize);
@@ -50,7 +50,7 @@ export class ELMemory {
         this.free({ start: this._buffer.length, length: size });
     }
 
-    allocate(size: number): ELBlock {
+    allocate(size: number): MotorBlock {
         let block = this._emptyBlocks.find(b => b.length >= size);
         if (!block) {
             this._extend(Math.max(size, this._buffer.length));
@@ -71,7 +71,7 @@ export class ELMemory {
         }
     }
 
-    free(block: ELBlock): void {
+    free(block: MotorBlock): void {
         const blockBefore = this._emptyBlocks.find(b => b.start + b.length === block.start);
         const blockAfter = this._emptyBlocks.find(b => b.start === block.start + block.length);
         if (blockBefore) {
