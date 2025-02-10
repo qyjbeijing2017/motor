@@ -4,7 +4,10 @@ import { motorSingleton } from "../utils/singleton";
 import { MotorTypeOf } from "../utils/type-of";
 import { MotorValue } from "./value.type";
 
-export function MotorDefineArray<RawType, MotorInstanceType extends MotorInstance<RawType> = MotorInstance<RawType>>(
+export function motorDefineArray<
+    RawType, 
+    MotorInstanceType extends MotorInstance<RawType> = MotorInstance<RawType>,
+>(
     type: MotorTypeOf<RawType, MotorInstanceType>, 
     length: number
 ) {
@@ -27,4 +30,14 @@ export function MotorDefineArray<RawType, MotorInstanceType extends MotorInstanc
             }
         }
     };
+}
+
+export function motorNewArray<RawType, MotorInstanceType extends MotorInstance<RawType>>(
+    type: MotorTypeOf<RawType, MotorInstanceType>, 
+    length: number,
+    defaultValue?: RawType[],
+    memory?: MotorMemory,
+    address?: number
+) {
+    return new (motorDefineArray(type, length))(defaultValue, memory, address);
 }

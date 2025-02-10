@@ -1,48 +1,59 @@
-// import { MotorInstance } from "../instance";
-// import { MotorMemory } from "../memory";
-// import { motorSingleton } from "../utils/singleton";
-// import { MotorTypeOf } from "../utils/type-of";
-// import { MotorValue } from "./value.type";
-
-// export type MotorStructInstance<RawType extends object> = {
-//     [key in keyof RawType]: MotorInstance<RawType[key]>;
-// }
-
-// export type MotorStructType<RawType extends object, MotorStructInstanceType extends MotorStructInstance<RawType> = MotorStructInstance<RawType>> = {
-//     [key in keyof MotorStructInstanceType]: MotorTypeOf<any, MotorStructInstanceType[key]>;
-// };
+import { MotorInstance } from "../instance";
+import { MotorMemory } from "../memory";
+import { MotorTypeOf } from "../utils/type-of";
+import { MotorValue } from "./value.type";
 
 
-// export function motorDefineStruct<RawType extends object, MotorStructInstanceType extends MotorStructInstance<RawType> = MotorStructInstance<RawType>>(
-//     definition: MotorStructType<RawType, MotorStructInstanceType>
-// ) {
-//     let structSize = 0;
-//     for (const key in definition) {
-//         structSize += definition[key].size;
-//     }
-//     return class extends MotorValue {
-//         static readonly size = structSize;
-//         get(key: keyof MotorStructInstanceType) {
-//             let offset = 0;
-//             for (const k in definition) {
-//                 if (k === key) {
-//                     return new definition[k](undefined, this.memory, this.address + offset);
-//                 }
-//                 offset += definition[k].size;
-//             }
-//             throw new Error(`Key ${key.toString()} not found in struct`);
-//         }
-//         constructor(
-//             defaultValue?: RawType,
-//             memory: MotorMemory = motorSingleton(MotorMemory),
-//             address: number = memory.allocate(structSize)
-//         ) {
-//             super(memory, address);
-//             if (defaultValue) {
-//                 for (const key in definition) {
-//                     this.get(key).rawValue = defaultValue[key];
-//                 }
-//             }
-//         }
-//     };
-// }
+export function motorDefineStruct<StructRawType extends object,
+    StructDefinitionType extends { [K in keyof StructRawType]: MotorTypeOf<StructRawType[K], MotorInstance<StructRawType[K]>> } =
+    { [K in keyof StructRawType]: MotorTypeOf<StructRawType[K], MotorInstance<StructRawType[K]>> }
+>(
+    definition: StructDefinitionType
+) {
+    let size = 0;
+    for (const key in definition) {
+        size += definition[key].size;
+    }
+
+    return class extends MotorValue {
+        static readonly size = size;
+
+        get<K extends keyof StructDefinitionType>(key: K): InstanceType<StructDefinitionType[K]> {
+            let offset = 0;
+            for (const k in definition) {
+                if (k === key as string) {
+                    return new definition[k](undefined, this.memory, this.address + offset) as any
+                }
+                offset += definition[k].size;
+            }
+            throw new Error('Cannot get value');
+        }
+        constructor(
+            defaultValue?: StructRawType,
+            memory?: MotorMemory,
+            address?: number
+        ) {
+            super(
+                memory,
+                address
+            );
+
+            if(defaultValue) {
+                for(const key in defaultValue) {
+                    this.get(key).rawValue = defaultValue[key];
+                }
+            }
+        }
+    }
+}
+
+
+export function motorNewStruct<StructRawType extends object,
+    StructDefinitionType extends { [K in keyof StructRawType]: MotorTypeOf<StructRawType[K], MotorInstance<StructRawType[K]>> }>(
+    definition: StructDefinitionType,
+    defaultValue?: StructRawType,
+    memory?: MotorMemory,
+    address?: number
+) {
+    return new (motorDefineStruct(definition))(defaultValue, memory, address);
+}
