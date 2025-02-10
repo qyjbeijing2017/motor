@@ -1,16 +1,25 @@
 import { MotorMemory } from "./memory";
 import { motorAssertType } from "./utils/is-type";
 import { motorSingleton } from "./utils/singleton";
-import { motorSizeOf } from "./utils/size-of";
 
 export abstract class MotorInstance<RawValue> {
+    private _address: number;
+    get address(): number {
+        return this._address;
+    }
+    protected set address(value: number) {
+        this._address = value;
+    }
     constructor(
         defaultVal?: RawValue | MotorInstance<RawValue>,
         readonly memory: MotorMemory = motorSingleton(MotorMemory),
-        readonly address: number = memory.allocate(motorSizeOf(motorAssertType(this.constructor)))
+        address: number = motorAssertType(this.constructor).size
     ) {
-        if(defaultVal !== undefined)
+        this._address = address;
+        if(defaultVal !== undefined) {
             this.write(defaultVal instanceof MotorInstance ? defaultVal.rawValue : defaultVal);
+        }
+
     }
     get rawValue(): RawValue {
         return this.read();
@@ -20,4 +29,11 @@ export abstract class MotorInstance<RawValue> {
     }
     protected abstract read(): RawValue;
     protected abstract write(value: RawValue): void;
+
+    free(): void {
+        this.memory.free({
+            start: this.address,
+            length: motorAssertType(this.constructor).size,
+        });
+    }
 }
