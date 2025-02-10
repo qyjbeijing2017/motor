@@ -1,5 +1,5 @@
 import { MotorMemory } from "./memory";
-import { motorAssertType } from "./utils/is-type";
+import { motorAssertType } from "./utils/assert-type";
 import { motorSingleton } from "./utils/singleton";
 
 export abstract class MotorInstance<RawValue> {
