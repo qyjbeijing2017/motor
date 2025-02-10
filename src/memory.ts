@@ -50,7 +50,7 @@ export class MotorMemory {
         this.free({ start: this._buffer.length, length: size });
     }
 
-    allocate(size: number): MotorBlock {
+    allocate(size: number): number {
         let block = this._emptyBlocks.find(b => b.length >= size);
         if (!block) {
             this._extend(Math.max(size, this._buffer.length));
@@ -64,11 +64,7 @@ export class MotorMemory {
         }
         this._emptyBlocks = this._emptyBlocks.filter(b => b.start !== block.start);
         this._emptyBlocks.sort((a, b) => a.start - b.start);
-        if (block.length > size) {
-            return { start: block.start, length: size };
-        } else {
-            return block;
-        }
+        return block.start;
     }
 
     free(block: MotorBlock): void {

@@ -1,40 +1,23 @@
-import { MotorBlock, MotorMemory } from "./memory";
-import { motorSingleton } from "./singleton";
-import { MotorType } from "./type";
-import { MotorPointer } from "./types/pointer";
+import { MotorMemory } from "./memory";
+import { motorAssertType } from "./utils/is-type";
+import { motorSingleton } from "./utils/singleton";
+import { motorSizeOf } from "./utils/size-of";
 
-export class MotorInstance<RawType> {
-    get value(): RawType {
-        return this.type.read(this.memory, this.block);
-    }
-    set value(value: RawType) {
-        this.type.write(this.memory, this.block, value);
-    }
-    get address() {
-        return this.block.start;
-    }
-    get raw() {
-        if(this.type instanceof MotorPointer) {
-            const rawType = this.type.type;
-            return new MotorInstance(rawType, undefined, this.memory, {
-                start: this.value as number,
-                length: rawType.size
-            });
-        } else {
-            throw new Error("Not a pointer");
-        }
-    }
+export abstract class MotorInstance<RawValue> {
     constructor(
-        readonly type: MotorType<RawType>, 
-        defaultValue?: RawType, 
+        defaultVal?: RawValue | MotorInstance<RawValue>,
         readonly memory: MotorMemory = motorSingleton(MotorMemory),
-        readonly block: MotorBlock= memory.allocate(type.size)
+        readonly address: number = memory.allocate(motorSizeOf(motorAssertType(this.constructor)))
     ) {
-        if (defaultValue !== undefined) {
-            this.value = defaultValue;
-        }
+        if(defaultVal !== undefined)
+            this.write(defaultVal instanceof MotorInstance ? defaultVal.rawValue : defaultVal);
     }
-    free() {
-        this.memory.free(this.block);
+    get rawValue(): RawValue {
+        return this.read();
     }
+    set rawValue(value: RawValue) {
+        this.write(value);
+    }
+    protected abstract read(): RawValue;
+    protected abstract write(value: RawValue): void;
 }
