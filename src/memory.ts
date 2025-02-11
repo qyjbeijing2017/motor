@@ -129,6 +129,10 @@ export class MotorMemory {
         });
         return buffer;
     }
+    
+    clear(): void {
+        this._emptyBlocks = [{ start: 0, length: this._buffer.length }];
+    }
 
     private allocateBlock(start: number, length: number): void {
         const block = this._emptyBlocks.find(b => b.start <= start && b.start + b.length >= start + length);
@@ -145,7 +149,10 @@ export class MotorMemory {
         this._emptyBlocks.sort((a, b) => a.start - b.start);
     }
 
-    static fromBuffer(buffer: Uint8Array, options: Partial<MotorMemoryOptions> = {}): MotorMemory {
+    load(buffer: Uint8Array, loadOffset: number): void {
+        if(loadOffset + buffer.length > this._buffer.length) {
+            this._extend(loadOffset + buffer.length - this._buffer.length);
+        }
         const blocks: MemorySaveBlock[] = [];
         const dataView = new DataView(buffer.buffer);
         let offset = 0;
@@ -155,15 +162,9 @@ export class MotorMemory {
             blocks.push({ start, length, data: buffer.slice(offset + 8, offset + 8 + length) });
             offset += length + 8;
         }
-        const size = blocks[blocks.length - 1].start + blocks[blocks.length - 1].length;
-        const memory = new MotorMemory({
-            ...options,
-            defaultSize: Math.max(size, options.defaultSize || 1024 * 10),
-        });
         blocks.forEach(block => {
-            memory.allocateBlock(block.start, block.length);
-            memory.buffer.set(block.data, block.start);
+            this.allocateBlock(loadOffset + block.start, block.length);
+            this._buffer.set(block.data, loadOffset + block.start);
         });
-        return memory;
     }
 }
