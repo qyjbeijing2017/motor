@@ -1,22 +1,22 @@
-import { motorNewArray, motorDefineArray } from "./types/array.type";
+import { motorDefineArray } from "./types/array.type";
 import { MotorChar } from "./types/char.type";
+import { MotorInteger } from "./types/integer.type";
 import { motorDefineStruct } from "./types/struct.type";
 
-const a1 = new (motorDefineArray(MotorChar, 3))(['1', '2', '3']);
-a1.at(0)
-
-export interface TestType {
-    a: number;
-    b: string;
-}
-
-const S1 = motorDefineStruct({
-    start: MotorChar,
-})
-const s1 = new S1({
-    start: 'H',
+const Struct = motorDefineStruct({
+    name: motorDefineArray(MotorChar, 11),
+    age: MotorInteger,
 });
-console.log(s1.get('start').rawValue); // H
 
-const a2 = motorNewArray(MotorChar, 3, ['1', '2', '3']);
-console.log(a2.at(0).rawValue);
+const A = motorDefineArray(Struct, 2);
+const a = new A([
+    {
+        name: ["John", "D"],
+        age: 21,
+    },
+    {
+        name: ["Jane", "Soe"],
+        age: 22,
+    },
+])
+console.log(a.rawValue);

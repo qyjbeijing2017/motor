@@ -1,43 +1,31 @@
 import { MotorInstance } from "../instance";
 import { MotorMemory } from "../memory";
-import { motorSingleton } from "../utils/singleton";
-import { MotorTypeOf } from "../utils/type-of";
-import { MotorValue } from "./value.type";
+import { MotorType } from "../type";
+import { MotorRawOf } from "../utils/raw-of";
 
-export function motorDefineArray<
-    RawType, 
-    MotorInstanceType extends MotorInstance<RawType> = MotorInstance<RawType>,
->(
-    type: MotorTypeOf<RawType, MotorInstanceType>, 
-    length: number
-) {
-    return class extends MotorValue {
-        static readonly size = type.size * length;
-        at(index: number): MotorInstanceType {
-            return new type(undefined, this.memory, this.address + index * type.size);
-        }
-
-        constructor(
-            defaultValue: RawType[] = [],
-            memory: MotorMemory = motorSingleton(MotorMemory),
-            address: number = memory.allocate(type.size * length)
-        ) {
-            super(memory, address);
+export function motorDefineArray<T extends MotorType<any>>(type: T, length: number) {
+    return class extends MotorInstance<MotorRawOf<InstanceType<T>>[]> {
+        protected read(): MotorRawOf<InstanceType<T>>[] {
+            let result = [];
             for (let i = 0; i < length; i++) {
-                if (defaultValue[i] !== undefined) {
-                    this.at(i).rawValue = defaultValue[i];
-                }
+                result.push(new type(undefined, this.memory, this.address + i * type.size).rawValue);
+            }
+            return result;
+        }
+        protected write(value: MotorRawOf<InstanceType<T>>[]): void {
+            for (let i = 0; i < length; i++) {
+                new type(value[i], this.memory, this.address + i * type.size).rawValue = value[i];
             }
         }
-    };
-}
+        static readonly size = type.size * length;
 
-export function motorNewArray<RawType, MotorInstanceType extends MotorInstance<RawType>>(
-    type: MotorTypeOf<RawType, MotorInstanceType>, 
-    length: number,
-    defaultValue?: RawType[],
-    memory?: MotorMemory,
-    address?: number
-) {
-    return new (motorDefineArray(type, length))(defaultValue, memory, address);
+        at(index: number): InstanceType<T> {
+            return new type(undefined, this.memory, this.address + index * type.size) as any;
+        }
+
+        constructor(defaultVal?: MotorRawOf<InstanceType<T>>[], memory?: MotorMemory, address?: number) {
+            super(defaultVal, memory, address);
+        }
+        
+    }
 }
