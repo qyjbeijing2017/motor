@@ -13,3 +13,5 @@ export class MotorFloat extends MotorInstance<number> {
         this.memory.dataView.setFloat32(this.address, value, true);
     }
 }
+
+export type MotorFloat32 = MotorFloat;
