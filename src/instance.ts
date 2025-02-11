@@ -13,7 +13,7 @@ export abstract class MotorInstance<RawValue> {
     constructor(
         defaultVal?: RawValue | MotorInstance<RawValue>,
         readonly memory: MotorMemory = motorSingleton(MotorMemory),
-        address: number = motorAssertType(this.constructor).size
+        address: number = memory.allocate(motorAssertType(this.constructor).size)
     ) {
         this._address = address;
         if(defaultVal !== undefined) {

@@ -1,6 +1,5 @@
 import { MotorInstance } from "../instance";
 import { MotorMemory } from "../memory";
-import { motorSingleton } from "../utils/singleton";
 
 export class MotorString extends MotorInstance<string> {
     static size: number = 1;
