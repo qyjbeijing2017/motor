@@ -2,7 +2,6 @@ import { MotorInstance } from "../instance";
 import { MotorMemory } from "../memory";
 import { MotorArray, motorNewArray } from "./array.type";
 import { MotorChar } from "./char.type";
-import { motorGetPointer, MotorPointer } from "./pointer.type";
 
 export class MotorString extends MotorInstance<string> {
     static readonly size = 4;

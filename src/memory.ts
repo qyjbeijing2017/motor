@@ -25,17 +25,26 @@ export interface MotorBlock {
     readonly length: number;
 }
 
+export interface MemorySaveBlock {
+    start: number;
+    length: number;
+    data: Uint8Array;
+}
+
 export class MotorMemory {
     private _buffer: Uint8Array;
     private _emptyBlocks: MotorBlock[];
     private _dataView: DataView;
     private _getBuffer: (size: number, before?: Uint8Array) => Uint8Array;
+
     get buffer(): Uint8Array {
         return this._buffer;
     }
+
     get dataView(): DataView {
         return this._dataView;
     }
+
     constructor(options: Partial<MotorMemoryOptions> = {}) {
         const currentOptions = { ...defaultOptions, ...options };
         this._getBuffer = currentOptions.getBuffer;
@@ -97,5 +106,64 @@ export class MotorMemory {
             this._emptyBlocks.pop();
         }
 
+    }
+
+    save() {
+        let offset = 0;
+        const blocks: MemorySaveBlock[] = [];
+        this._emptyBlocks.forEach(block => {
+            const length = block.start - offset;
+            if(length != 0) {
+                blocks.push({ start: offset, length, data: this._buffer.slice(offset, block.start) });
+            }
+            offset = block.start + block.length;
+        });
+        const buffer = new Uint8Array(blocks.reduce((acc, block) => acc + block.length + 8, 0));
+        let view = new DataView(buffer.buffer);
+        offset = 0;
+        blocks.forEach(block => {
+            view.setUint32(offset, block.start, true);
+            view.setUint32(offset + 4, block.length, true);
+            buffer.set(block.data, offset + 8);
+            offset += block.length + 8;
+        });
+        return buffer;
+    }
+
+    private allocateBlock(start: number, length: number): void {
+        const block = this._emptyBlocks.find(b => b.start <= start && b.start + b.length >= start + length);
+        if (!block) {
+            throw new Error('Cannot allocate block');
+        }
+        if (block.start < start) {
+            this._emptyBlocks.push({ start: block.start, length: start - block.start });
+        }
+        if (block.start + block.length > start + length) {
+            this._emptyBlocks.push({ start: start + length, length: block.start + block.length - start - length });
+        }
+        this._emptyBlocks = this._emptyBlocks.filter(b => b.start !== block.start);
+        this._emptyBlocks.sort((a, b) => a.start - b.start);
+    }
+
+    static fromBuffer(buffer: Uint8Array, options: Partial<MotorMemoryOptions> = {}): MotorMemory {
+        const blocks: MemorySaveBlock[] = [];
+        const dataView = new DataView(buffer.buffer);
+        let offset = 0;
+        while(offset < buffer.length) {
+            const start = dataView.getUint32(offset, true);
+            const length = dataView.getUint32(offset + 4, true);
+            blocks.push({ start, length, data: buffer.slice(offset + 8, offset + 8 + length) });
+            offset += length + 8;
+        }
+        const size = blocks[blocks.length - 1].start + blocks[blocks.length - 1].length;
+        const memory = new MotorMemory({
+            ...options,
+            defaultSize: Math.max(size, options.defaultSize || 1024 * 10),
+        });
+        blocks.forEach(block => {
+            memory.allocateBlock(block.start, block.length);
+            memory.buffer.set(block.data, block.start);
+        });
+        return memory;
     }
 }
