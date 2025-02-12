@@ -19,6 +19,19 @@ export abstract class MotorArray<T extends MotorInstance<any>> extends MotorInst
             this.at(i).rawValue = value[i];
         }
     }
+
+    static define<T extends MotorType<any>>(type: T, length: number) {
+        return class extends MotorArray<InstanceType<T>> {
+            static readonly size = type.size * length;
+            get length(): number {
+                return length;
+            }
+            at(index: number): InstanceType<T> {
+                return new type(undefined, this.memory, this.address + index * type.size) as any;
+            }   
+        }
+    }
+    
 }
 
 export function motorDefineArray<T extends MotorType<any>>(type: T, length: number) {
@@ -31,16 +44,4 @@ export function motorDefineArray<T extends MotorType<any>>(type: T, length: numb
             return new type(undefined, this.memory, this.address + index * type.size) as any;
         }   
     }
-}
-
-export function motorNewArray<T extends MotorType<any>>(
-    type: T, 
-    length: number, 
-    defaultVal?: MotorRawOf<InstanceType<T>>[],
-    memory?: MotorMemory,
-    address?: number
-): MotorArray<InstanceType<T>> {
-    const arrayType = motorDefineArray(type, length);
-    const array = new arrayType(defaultVal, memory, address);
-    return array;
 }

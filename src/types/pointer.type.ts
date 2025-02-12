@@ -13,6 +13,10 @@ export abstract class MotorPointer<T extends MotorInstance<any>> extends MotorIn
 
     abstract get raw(): T;
 
+    delete(): void {
+        this.raw.free();
+    }
+
     constructor(defaultValue?: number | MotorPointer<any>, memory?: MotorMemory, address?: number) {
         super(defaultValue ?? 0, memory, address);
     }
