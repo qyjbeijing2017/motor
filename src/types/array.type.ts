@@ -36,7 +36,7 @@ export function motorDefineArray<T extends MotorType<any>>(type: T, length: numb
 export function motorNewArray<T extends MotorType<any>>(
     type: T, 
     length: number, 
-    defaultVal: MotorRawOf<InstanceType<T>>[] = [],
+    defaultVal?: MotorRawOf<InstanceType<T>>[],
     memory?: MotorMemory,
     address?: number
 ): MotorArray<InstanceType<T>> {

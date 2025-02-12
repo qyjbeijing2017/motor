@@ -1,7 +1,6 @@
 import { MotorInstance } from "../instance";
 import { MotorMemory } from "../memory";
 import { MotorType } from "../type";
-import { MotorTypeOf } from "../utils/type-of";
 
 export abstract class MotorPointer<T extends MotorInstance<any>> extends MotorInstance<number> {
     protected read(): number {
@@ -14,21 +13,21 @@ export abstract class MotorPointer<T extends MotorInstance<any>> extends MotorIn
 
     abstract get raw(): T;
 
-    constructor(defaultValue?: number, memory?: MotorMemory, address?: number) {
+    constructor(defaultValue?: number | MotorPointer<any>, memory?: MotorMemory, address?: number) {
         super(defaultValue ?? 0, memory, address);
     }
 }
 
-export function motorDefinePointer<T extends MotorType<any>>(type: T): MotorTypeOf<MotorPointer<InstanceType<T>>> {
+export function motorDefinePointer<T extends MotorType<any>>(type: T) {
     return class extends MotorPointer<InstanceType<T>> {
-        static readonly size: number = 4;
+        static readonly size = 4;
         get raw(): InstanceType<T> {
             return new type(undefined, this.memory, this.rawValue) as InstanceType<T>;
         }
-    } as MotorTypeOf<MotorPointer<InstanceType<T>>>;
+    };
 }
 
 export function motorGetPointer<T extends MotorInstance<any>>(instance: T): MotorPointer<T> {
-    const type = motorDefinePointer(instance.constructor as MotorTypeOf<T>);
+    const type = motorDefinePointer(instance.constructor as any);
     return new type(instance.address, instance.memory);
 }
