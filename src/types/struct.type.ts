@@ -1,14 +1,8 @@
 import { MotorInstance } from "../instance";
-import { MotorMemory } from "../memory";
 import { MotorType } from "../type";
 import { MotorRawOf } from "../utils/raw-of";
 
 export abstract class MotorStruct<T extends {[key: string]: MotorType<any>} > extends MotorInstance<{ [K in keyof T]: MotorRawOf<InstanceType<T[K]>> }>{
-
-    constructor(defaultVal?: { [K in keyof T]: MotorRawOf<InstanceType<T[K]>>; }, memory?: MotorMemory, address?: number) {
-        super(defaultVal, memory, address);
-    }
-
     static define<T extends {[key: string]: MotorType<any>}>( definition: T){
         let size = 0;
         for (const key in definition) {

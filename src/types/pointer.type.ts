@@ -1,5 +1,4 @@
 import { MotorInstance } from "../instance";
-import { MotorMemory } from "../memory";
 import { MotorType } from "../type";
 
 export abstract class MotorPointer<T extends MotorInstance<any>> extends MotorInstance<number> {
@@ -17,10 +16,6 @@ export abstract class MotorPointer<T extends MotorInstance<any>> extends MotorIn
         this.raw.free();
     }
 
-    constructor(defaultValue?: number | MotorPointer<any>, memory?: MotorMemory, address?: number) {
-        super(defaultValue, memory, address);
-    }
-
     static define<T extends MotorType<any>>(type: T) {
         return class extends MotorPointer<InstanceType<T>> {
             static readonly size = 4;
@@ -30,7 +25,7 @@ export abstract class MotorPointer<T extends MotorInstance<any>> extends MotorIn
         };
     }
 
-    fromInstance<T extends MotorInstance<any>>(instance: T) {
+    static getPointer<T extends MotorInstance<any>>(instance: T) {
         return new (MotorPointer.define(instance.constructor as any))(instance.address, instance.memory);
     }
 }
