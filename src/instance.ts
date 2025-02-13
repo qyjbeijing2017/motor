@@ -7,6 +7,15 @@ export abstract class MotorInstance {
         this.memory.copy(val.address, this.address, motorAssertType(this.constructor).size);
     }
 
+    free(): void {
+        this.memory.free({
+            start: this.address,
+            length: this.address + motorAssertType(this.constructor).size
+        });
+    }
+
+    abstract get jsVal(): any;
+
     constructor(
         def?: any, 
         readonly memory: MotorMemory = motorSingleton(MotorMemory), 
