@@ -48,3 +48,7 @@ export abstract class MotorStruct<T extends {[key: string]: MotorType<any>} > ex
         }
     }
 }
+
+export function motorDefineStruct<T extends {[key: string]: MotorType<any>}>(definition: T){
+    return MotorStruct.define(definition);
+}

@@ -18,7 +18,20 @@ export abstract class MotorPointer<T extends MotorInstance<any>> extends MotorIn
     }
 
     constructor(defaultValue?: number | MotorPointer<any>, memory?: MotorMemory, address?: number) {
-        super(defaultValue ?? 0, memory, address);
+        super(defaultValue, memory, address);
+    }
+
+    static define<T extends MotorType<any>>(type: T) {
+        return class extends MotorPointer<InstanceType<T>> {
+            static readonly size = 4;
+            get raw(): InstanceType<T> {
+                return new type(undefined, this.memory, this.rawValue) as InstanceType<T>;
+            }
+        };
+    }
+
+    fromInstance<T extends MotorInstance<any>>(instance: T) {
+        return new (MotorPointer.define(instance.constructor as any))(instance.address, instance.memory);
     }
 }
 
