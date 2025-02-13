@@ -1,4 +1,4 @@
-import { ClassConstructor } from "./class-constructor";
+export type ClassConstructor<T> = new (...args: any[]) => T;
 
 const singletonMap = new Map<ClassConstructor<any>, any>();
 
