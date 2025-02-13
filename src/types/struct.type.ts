@@ -53,6 +53,14 @@ export abstract class MotorStruct<T extends { [key: string]: MotorType<any> }> e
                     }
                 }
             }
+            
+            toString() {
+                let results = [];
+                for (const key in definition) {
+                    results.push(`${key}: ${this.get(key as any).toString()}`);
+                }
+                return `{ ${results.join(", ")} }`;
+            }
         }
     }
 }

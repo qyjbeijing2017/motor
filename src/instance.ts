@@ -36,4 +36,8 @@ export abstract class MotorInstance<RawValue> {
             length: motorAssertType(this.constructor).size,
         });
     }
+
+    toString(): string {
+        return this.rawValue + '';
+    }
 }

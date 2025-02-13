@@ -60,6 +60,9 @@ export class MotorMemory {
     }
 
     allocate(size: number): number {
+        if(size == 0) {
+            return 0;
+        }
         let block = this._emptyBlocks.find(b => b.length >= size);
         if (!block) {
             this._extend(Math.max(size, this._buffer.length));

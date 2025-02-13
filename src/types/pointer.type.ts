@@ -10,16 +10,17 @@ export abstract class MotorPointer<T extends MotorInstance<any>> extends MotorIn
         this.memory.dataView.setUint32(this.address, value, true);
     }
 
-    abstract get raw(): T;
+    abstract get raw(): T | null;
 
     delete(): void {
-        this.raw.free();
+        this.raw?.free();
     }
 
     static define<T extends MotorType<any>>(type: T) {
         return class extends MotorPointer<InstanceType<T>> {
             static readonly size = 4;
-            get raw(): InstanceType<T> {
+            get raw(): InstanceType<T> | null {
+                if(this.rawValue === 0) return null;
                 return new type(undefined, this.memory, this.rawValue) as InstanceType<T>;
             }
         };
@@ -31,15 +32,9 @@ export abstract class MotorPointer<T extends MotorInstance<any>> extends MotorIn
 }
 
 export function motorDefinePointer<T extends MotorType<any>>(type: T) {
-    return class extends MotorPointer<InstanceType<T>> {
-        static readonly size = 4;
-        get raw(): InstanceType<T> {
-            return new type(undefined, this.memory, this.rawValue) as InstanceType<T>;
-        }
-    };
+    return MotorPointer.define(type);
 }
 
 export function motorGetPointer<T extends MotorInstance<any>>(instance: T): MotorPointer<T> {
-    const type = motorDefinePointer(instance.constructor as any);
-    return new type(instance.address, instance.memory);
+    return MotorPointer.getPointer(instance);
 }

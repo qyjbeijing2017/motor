@@ -2,85 +2,145 @@ import { MotorInstance } from "../../instance";
 import { MotorMemory } from "../../memory";
 import { MotorType } from "../../type";
 import { MotorRawOf } from "../../utils/raw-of";
-import { MotorNull } from "../null.type";
-import { MotorPointer } from "../pointer.type";
-import { MotorStruct } from "../struct.type";
-import { MotorUnsignedInteger } from "../unsigned-integer.type";
 
-export class MotorList<T extends MotorType<any>> extends MotorStruct.define({
-    length: MotorUnsignedInteger,
-    data: MotorPointer.define(MotorNull)
-}) {
-    static readonly size = 8;
-    private _type: T;
 
-    at(index: number): InstanceType<T> {
-        if (index < 0 || index >= this.length) {
-            throw new Error("Index out of range");
-        }
-        return new this._type(undefined, this.memory, this.get("data").rawValue + index * this._type.size) as InstanceType<T>;
+export abstract class MotorList<T extends MotorInstance<any>> extends MotorInstance<number> {
+    protected read(): number {
+        return this.memory.dataView.getUint32(this.address, true);
     }
-
-    full(value: InstanceType<T> | MotorRawOf<InstanceType<T>>): void {
-        for (let i = 0; i < this.length; i++) {
-            this.at(i).rawValue = value instanceof MotorInstance ? value.rawValue : value;
-        }
-    }
-
-    clear(): void {
-        this.length = 0;
+    protected write(value: number): void {
+        this.memory.dataView.setUint32(this.address, value, true);
     }
 
     get length(): number {
-        return this.get("length").rawValue;
+        return this.memory.dataView.getUint32(this.address + 4, true);
     }
 
-    set length(value: number) {
-        const oldLength = this.get("length").rawValue;
-        if (oldLength < value) {
-            const oldAddress = this.get("data").rawValue;
-            const newAddress = this.memory.allocate(value * this._type.size);
-            this.get("data").rawValue = newAddress;
-            for (let i = 0; i < oldLength; i++) {
-                this.memory.copy(oldAddress + i * this._type.size, newAddress + i * this._type.size, this._type.size);
-            }
-            for (let i = oldLength; i < value; i++) {
-                new this._type(undefined, this.memory, newAddress + i * this._type.size);
-            }
-        } else if (oldLength > value) {
-            this.memory.free({
-                start: this.get("data").rawValue + value * this._type.size,
-                length: oldLength - value
-            });
-        }
-        this.get("length").rawValue = value
+    abstract at(index: number): T;
+
+    abstract setLength(value: number): void;
+
+    abstract removeAt(index: number): void;
+
+    abstract insertAt(index: number, value: T | MotorRawOf<T>): void;
+
+    abstract pushBack(value: T | MotorRawOf<T>): void;
+
+    abstract full(value: T | MotorRawOf<T>): void;
+
+    clear(): void {
+        this.setLength(0);
     }
 
-    pushBack(value: InstanceType<T> | MotorRawOf<InstanceType<T>>): void {
-        const length = this.length;
-        this.length = length + 1;
-        this.at(length).rawValue = value instanceof MotorInstance ? value.rawValue : value;
-    }
-    
-    constructor(defaultVal: {
-        type: T,
-        length?: number,
-        defaultValue?: (InstanceType<T> | MotorRawOf<InstanceType<T>>)[]
-    }, memory?: MotorMemory, address?: number) {
-        super(undefined, memory, address);
-        this._type = defaultVal.type
-        const length = defaultVal.length ?? defaultVal.defaultValue?.length ?? 0;
-        this.get("length").rawValue = length;
-        if (length > 0) {
-            const address = this.memory.allocate(length * defaultVal.type.size);
-            this.get("data").rawValue = address;
-            if (defaultVal.defaultValue) {
-                for (let i = 0; i < length; i++) {
-                    new defaultVal.type(defaultVal.defaultValue[i], this.memory, address + i * defaultVal.type.size);
+    static define<T extends MotorType<any>>(type: T) {
+        return class extends MotorList<InstanceType<T>> {
+            static readonly size = 8;
+            at(index: number): InstanceType<T> {
+                if (index < 0 || index >= this.length) {
+                    throw new Error("Index out of range");
+                }
+                return new type(undefined, this.memory, this.rawValue + index * type.size) as InstanceType<T>;
+            }
+
+            setLength(value: number): void {
+                if (value === 0) {
+                    this.memory.free({
+                        start: this.rawValue,
+                        length: this.length * type.size
+                    });
+                    this.memory.dataView.setUint32(this.address, 0, true);
+                    this.memory.dataView.setUint32(this.address + 4, 0, true);
+                    return;
+                }
+                const oldLength = this.length;
+                if (oldLength < value) {
+                    const oldAddress = this.rawValue;
+                    const newAddress = this.memory.allocate(value * type.size);
+                    this.rawValue = newAddress;
+                    this.memory.copy(oldAddress, newAddress, oldLength * type.size);
+                } else if (oldLength > value) {
+                    this.memory.free({
+                        start: this.rawValue + value * type.size,
+                        length: oldLength - value
+                    });
+                }
+                this.memory.dataView.setUint32(this.address + 4, value, true);
+            }
+
+            removeAt(index: number): void {
+                if (index < 0 || index >= this.length) {
+                    throw new Error("Index out of range");
+                }
+                const address = this.rawValue;
+                this.memory.copy(address + (index + 1) * type.size, address + index * type.size, (this.length - index - 1) * type.size);
+                this.setLength(this.length - 1);
+            }
+
+            insertAt(index: number, value: InstanceType<T> | MotorRawOf<InstanceType<T>>): void {
+                if (index < 0 || index > this.length) {
+                    throw new Error("Index out of range");
+                }
+                const length = this.length;
+                const oldAddress = this.rawValue;
+                this.setLength(length + 1);
+                const newAddress = this.rawValue;
+                this.memory.copy(oldAddress, newAddress, index * type.size);
+                this.at(index).rawValue = value instanceof MotorInstance ? value.rawValue : value;
+                this.memory.copy(oldAddress + index * type.size, newAddress + (index + 1) * type.size, (length - index) * type.size);
+            }
+
+            pushBack(value: InstanceType<T> | MotorRawOf<InstanceType<T>>): void {
+                const length = this.length;
+                this.setLength(length + 1);
+                this.at(length).rawValue = value instanceof MotorInstance ? value.rawValue : value;
+            }
+
+            full(value: InstanceType<T> | MotorRawOf<InstanceType<T>>): void {
+                for (let i = 0; i < this.length; i++) {
+                    this.at(i).rawValue = value instanceof MotorInstance ? value.rawValue : value;
                 }
             }
-        } else {
-            this.get("data").rawValue = 0;
+
+            toString(): string {
+                let str = "[" + this.at(0).toString();
+                for (let i = 1; i < this.length; i++) {
+                    str += ", " + this.at(i).toString();
+                }
+                return str + "]";
+            }
+
+            constructor(defaultValue?: {
+                address?: number,
+                length?: number,
+                defaultValue?: (InstanceType<T> | MotorRawOf<InstanceType<T>>)[]
+            } | MotorList<InstanceType<T>>, memory?: MotorMemory, address?: number) {
+                super(undefined, memory, address);
+                let length = defaultValue instanceof MotorList ? defaultValue.length : (defaultValue?.length ?? defaultValue?.defaultValue?.length ?? 0);
+                this.write(defaultValue instanceof MotorList ? defaultValue.rawValue : this.memory.allocate(length * type.size));
+                this.memory.dataView.setUint32(this.address + 4, length, true);
+                if (!(defaultValue instanceof MotorList) && defaultValue?.defaultValue) {
+                    if(defaultValue.defaultValue.length) {
+                        for (let i = 0; i < defaultValue.defaultValue.length; i++) {
+                            new type(defaultValue.defaultValue[i], this.memory, this.rawValue + i * type.size);
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    static newList<T extends MotorType<any>>(
+        type: T,
+        defaultValue?: {
+            address?: number,
+            length?: number,
+            defaultValue?: (InstanceType<T> | MotorRawOf<InstanceType<T>>)[]
+        } | MotorList<InstanceType<T>>,
+        memory?: MotorMemory,
+        address?: number
+    ): MotorList<InstanceType<T>> {
+        const listType = MotorList.define(type);
+        const list = new listType(defaultValue, memory, address);
+        return list;
     }
 }
