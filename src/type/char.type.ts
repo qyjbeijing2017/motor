@@ -1,13 +1,11 @@
 import { MotorInstance } from "../instance";
-import { MotorMemory } from "../memory";
 
-export class MotorChar extends MotorInstance {
+export class MotorChar extends MotorInstance<string> {
     static size = 1;
-    get jsVal() {
-        return String.fromCharCode(this.memory.buffer[this.address]);
+    write(value: string): void {
+        this.memory.buffer[this.address] = value.charCodeAt(0);
     }
-    constructor(def?: MotorChar | string, memory?: MotorMemory, address?: number) {
-        super(def, memory, address);
-        if(typeof def === "string") this.memory.buffer[this.address] = def.charCodeAt(0);
+    read(): string {
+        return String.fromCharCode(this.memory.buffer[this.address]);
     }
 }

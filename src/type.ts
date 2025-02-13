@@ -1,7 +1,7 @@
 import { MotorInstance } from "./instance";
 import { MotorMemory } from "./memory";
 
-export interface MotorType {
+export interface MotorType<T> {
     readonly size: number;
-    new (def: any, memory?: MotorMemory, address?: number): MotorInstance;
+    new (def: T, memory?: MotorMemory, address?: number): MotorInstance<T>;
 }

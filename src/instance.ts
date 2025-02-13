@@ -2,25 +2,31 @@ import { MotorMemory } from "./memory";
 import { motorAssertType } from "./utils/assert-type";
 import { motorSingleton } from "./utils/singleton";
 
-export abstract class MotorInstance {
-    set(val: MotorInstance): void {
-        this.memory.copy(val.address, this.address, motorAssertType(this.constructor).size);
+export abstract class MotorInstance<T> {
+    abstract write(value: T): void;
+    abstract read(): T;
+    set(value: T | MotorInstance<T>): void {
+        if(value instanceof MotorInstance) {
+            this.write(value.read());
+        } else {
+            this.write(value);
+        }
     }
-
     free(): void {
         this.memory.free({
             start: this.address,
-            length: this.address + motorAssertType(this.constructor).size
+            length: motorAssertType(this.constructor).size
         });
     }
-
-    abstract get jsVal(): any;
-
+    toString(): string {
+        return JSON.stringify(this.read(), null, 4);
+    }
     constructor(
-        def?: any, 
+        defaultValue?: T | MotorInstance<T>, 
         readonly memory: MotorMemory = motorSingleton(MotorMemory), 
         readonly address: number = memory.allocate(motorAssertType(this.constructor).size)
     ) {
-        if(def instanceof MotorInstance) this.set(def);
+        if(defaultValue !== undefined)
+            this.set(defaultValue);  
     }
 }
