@@ -5,11 +5,12 @@ export class MotorString extends MotorInstance<string> {
     static readonly encoder = new TextEncoder();
     write(value: string): void {
         const newAddress = this.memory.allocate(value.length);
+
         this.memory.buffer.set(MotorString.encoder.encode(value), newAddress);
         this.memory.free({
             start: this.charAddress,
             length: this.length
-        })
+        });
         this.charAddress = newAddress;
         this.length = value.length;
     }

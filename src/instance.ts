@@ -26,6 +26,7 @@ export abstract class MotorInstance<T> {
         readonly memory: MotorMemory = motorSingleton(MotorMemory), 
         readonly address: number = memory.allocate(motorAssertType(this.constructor).size)
     ) {
+        memory.buffer.fill(0, address, address + motorAssertType(this.constructor).size);
         if(defaultValue !== undefined)
             this.set(defaultValue);  
     }
