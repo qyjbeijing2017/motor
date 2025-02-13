@@ -167,4 +167,8 @@ export class MotorMemory {
             this._buffer.set(block.data, loadOffset + block.start);
         });
     }
+
+    copy(from: number, to: number, length: number): void {
+        this._buffer.copyWithin(to, from, from + length);
+    }
 }

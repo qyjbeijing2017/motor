@@ -1,9 +1,10 @@
 import { MotorInstance } from "../instance";
+import { MotorMemory } from "../memory";
 import { MotorType } from "../type";
 import { MotorRawOf } from "../utils/raw-of";
 
-export abstract class MotorStruct<T extends {[key: string]: MotorType<any>} > extends MotorInstance<{ [K in keyof T]: MotorRawOf<InstanceType<T[K]>> }>{
-    static define<T extends {[key: string]: MotorType<any>}>( definition: T){
+export abstract class MotorStruct<T extends { [key: string]: MotorType<any> }> extends MotorInstance<{ [K in keyof T]: MotorRawOf<InstanceType<T[K]>> }> {
+    static define<T extends { [key: string]: MotorType<any> }>(definition: T) {
         let size = 0;
         for (const key in definition) {
             size += definition[key].size;
@@ -21,8 +22,8 @@ export abstract class MotorStruct<T extends {[key: string]: MotorType<any>} > ex
                 }
                 throw new Error("Invalid key");
             }
-        
-            protected read(): { [K in keyof T]: MotorRawOf<InstanceType<T[K]>>; } {
+
+            protected read(): { [K in keyof T]: MotorRawOf<InstanceType<T[K]>> } {
                 let offset = 0;
                 let result = {} as any;
                 for (const key in definition) {
@@ -31,7 +32,7 @@ export abstract class MotorStruct<T extends {[key: string]: MotorType<any>} > ex
                 }
                 return result;
             }
-        
+
             protected write(value: { [K in keyof T]: MotorRawOf<InstanceType<T[K]>>; }): void {
                 let offset = 0;
                 for (const key in definition) {
@@ -39,10 +40,23 @@ export abstract class MotorStruct<T extends {[key: string]: MotorType<any>} > ex
                     offset += definition[key].size;
                 }
             }
+
+            constructor(defaultValue?: { [K in keyof T]?: MotorRawOf<InstanceType<T[K]>> | InstanceType<T[K]> }, memory?: MotorMemory, address?: number) {
+                super(undefined, memory, address);
+                if (defaultValue) {
+                    let offset = 0;
+                    for (const key in definition) {
+                        if (key in defaultValue) {
+                            new definition[key](defaultValue[key], memory, this.address + offset);
+                        }
+                        offset += definition[key].size;
+                    }
+                }
+            }
         }
     }
 }
 
-export function motorDefineStruct<T extends {[key: string]: MotorType<any>}>(definition: T){
+export function motorDefineStruct<T extends { [key: string]: MotorType<any> }>(definition: T) {
     return MotorStruct.define(definition);
 }
