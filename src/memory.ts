@@ -80,6 +80,9 @@ export class MotorMemory {
     }
 
     free(block: MotorBlock): void {
+        if(block.length == 0) {
+            return;
+        }
         const blockBefore = this._emptyBlocks.find(b => b.start + b.length === block.start);
         const blockAfter = this._emptyBlocks.find(b => b.start === block.start + block.length);
         if (blockBefore) {
