@@ -1,4 +1,4 @@
-import { MotorInstance } from "../../instance";
+import { MotorInstance } from "../../instance.js";
 
 export class MotorString extends MotorInstance<string> {
     static readonly decoder = new TextDecoder();

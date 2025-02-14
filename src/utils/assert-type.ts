@@ -1,4 +1,4 @@
-import { MotorType } from "../type";
+import { MotorType } from "../type.js";
 
 export function motorAssertType<T>(value: Function): MotorType<T> {
     const keys = Object.keys(value);

@@ -1,5 +1,5 @@
-import { MotorInstance } from "./instance";
-import { MotorMemory } from "./memory";
+import { MotorInstance } from "./instance.js";
+import { MotorMemory } from "./memory.js";
 
 export interface MotorType<T> {
     readonly size: number;

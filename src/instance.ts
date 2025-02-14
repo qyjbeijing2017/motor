@@ -1,6 +1,6 @@
-import { MotorMemory } from "./memory";
-import { motorAssertType } from "./utils/assert-type";
-import { motorSingleton } from "./utils/singleton";
+import { MotorMemory } from "./memory.js";
+import { motorAssertType } from "./utils/assert-type.js";
+import { motorSingleton } from "./utils/singleton.js";
 
 export abstract class MotorInstance<T> {
     abstract write(value: T): void;
