@@ -76,6 +76,7 @@ export class MotorMemory {
         }
         this._emptyBlocks = this._emptyBlocks.filter(b => b.start !== block.start);
         this._emptyBlocks.sort((a, b) => a.start - b.start);
+        this.buffer.fill(0, block.start, block.start + size);
         return block.start;
     }
 
