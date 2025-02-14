@@ -1,6 +1,6 @@
-import { MotorInstance } from "../instance.js";
+import { MotorInstance } from "../instance";
 
-export class MotorInteger extends MotorInstance<boolean> {
+export class MotorBool extends MotorInstance<boolean> {
     write(value: boolean): void {
         this.memory.buffer[this.address] = value ? 1 : 0;
     }

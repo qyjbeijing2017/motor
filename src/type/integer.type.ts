@@ -1,4 +1,4 @@
-import { MotorInstance } from "../instance.js";
+import { MotorInstance } from "../instance";
 
 export class MotorInteger extends MotorInstance<number> {
     write(value: number): void {

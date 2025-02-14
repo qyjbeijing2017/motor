@@ -1,4 +1,4 @@
-import { MotorInstance } from "../instance.js";
+import { MotorInstance } from "../instance";
 
 export class MotorUnsignedLong extends MotorInstance<bigint> {
     write(value: bigint): void {
@@ -10,4 +10,4 @@ export class MotorUnsignedLong extends MotorInstance<bigint> {
     static size = 8;
 }
 
-export const MotorUInt64 = MotorUnsignedLong;
+export const MotorUint64 = MotorUnsignedLong;

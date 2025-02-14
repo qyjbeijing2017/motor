@@ -1,4 +1,4 @@
-import { MotorInstance } from "../instance.js";
+import { MotorInstance } from "../instance";
 
 export class MotorChar extends MotorInstance<string> {
     static size = 1;

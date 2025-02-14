@@ -1,4 +1,4 @@
-import { MotorInstance } from "../instance.js";
+import { MotorInstance } from "../instance";
 
 export class MotorUnsignedInt8 extends MotorInstance<number> {
     write(value: number): void {
@@ -9,3 +9,4 @@ export class MotorUnsignedInt8 extends MotorInstance<number> {
     }
     static size = 1;
 }
+export const MotorUint8 = MotorUnsignedInt8;

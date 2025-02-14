@@ -1,4 +1,4 @@
-import { VERSION } from "./global.js";
+import { VERSION } from "./global";
 
 export interface MotorMemoryOptions {
     version: VERSION;

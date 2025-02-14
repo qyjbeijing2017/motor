@@ -1,6 +1,6 @@
-import { MotorInstance } from "../instance.js";
-import { MotorMemory } from "../memory.js";
-import { MotorType } from "../type.js";
+import { MotorInstance } from "../instance";
+import { MotorMemory } from "../memory";
+import { MotorType } from "../type";
 
 export abstract class MotorArray<T extends MotorInstance<any>> extends MotorInstance<(T extends MotorInstance<infer U> ? U : never)[]> {
     abstract at(index: number): T;

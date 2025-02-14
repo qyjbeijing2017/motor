@@ -1,6 +1,6 @@
-import { MotorInstance } from "../instance.js";
-import { MotorMemory } from "../memory.js";
-import { MotorType } from "../type.js";
+import { MotorInstance } from "../instance";
+import { MotorMemory } from "../memory";
+import { MotorType } from "../type";
 
 export abstract class MotorStruct<T extends {[key in keyof T]: MotorInstance<any>}> extends MotorInstance<{[key in keyof T]: (T[key] extends MotorInstance<infer U> ? U : never)}> {
     abstract get<Key extends keyof T>(key: Key): T[Key];

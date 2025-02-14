@@ -1,6 +1,6 @@
-import { MotorInstance } from "../../instance.js";
-import { MotorMemory } from "../../memory.js";
-import { MotorType } from "../../type.js";
+import { MotorInstance } from "../../instance";
+import { MotorMemory } from "../../memory";
+import { MotorType } from "../../type";
 
 export abstract class MotorList<T extends MotorInstance<T>> extends MotorInstance<(T extends MotorInstance<infer U> ? U : never)[]> {
     get length() {
