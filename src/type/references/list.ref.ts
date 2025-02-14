@@ -3,34 +3,40 @@ import { MotorMemory } from "../../memory";
 import { MotorType } from "../../type";
 
 export abstract class MotorList<T extends MotorInstance<T>> extends MotorInstance<(T extends MotorInstance<infer U> ? U : never)[]> {
-    get length() {
-        return this.memory.dataView.getUint32(this.address + 4, true);
-    }
-    protected set length(value: number) {
-        this.setLength(value);
-    }
-    protected get arrayAddress() {
-        return this.memory.dataView.getUint32(this.address, true);
-    }
-    protected set arrayAddress(value: number) {
-        this.memory.dataView.setUint32(this.address, value, true);
-    }
-    pushBack(value: T): void {
-        this.length++;
-        this.at(this.length - 1).set(value);
-    }
-    popBack(): void {
-        this.length--;
-    }
+    abstract get length(): number;
+    protected abstract set length(value: number);
+
+    abstract get arrayAddress(): number;
+    protected abstract set arrayAddress(value: number);
+
     abstract removeAt(index: number): void;
     abstract insertAt(index: number, value: T): void;
     abstract at(index: number): T;
-
     protected abstract setLength(value: number): void;
 
     static define<T extends MotorType<any>>(type: T) {
         return class extends MotorList<InstanceType<T>> {
-            protected setLength(value: number): void {
+            get length() {
+                return this.memory.dataView.getUint32(this.address + 4, true);
+            }
+            protected set length(value: number) {
+                this.setLength(value);
+            }
+            get arrayAddress() {
+                return this.memory.dataView.getUint32(this.address, true);
+            }
+            protected set arrayAddress(value: number) {
+                this.memory.dataView.setUint32(this.address, value, true);
+            }
+            pushBack(value: T): void {
+                this.length++;
+                this.at(this.length - 1).set(value);
+            }
+            popBack(): void {
+                this.length--;
+            }
+
+            setLength(value: number): void {
                 if (value < this.length) {
                     this.memory.free({
                         start: this.arrayAddress + value,
