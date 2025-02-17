@@ -8,6 +8,10 @@ export class MotorLong extends MotorInstance<bigint> {
         return this.memory.dataView.getBigInt64(this.address);
     }
     static size = 8;
+
+    toString(): string {
+        return this.read().toString();
+    }
 }
 
 export const MotorInt64 = MotorLong;

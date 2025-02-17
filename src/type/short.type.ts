@@ -10,4 +10,4 @@ export class MotorShort extends MotorInstance<number> {
     static size = 2;
 }
 
-export type MotorInt16 = MotorShort;
+export const MotorInt16 = MotorShort;
