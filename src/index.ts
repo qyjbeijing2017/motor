@@ -17,3 +17,4 @@ export { MotorInstance } from "./instance";
 export { MotorMemory } from "./memory";
 export { MotorType } from "./type";
 export { MotorNull } from "./type/null.type";
+export { MotorChar } from "./type/char.type";

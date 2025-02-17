@@ -8,4 +8,7 @@ export class MotorChar extends MotorInstance<string> {
     read(): string {
         return String.fromCharCode(this.memory.dataView.getUint8(this.address));
     }
+    toString(): string {
+        return this.read();
+    }
 }
