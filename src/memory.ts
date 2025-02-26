@@ -1,181 +1,291 @@
-import { VERSION } from "./global";
 
+/**
+ * MotorVersion
+ * @enum {number}
+ * @property {number} V1 = 1
+ * 
+ */
+export enum MotorVersion {
+    V1 = 1,
+}
+
+/**
+ * MotorMemoryOptions
+ * @param allocatedMemory: (size: number) => Uint8Array = (size: number) => new Uint8Array(size) - the function to allocate memory
+ * @param size: number = 4 * 1024 - the initial size of memory
+ * 
+ */
 export interface MotorMemoryOptions {
-    version: VERSION;
-    name: string;
-    defaultSize: number;
-    getBuffer: (size: number, before?: Uint8Array) => Uint8Array;
+    allocatedMemory: (size: number) => Uint8Array;
+    size: number;
 }
 
-const defaultOptions: MotorMemoryOptions = {
-    version: VERSION.V1,
-    name: 'ELS',
-    defaultSize: 1024 * 10,
-    getBuffer: (size: number, before?: Uint8Array) => {
-        const memory = new Uint8Array(size);
-        if (before) {
-            memory.set(before);
-        }
-        return memory;
-    },
-};
-
-export interface MotorBlock {
-    readonly start: number;
-    readonly length: number;
+/**
+ * MotorMemoryBlock is a block of memory with address and size
+ * MotorMemoryBlock
+ * @param address: number - the address of the block
+ * @param size: number - the size of the block
+ */
+export interface MotorMemoryBlock {
+    address: number;
+    size: number;
 }
 
-export interface MemorySaveBlock {
-    start: number;
-    length: number;
-    data: Uint8Array;
-}
-
+/**
+ * MotorMemory is the environment of the motor, it can be allocate, free and expand. all data is stored in the memory, including the flash, RAM, Storage, etc.
+ * MotorMemory
+ * @param options?: Partial<MotorMemoryOptions> - the options of the memory
+ */
 export class MotorMemory {
-    private _buffer: Uint8Array;
-    private _emptyBlocks: MotorBlock[];
-    private _dataView: DataView;
-    private _getBuffer: (size: number, before?: Uint8Array) => Uint8Array;
+    /**
+     * magic number of the memory file
+     * @type {string} = `MOTR`
+     */
+    static readonly magic = `MOTR`;
 
-    get buffer(): Uint8Array {
-        return this._buffer;
+    private _version: MotorVersion = MotorVersion.V1;
+
+    /**
+     * version of the memory file
+     * @type {MotorVersion} = MotorVersion.V1
+     */
+    get version() {
+        return this._version;
     }
 
-    get dataView(): DataView {
-        return this._dataView;
+    private _emptyBlocks: MotorMemoryBlock[] = [];
+    private _allocatedMemory: (size: number) => Uint8Array = (size: number) => new Uint8Array(size);
+    private _memory: Uint8Array;
+
+    /**
+     * memory of the motor
+     * @type {Uint8Array}
+     * @readonly
+     */
+    get memory() {
+        return this._memory;
     }
 
-    constructor(options: Partial<MotorMemoryOptions> = {}) {
-        const currentOptions = { ...defaultOptions, ...options };
-        this._getBuffer = currentOptions.getBuffer;
-        this._buffer = this._getBuffer(currentOptions.defaultSize);
-        this._emptyBlocks = [{ start: 0, length: currentOptions.defaultSize }];
-        this._dataView = new DataView(this._buffer.buffer);
-    }
-
-    private _extend(size: number): void {
-        this._buffer = this._getBuffer(size + this._buffer.length, this._buffer);
-        this._dataView = new DataView(this._buffer.buffer);
-        this.free({ start: this._buffer.length, length: size });
-    }
-
-    allocate(size: number): number {
-        if(size == 0) {
-            return 0;
+    constructor(options?: Partial<MotorMemoryOptions>) {
+        if (options?.allocatedMemory) {
+            this._allocatedMemory = options.allocatedMemory;
         }
-        let block = this._emptyBlocks.find(b => b.length >= size);
-        if (!block) {
-            this._extend(Math.max(size, this._buffer.length));
-            block = this._emptyBlocks.find(b => b.length >= size);
-        }
-        if (!block) {
-            throw new Error('Cannot allocate memory');
-        }
-        if (block.length > size) {
-            this._emptyBlocks.push({ start: block.start + size, length: block.length - size });
-        }
-        this._emptyBlocks = this._emptyBlocks.filter(b => b.start !== block.start);
-        this._emptyBlocks.sort((a, b) => a.start - b.start);
-        this.buffer.fill(0, block.start, block.start + size);
-        return block.start;
+        this._memory = this._allocatedMemory(options?.size ?? 4 * 1024);
+        this._emptyBlocks.push({ address: 0, size: this._memory.length });
     }
 
-    free(block: MotorBlock): void {
-        if(block.length == 0) {
+    /**
+     * clean the memory, all data will be lost
+     * @returns {void}
+     */
+    clean() {
+        this._emptyBlocks = [{ address: 0, size: this._memory.length }];
+    }
+
+    /**
+     * expand the memory
+     * @param size: number = this._memory.length * 2 - the size of the new memory. if the size is smaller than the current size, the memory will not be changed. if the size is smaller than the current size * 2, the memory will be expanded to the size * 2. if the size is larger than the current size * 2, the memory will be expanded to the new size, and the empty block will be changed to the new size
+     * @returns {void}
+     */
+    expand(size: number = this._memory.length * 2) {
+        size = Math.floor(size);
+        if(size < this._memory.length) {
             return;
         }
-        const blockBefore = this._emptyBlocks.find(b => b.start + b.length === block.start);
-        const blockAfter = this._emptyBlocks.find(b => b.start === block.start + block.length);
-        if (blockBefore) {
-            this._emptyBlocks = this._emptyBlocks.filter(b => b.start == blockBefore.start);
-            this._emptyBlocks.push({ start: blockBefore.start, length: blockBefore.length + block.length });
-        } else if (blockAfter) {
-            this._emptyBlocks = this._emptyBlocks.filter(b => b.start == blockAfter.start);
-            this._emptyBlocks.push({ start: block.start, length: block.length + blockAfter.length });
-        } else {
-            this._emptyBlocks.push(block);
-        }
-        this._emptyBlocks.sort((a, b) => a.start - b.start);
+        const newMemory = this._allocatedMemory(size);
+        newMemory.set(this._memory);
+        const lastSize = this._memory.length;
+        this._memory = newMemory;
+        this.free(lastSize, size - lastSize);
     }
 
-    shrink(size?: number): void {
-        const lastBlock = this._emptyBlocks[this._emptyBlocks.length - 1];
-        if (size === undefined) {
-            size = lastBlock.length
-        }
-        size = Math.min(size, lastBlock.length);
-        const sizeDiff = this._buffer.length - size;
-        this._buffer = this._buffer.slice(0, sizeDiff);
-        this._dataView = new DataView(this._buffer.buffer);
-        if(size < lastBlock.length) {
-            this._emptyBlocks[this._emptyBlocks.length - 1] = { start: lastBlock.start, length: size };
-        } else {
-            this._emptyBlocks.pop();
-        }
-
+    /**
+     * empty size of the memory
+     * @type {number}
+     * @readonly
+     * @returns {number}
+     */
+    get emptySize() {
+        return this._emptyBlocks.reduce((acc, block) => acc + block.size, 0);
     }
 
-    save() {
-        let offset = 0;
-        const blocks: MemorySaveBlock[] = [];
-        this._emptyBlocks.forEach(block => {
-            const length = block.start - offset;
-            if(length != 0) {
-                blocks.push({ start: offset, length, data: this._buffer.slice(offset, block.start) });
+    /**
+     * used size of the memory
+     * @type {number}
+     * @readonly
+     * @returns {number}
+     */
+    get usedSize() {
+        return this._memory.length - this.emptySize;
+    }
+
+    /**
+     * used blocks of the memory
+     * @type {MotorMemoryBlock[]}
+     * @readonly
+     * @returns {MotorMemoryBlock[]}
+     */
+    get usedBlocks(): MotorMemoryBlock[] {
+        const blocks: MotorMemoryBlock[] = [];
+        this._emptyBlocks.sort((a, b) => a.address - b.address);
+        let address = 0;
+        for (const block of this._emptyBlocks) {
+            if (block.address > address) {
+                blocks.push({ address, size: block.address - address });
             }
-            offset = block.start + block.length;
-        });
-        const buffer = new Uint8Array(blocks.reduce((acc, block) => acc + block.length + 8, 0));
-        let view = new DataView(buffer.buffer);
-        offset = 0;
-        blocks.forEach(block => {
-            view.setUint32(offset, block.start, true);
-            view.setUint32(offset + 4, block.length, true);
-            buffer.set(block.data, offset + 8);
-            offset += block.length + 8;
-        });
-        return buffer;
+            address = block.address + block.size;
+        }
+        if (address < this._memory.length) {
+            blocks.push({ address, size: this._memory.length - address });
+        }
+        return blocks;
     }
     
-    clear(): void {
-        this._emptyBlocks = [{ start: 0, length: this._buffer.length }];
-    }
-
-    private allocateBlock(start: number, length: number): void {
-        const block = this._emptyBlocks.find(b => b.start <= start && b.start + b.length >= start + length);
-        if (!block) {
-            throw new Error('Cannot allocate block');
-        }
-        if (block.start < start) {
-            this._emptyBlocks.push({ start: block.start, length: start - block.start });
-        }
-        if (block.start + block.length > start + length) {
-            this._emptyBlocks.push({ start: start + length, length: block.start + block.length - start - length });
-        }
-        this._emptyBlocks = this._emptyBlocks.filter(b => b.start !== block.start);
-        this._emptyBlocks.sort((a, b) => a.start - b.start);
-    }
-
-    load(buffer: Uint8Array, loadOffset: number): void {
-        if(loadOffset + buffer.length > this._buffer.length) {
-            this._extend(loadOffset + buffer.length - this._buffer.length);
-        }
-        const blocks: MemorySaveBlock[] = [];
-        const dataView = new DataView(buffer.buffer);
+    /**
+     * save the memory to a buffer
+     * 
+     * magic: 4 bytes
+     * version: 4 bytes
+     * blocks:[
+     *  address: 4 bytes
+     *  size: 4 bytes
+     *  data: size bytes
+     * ]
+     * 
+     * @returns {Uint8Array}
+     */
+    save(): Uint8Array {
+        const blocks = this.usedBlocks;
+        const size = 8 + blocks.reduce((acc, block) => acc + block.size + 8, 0);
+        const buffer = this._allocatedMemory(size);
+        const view = new DataView(buffer.buffer);
         let offset = 0;
-        while(offset < buffer.length) {
-            const start = dataView.getUint32(offset, true);
-            const length = dataView.getUint32(offset + 4, true);
-            blocks.push({ start, length, data: buffer.slice(offset + 8, offset + 8 + length) });
-            offset += length + 8;
+        const magicNumber = new Uint8Array(4);
+        for (let i = 0; i < MotorMemory.magic.length; i++) {
+            magicNumber[i] = MotorMemory.magic.charCodeAt(i);
         }
-        blocks.forEach(block => {
-            this.allocateBlock(loadOffset + block.start, block.length);
-            this._buffer.set(block.data, loadOffset + block.start);
-        });
+        buffer.set(magicNumber, offset);
+        offset += 4;
+        view.setUint32(offset, this._version);
+        offset += 4;
+        for (const block of blocks) {
+            view.setUint32(offset, block.address);
+            offset += 4;
+            view.setUint32(offset, block.size);
+            offset += 4;
+            buffer.set(this._memory.subarray(block.address, block.address + block.size), offset);
+            offset += block.size;
+        }
+        return buffer;
     }
 
-    copy(from: number, to: number, length: number): void {
-        this._buffer.copyWithin(to, from, from + length);
+    /**
+     * read the memory from a buffer
+     * magic: 4 bytes
+     * version: 4 bytes
+     * blocks:[
+     *  address: 4 bytes
+     *  size: 4 bytes
+     *  data: size bytes
+     * ]
+     * @returns {void}
+     */
+    read(buffer: Uint8Array) {
+        const view = new DataView(buffer.buffer);
+        let offset = 0;
+        const magicNumber = new Uint8Array(4);
+        magicNumber.set(buffer.subarray(offset, offset + 4));
+        offset += 4;
+        if (magicNumber.toString() !== MotorMemory.magic) {
+            throw new Error(`Invalid memory file`);
+        }
+        this._version = view.getUint32(offset);
+        offset += 4;
+
+        const blockUsed: MotorMemoryBlock[] = [];
+        while (offset < buffer.length) {
+            const address = view.getUint32(offset);
+            offset += 4;
+            const blockSize = view.getUint32(offset);
+            offset += 4;
+            blockUsed.push({ address, size: blockSize });
+        }
+        blockUsed.sort((a, b) => a.address - b.address);
+        const lastBlock = blockUsed[blockUsed.length - 1];
+        this.expand(lastBlock.address + lastBlock.size);
+        this._emptyBlocks = [];
+
+        offset = 8;
+        let address = 0;
+        for (const block of blockUsed) {
+            if (block.address > address) {
+                this._emptyBlocks.push({ address: offset, size: block.address - offset });
+            }
+            this._memory.set(buffer.subarray(offset, offset + block.size), block.address);
+            offset += block.size;
+            address = block.address + block.size;
+        }
+        if (address < this._memory.length) {
+            this._emptyBlocks.push({ address: offset, size: this._memory.length - offset });
+        }
+    }
+
+    /**
+     * free the memory
+     * @param address: number - the address of the block
+     * @param size: number - the size of the block
+     * @returns {void}
+     */
+    free(address: number, size: number) {
+        address = Math.floor(address);
+        size = Math.floor(size);
+        this._emptyBlocks.sort((a, b) => a.address - b.address);
+        const beforeIndex = this._emptyBlocks.findIndex((block) => block.address + block.size === address);
+        const afterIndex = this._emptyBlocks.findIndex((block) => block.address === address + size);
+        if(beforeIndex > 0 && afterIndex > 0) {
+            this._emptyBlocks[beforeIndex].size += size + this._emptyBlocks[afterIndex].size;
+            this._emptyBlocks.splice(afterIndex, 1);
+        } else if(beforeIndex > 0) {
+            this._emptyBlocks[beforeIndex].size += size;
+        } else if(afterIndex > 0) {
+            this._emptyBlocks[afterIndex].address = address;
+            this._emptyBlocks[afterIndex].size += size;
+        } else {
+            this._emptyBlocks.push({ address, size });
+        }
+    }
+
+    /**
+     * allocate the memory, if the block is not enough, the memory will be tried to expand
+     * @param size: number - the size of the block
+     * @returns {number} - the address of the block
+     */
+    allocate(size: number): number {
+        size = Math.floor(size);
+        this._emptyBlocks.sort((a, b) => a.size - b.size);
+        let block = this._emptyBlocks.find((block) => block.size >= size);
+        if (!block) {
+            this.expand(Math.max(this._memory.length * 2, this._memory.length + size));
+            block = this._emptyBlocks.find((block) => block.size >= size)!;
+        }
+        const address = block.address;
+        if(block.size > size) {
+            block.address += size;
+            block.size -= size;
+        } else {
+            this._emptyBlocks.splice(this._emptyBlocks.indexOf(block), 1);
+        }
+        return address;
+    }
+
+    /**
+     * resize the memory, it will clean the whole memory
+     * @param size: number - the size of the block
+     * @returns {void}
+     */
+    resize(size: number) {
+        size = Math.floor(size);
+        this._memory = this._allocatedMemory(size);
+        this._emptyBlocks = [{ address: 0, size }];
     }
 }
