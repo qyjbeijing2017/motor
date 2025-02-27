@@ -4,3 +4,5 @@ export { MotorInstance } from './types/instance';
 export { MotorFloat, MotorFloat32 } from './types/float.type';
 export { MotorInteger, MotorInt32 } from './types/integer.type';
 export { MotorBoolean, MotorBool } from './types/bool.type';
+export { MotorChar } from './types/char.type';
+export { MotorArray, defineArray } from './types/array.type';
