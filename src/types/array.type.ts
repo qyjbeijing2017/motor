@@ -20,7 +20,7 @@ export abstract class  MotorArray<T extends new (def: undefined, memory: MotorMe
         if(index < 0 || index >= this.length) {
             throw new Error(`Index out of bounds: ${index}`);
         }
-        return new (this.onGetType())(undefined,this.memory, this.address + index * 4) as InstanceType<T>;
+        return new (this.onGetType())(undefined,this.memory, this.address + index * motorSizeOf(this.onGetType())) as InstanceType<T>;
     } 
         
 }
