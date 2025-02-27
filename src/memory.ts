@@ -57,6 +57,17 @@ export class MotorMemory {
     private _allocatedMemory: (size: number) => Uint8Array = (size: number) => new Uint8Array(size);
     private _memory: Uint8Array;
 
+    private _dataView: DataView;
+
+    /**
+     * data view of the motor
+     * @type {DataView}
+     * @readonly
+     */
+    get dataView() {
+        return this._dataView;
+    }
+
     /**
      * memory of the motor
      * @type {Uint8Array}
@@ -71,6 +82,7 @@ export class MotorMemory {
             this._allocatedMemory = options.allocatedMemory;
         }
         this._memory = this._allocatedMemory(options?.size ?? 4 * 1024);
+        this._dataView = new DataView(this._memory.buffer);
         this._emptyBlocks.push({ address: 0, size: this._memory.length });
     }
 
@@ -93,6 +105,7 @@ export class MotorMemory {
             return;
         }
         const newMemory = this._allocatedMemory(size);
+        this._dataView = new DataView(newMemory.buffer);
         newMemory.set(this._memory);
         const lastSize = this._memory.length;
         this._memory = newMemory;
@@ -158,6 +171,7 @@ export class MotorMemory {
         const blocks = this.usedBlocks;
         const size = 8 + blocks.reduce((acc, block) => acc + block.size + 8, 0);
         const buffer = this._allocatedMemory(size);
+        this._dataView = new DataView(buffer.buffer);
         const view = new DataView(buffer.buffer);
         let offset = 0;
         const magicNumber = new Uint8Array(4);
@@ -196,7 +210,7 @@ export class MotorMemory {
         const magicNumber = new Uint8Array(4);
         magicNumber.set(buffer.subarray(offset, offset + 4));
         offset += 4;
-        if (magicNumber.toString() !== MotorMemory.magic) {
+        if (String.fromCharCode(...magicNumber) !== MotorMemory.magic) {
             throw new Error(`Invalid memory file`);
         }
         this._version = view.getUint32(offset);
@@ -209,6 +223,7 @@ export class MotorMemory {
             const blockSize = view.getUint32(offset);
             offset += 4;
             blockUsed.push({ address, size: blockSize });
+            offset += blockSize;
         }
         blockUsed.sort((a, b) => a.address - b.address);
         const lastBlock = blockUsed[blockUsed.length - 1];
@@ -221,12 +236,13 @@ export class MotorMemory {
             if (block.address > address) {
                 this._emptyBlocks.push({ address: offset, size: block.address - offset });
             }
+            offset += 8;
             this._memory.set(buffer.subarray(offset, offset + block.size), block.address);
             offset += block.size;
             address = block.address + block.size;
         }
         if (address < this._memory.length) {
-            this._emptyBlocks.push({ address: offset, size: this._memory.length - offset });
+            this._emptyBlocks.push({ address: address, size: this._memory.length - address });
         }
     }
 
@@ -242,12 +258,12 @@ export class MotorMemory {
         this._emptyBlocks.sort((a, b) => a.address - b.address);
         const beforeIndex = this._emptyBlocks.findIndex((block) => block.address + block.size === address);
         const afterIndex = this._emptyBlocks.findIndex((block) => block.address === address + size);
-        if(beforeIndex > 0 && afterIndex > 0) {
+        if(beforeIndex > -1 && afterIndex > -1) {
             this._emptyBlocks[beforeIndex].size += size + this._emptyBlocks[afterIndex].size;
             this._emptyBlocks.splice(afterIndex, 1);
-        } else if(beforeIndex > 0) {
+        } else if(beforeIndex > -1) {
             this._emptyBlocks[beforeIndex].size += size;
-        } else if(afterIndex > 0) {
+        } else if(afterIndex > -1) {
             this._emptyBlocks[afterIndex].address = address;
             this._emptyBlocks[afterIndex].size += size;
         } else {
@@ -286,6 +302,7 @@ export class MotorMemory {
     resize(size: number) {
         size = Math.floor(size);
         this._memory = this._allocatedMemory(size);
+        this._dataView = new DataView(this._memory.buffer);
         this._emptyBlocks = [{ address: 0, size }];
     }
 }
