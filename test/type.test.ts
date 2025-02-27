@@ -4,7 +4,7 @@ import {
     MotorInt32, 
     MotorMemory, 
     MotorChar, 
-    defineArray, 
+    defineMotorArray, 
     motorSizeOf
 } from '../src';
 import { motorSingleton } from '../src/utils/singleton';
@@ -95,7 +95,7 @@ describe('Type', () => {
     });
 
     describe('array', () => {
-        const arrayOnTest = defineArray(MotorFloat32, 3);
+        const arrayOnTest = defineMotorArray(MotorFloat32, 3);
         test('size', () => {
             expect(motorSizeOf(arrayOnTest)).toBe(12);
         });
@@ -133,7 +133,7 @@ describe('Type', () => {
             expect(array.at(2).jsVal).toBeCloseTo(5.5);
         });
         test('define int', () => {
-            const arrayOnTest = defineArray(MotorInt32, 5);
+            const arrayOnTest = defineMotorArray(MotorInt32, 5);
             const array = new arrayOnTest([1,2,3,4,5]);
             expect(array.at(0) instanceof MotorInt32).toBe(true);
             expect(array.at(0).jsVal).toBe(1);
@@ -143,7 +143,7 @@ describe('Type', () => {
             expect(array.at(4).jsVal).toBe(5);
         });
         test('define bool', () => {
-            const arrayOnTest = defineArray(MotorBool, 5);
+            const arrayOnTest = defineMotorArray(MotorBool, 5);
             const array = new arrayOnTest([true,false,true,false,true]);
             expect(array.at(0) instanceof MotorBool).toBe(true);
             expect(array.at(0).jsVal).toBe(true);
@@ -153,7 +153,7 @@ describe('Type', () => {
             expect(array.at(4).jsVal).toBe(true);
         });
         test('define char', () => {
-            const arrayOnTest = defineArray(MotorChar, 5);
+            const arrayOnTest = defineMotorArray(MotorChar, 5);
             const array = new arrayOnTest(['a','b','c','d','e']);
             expect(array.at(0) instanceof MotorChar).toBe(true);
             expect(array.at(0).jsVal).toBe('a');
@@ -163,10 +163,10 @@ describe('Type', () => {
             expect(array.at(4).jsVal).toBe('e');
         });
         test('define array', () => {
-            const arrayOnTest = defineArray(defineArray(MotorFloat32, 3), 2);
+            const arrayOnTest = defineMotorArray(defineMotorArray(MotorFloat32, 3), 2);
             expect(motorSizeOf(arrayOnTest)).toBe(24);
             const array = new arrayOnTest([[1.1,2.2,3.3],[4.4,5.5,6.6]]);
-            const jsArrayOnTest = array.jsVal as number[][];
+            const jsArrayOnTest = array.jsVal;
             expect(jsArrayOnTest.length).toBe(2);
             expect(jsArrayOnTest[0]!.length).toBe(3);
             expect(jsArrayOnTest[1]!.length).toBe(3);
