@@ -373,5 +373,11 @@ describe('Type', () => {
             expect(stringOnTest2.jsVal).toBe('test');
             expect(motorSingleton(MotorMemory).dataView.getUint32(stringOnTest2.address, true)).toBe(4);
         });
+        test('set', () => {
+            const stringOnTest = new MotorString();
+            stringOnTest.jsVal = 'test';
+            expect(stringOnTest.jsVal).toBe('test');
+            expect(motorSingleton(MotorMemory).dataView.getUint32(stringOnTest.address, true)).toBe(4);
+        });
     });
 });
