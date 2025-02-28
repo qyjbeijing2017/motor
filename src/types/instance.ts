@@ -26,6 +26,14 @@ export abstract class MotorInstance<T> {
     set jsVal(val: T) {
         this.onSetData(val);
     }
+
+    /**
+     * Free the memory of this instance.
+     */
+    free(): void {
+        this.memory.free(this._address, motorSizeOf(this.constructor));
+    }
+
     constructor(
         def?: T,
         /**

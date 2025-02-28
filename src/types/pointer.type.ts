@@ -17,26 +17,15 @@ export abstract class MotorPointer<T extends new (def: undefined, memory: MotorM
     }
 }
 
-const pointerMap = new Map<(new () => MotorInstance<any>), new (def?: InstanceType<any>['jsVal'], memory?: MotorMemory, address?: number) => MotorPointer<any>>();
-
 export function defineMotorPointer<T extends new () => MotorInstance<any>>(type: T): new (
     def?: InstanceType<T>['jsVal'],
     memory?: MotorMemory,
     address?: number
 ) => MotorPointer<T> {
-    if(pointerMap.has(type)) {
-        return pointerMap.get(type) as new (
-            def?: InstanceType<T>['jsVal'],
-            memory?: MotorMemory,
-            address?: number
-        ) => MotorPointer<T>;
-    }
-    const t = class extends MotorPointer<T> {
+    return class extends MotorPointer<T> {
         static size = 4;
         onGetType(): T {
             return type;
         }
     }
-    pointerMap.set(type, t);
-    return t;
 }

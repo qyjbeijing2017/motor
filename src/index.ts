@@ -9,3 +9,4 @@ export { MotorArray, defineMotorArray } from './types/array.type';
 export { MotorStruct, defineMotorStruct as motorDefineStruct } from './types/struct.type';
 export { MotorPointer, defineMotorPointer } from './types/pointer.type';
 export { MotorNull } from './types/null.type';
+export { MotorString } from './types/string.type';
