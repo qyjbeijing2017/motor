@@ -9,6 +9,7 @@ import {
     motorDefineStruct
 } from '../src';
 import { motorSingleton } from '../src/utils/singleton';
+
 describe('Type', () => {
     describe('float32', () => {
         test('size', () => {
@@ -173,31 +174,6 @@ describe('Type', () => {
             expect(jsArrayOnTest[1]!.length).toBe(3);
             console.log(jsArrayOnTest);
         });
-        test('define struct', () => {
-            const structOnTest = motorDefineStruct({
-                f: MotorFloat32,
-                i: MotorInt32,
-                b: MotorBool,
-                c: MotorChar,
-                a: defineMotorArray(MotorFloat32, 3)
-            });
-            const struct = new structOnTest({
-                f: 1.1,
-                i: 2,
-                b: true,
-                c: 'a',
-                a: [1.1,2.2,3.3]
-            });
-            const jsStruct = struct.jsVal;
-            expect(jsStruct.f).toBeCloseTo(1.1);
-            expect(jsStruct.i).toBe(2);
-            expect(jsStruct.b).toBe(true);
-            expect(jsStruct.c).toBe('a');
-            expect(jsStruct.a.length).toBe(3);
-            expect(jsStruct.a[0]).toBeCloseTo(1.1);
-            expect(jsStruct.a[1]).toBeCloseTo(2.2);
-            expect(jsStruct.a[2]).toBeCloseTo(3.3);
-        });
         test('define struct array', () => {
             const structOnTest = motorDefineStruct({
                 f: MotorFloat32,
@@ -238,6 +214,112 @@ describe('Type', () => {
             expect(jsStructArray[1].a[0]).toBeCloseTo(4.4);
             expect(jsStructArray[1].a[1]).toBeCloseTo(5.5);
             expect(jsStructArray[1].a[2]).toBeCloseTo(6.6);
+        });
+    });
+
+    describe('struct', () => {
+        const structOnTest = motorDefineStruct({
+            f: MotorFloat32,
+            i: MotorInt32,
+            b: MotorBool,
+            c: MotorChar,
+            a: defineMotorArray(MotorFloat32, 3)
+        });
+        test('size', () => {
+            expect(motorSizeOf(structOnTest)).toBe(22);
+        });
+        test('init', () => {
+            const struct = new structOnTest();
+            const struct2 = new structOnTest({
+                f: 1.1,
+                i: 2,
+                b: true,
+                c: 'a',
+                a: [1.1,2.2,3.3]
+            });
+            const jsStructOnTest = struct.jsVal;
+            const jsStructOnTest2 = struct2.jsVal;
+            expect(jsStructOnTest.f).toBeCloseTo(0);
+            expect(jsStructOnTest.i).toBe(0);
+            expect(jsStructOnTest.b).toBe(false);
+            expect(jsStructOnTest.c).toBe('\x00');
+            expect(jsStructOnTest.a.length).toBe(3);
+            expect(jsStructOnTest.a[0]).toBeCloseTo(0);
+            expect(jsStructOnTest.a[1]).toBeCloseTo(0);
+            expect(jsStructOnTest.a[2]).toBeCloseTo(0);
+            expect(jsStructOnTest2.f).toBeCloseTo(1.1);
+            expect(jsStructOnTest2.i).toBe(2);
+            expect(jsStructOnTest2.b).toBe(true);
+            expect(jsStructOnTest2.c).toBe('a');
+            expect(jsStructOnTest2.a.length).toBe(3);
+            expect(jsStructOnTest2.a[0]).toBeCloseTo(1.1);
+            expect(jsStructOnTest2.a[1]).toBeCloseTo(2.2);
+            expect(jsStructOnTest2.a[2]).toBeCloseTo(3.3);
+            expect(motorSingleton(MotorMemory).dataView.getFloat32(struct2.address)).toBeCloseTo(1.1);
+            expect(motorSingleton(MotorMemory).dataView.getInt32(struct2.address+4)).toBe(2);
+            expect(motorSingleton(MotorMemory).dataView.getUint8(struct2.address+8)).toBe(1);
+            expect(motorSingleton(MotorMemory).dataView.getUint8(struct2.address+9)).toBe(97);
+            expect(motorSingleton(MotorMemory).dataView.getFloat32(struct2.address+10)).toBeCloseTo(1.1);
+        });
+        test('set', () => {
+            const struct = new structOnTest();
+            struct.jsVal = {
+                f: 1.1,
+                i: 2,
+                b: true,
+                c: 'a',
+                a: [1.1,2.2,3.3]
+            };
+            const jsStructOnTest = struct.jsVal;
+            expect(jsStructOnTest.f).toBeCloseTo(1.1);
+            expect(jsStructOnTest.i).toBe(2);
+            expect(jsStructOnTest.b).toBe(true);
+            expect(jsStructOnTest.c).toBe('a');
+            expect(jsStructOnTest.a.length).toBe(3);
+            expect(jsStructOnTest.a[0]).toBeCloseTo(1.1);
+            expect(jsStructOnTest.a[1]).toBeCloseTo(2.2);
+            expect(jsStructOnTest.a[2]).toBeCloseTo(3.3);
+        });
+        test('get', () => {
+            const struct = new structOnTest({
+                f: 1.1,
+                i: 2,
+                b: true,
+                c: 'a',
+                a: [1.1,2.2,3.3]
+            });
+            expect(struct.get('f') instanceof MotorFloat32).toBe(true);
+            expect(struct.get('i') instanceof MotorInt32).toBe(true);
+            expect(struct.get('b') instanceof MotorBool).toBe(true);
+            expect(struct.get('c') instanceof MotorChar).toBe(true);
+            expect(struct.get('f').jsVal).toBeCloseTo(1.1);
+            expect(struct.get('i').jsVal).toBe(2);
+            expect(struct.get('b').jsVal).toBe(true);
+            expect(struct.get('c').jsVal).toBe('a');
+            expect(struct.get('a').jsVal.length).toBe(3);
+            expect(struct.get('a').jsVal[0]).toBeCloseTo(1.1);
+            expect(struct.get('a').jsVal[1]).toBeCloseTo(2.2);
+            expect(struct.get('a').jsVal[2]).toBeCloseTo(3.3);
+        });
+        test('struct in struct', () => {
+            const structOnTest = motorDefineStruct({
+                f: MotorFloat32,
+                s: motorDefineStruct({
+                    i: MotorInt32,
+                    b: MotorBool
+                })
+            });
+            const struct = new structOnTest({
+                f: 1.1,
+                s: {
+                    i: 2,
+                    b: true
+                }
+            });
+            const jsStruct = struct.jsVal;
+            expect(jsStruct.f).toBeCloseTo(1.1);
+            expect(jsStruct.s.i).toBe(2);
+            expect(jsStruct.s.b).toBe(true);
         });
     });
 });
