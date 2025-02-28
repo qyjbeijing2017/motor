@@ -6,7 +6,9 @@ import {
     MotorChar, 
     defineMotorArray, 
     motorSizeOf,
-    motorDefineStruct
+    motorDefineStruct,
+    defineMotorPointer,
+    MotorNull
 } from '../src';
 import { motorSingleton } from '../src/utils/singleton';
 
@@ -320,6 +322,42 @@ describe('Type', () => {
             expect(jsStruct.f).toBeCloseTo(1.1);
             expect(jsStruct.s.i).toBe(2);
             expect(jsStruct.s.b).toBe(true);
+        });
+    });
+
+    describe('pointer', () => {
+        const pointerOnTest = defineMotorPointer(MotorFloat32);
+        test('size', () => {
+            expect(motorSizeOf(pointerOnTest)).toBe(4);
+        });
+        test('init', () => {
+            const pointer = new pointerOnTest();
+            const valOnTest = new MotorFloat32(1.1);
+            const pointer2 = new pointerOnTest(valOnTest.address);
+            expect(pointer.jsVal).toBe(0);
+            expect(pointer2.jsVal).toBe(valOnTest.address);
+        });
+        test('set', () => {
+            const pointer = new pointerOnTest();
+            const valOnTest = new MotorFloat32(1.1);
+            pointer.jsVal = valOnTest.address;
+            expect(pointer.jsVal).toBe(valOnTest.address);
+        });
+        test('val', () => {
+            const valOnTest = new MotorFloat32(1.1);
+            const pointer = new pointerOnTest(valOnTest.address);
+            expect(pointer.value instanceof MotorFloat32).toBe(true);
+            expect(pointer.value.jsVal).toBeCloseTo(1.1);
+        });
+    });
+
+    describe('null', () => {
+        test('size', () => {
+            expect(MotorNull.size).toBe(0);
+        });
+        test('init', () => {
+            const nullOnTest = new MotorNull();
+            expect(nullOnTest.jsVal).toBe(null);
         });
     });
 });

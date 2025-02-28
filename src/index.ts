@@ -7,3 +7,5 @@ export { MotorBoolean, MotorBool } from './types/bool.type';
 export { MotorChar } from './types/char.type';
 export { MotorArray, defineMotorArray } from './types/array.type';
 export { MotorStruct, defineMotorStruct as motorDefineStruct } from './types/struct.type';
+export { MotorPointer, defineMotorPointer } from './types/pointer.type';
+export { MotorNull } from './types/null.type';
