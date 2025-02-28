@@ -5,7 +5,8 @@ import {
     MotorMemory, 
     MotorChar, 
     defineMotorArray, 
-    motorSizeOf
+    motorSizeOf,
+    motorDefineStruct
 } from '../src';
 import { motorSingleton } from '../src/utils/singleton';
 describe('Type', () => {
@@ -171,6 +172,72 @@ describe('Type', () => {
             expect(jsArrayOnTest[0]!.length).toBe(3);
             expect(jsArrayOnTest[1]!.length).toBe(3);
             console.log(jsArrayOnTest);
+        });
+        test('define struct', () => {
+            const structOnTest = motorDefineStruct({
+                f: MotorFloat32,
+                i: MotorInt32,
+                b: MotorBool,
+                c: MotorChar,
+                a: defineMotorArray(MotorFloat32, 3)
+            });
+            const struct = new structOnTest({
+                f: 1.1,
+                i: 2,
+                b: true,
+                c: 'a',
+                a: [1.1,2.2,3.3]
+            });
+            const jsStruct = struct.jsVal;
+            expect(jsStruct.f).toBeCloseTo(1.1);
+            expect(jsStruct.i).toBe(2);
+            expect(jsStruct.b).toBe(true);
+            expect(jsStruct.c).toBe('a');
+            expect(jsStruct.a.length).toBe(3);
+            expect(jsStruct.a[0]).toBeCloseTo(1.1);
+            expect(jsStruct.a[1]).toBeCloseTo(2.2);
+            expect(jsStruct.a[2]).toBeCloseTo(3.3);
+        });
+        test('define struct array', () => {
+            const structOnTest = motorDefineStruct({
+                f: MotorFloat32,
+                i: MotorInt32,
+                b: MotorBool,
+                c: MotorChar,
+                a: defineMotorArray(MotorFloat32, 3)
+            });
+            const structArrayOnTest = defineMotorArray(structOnTest, 2);
+            const structArray = new structArrayOnTest([{
+                f: 1.1,
+                i: 2,
+                b: true,
+                c: 'a',
+                a: [1.1,2.2,3.3]
+            },{
+                f: 4.4,
+                i: 5,
+                b: false,
+                c: 'b',
+                a: [4.4,5.5,6.6]
+            }]);
+            const jsStructArray = structArray.jsVal;
+            expect(jsStructArray.length).toBe(2);
+            expect(jsStructArray[0].f).toBeCloseTo(1.1);
+            expect(jsStructArray[0].i).toBe(2);
+            expect(jsStructArray[0].b).toBe(true);
+            expect(jsStructArray[0].c).toBe('a');
+            expect(jsStructArray[0].a.length).toBe(3);
+            expect(jsStructArray[0].a[0]).toBeCloseTo(1.1);
+            expect(jsStructArray[0].a[1]).toBeCloseTo(2.2);
+            expect(jsStructArray[0].a[2]).toBeCloseTo(3.3);
+            expect(jsStructArray[1].f).toBeCloseTo(4.4);
+            expect(jsStructArray[1].i).toBe(5);
+            expect(jsStructArray[1].b).toBe(false);
+            expect(jsStructArray[1].c).toBe('b');
+            expect(jsStructArray[1].a.length).toBe(3);
+            expect(jsStructArray[1].a[0]).toBeCloseTo(4.4);
+            expect(jsStructArray[1].a[1]).toBeCloseTo(5.5);
+            expect(jsStructArray[1].a[2]).toBeCloseTo(6.6);
         });
     });
 });
