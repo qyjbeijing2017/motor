@@ -10,3 +10,4 @@ export { MotorStruct, defineMotorStruct as motorDefineStruct } from './types/str
 export { MotorPointer, defineMotorPointer } from './types/pointer.type';
 export { MotorNull } from './types/null.type';
 export { MotorString } from './types/string.type';
+export { MotorList, defineMotorList } from './types/list.type';

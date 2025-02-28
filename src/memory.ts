@@ -180,12 +180,12 @@ export class MotorMemory {
         }
         buffer.set(magicNumber, offset);
         offset += 4;
-        view.setUint32(offset, this._version);
+        view.setUint32(offset, this._version, true);
         offset += 4;
         for (const block of blocks) {
-            view.setUint32(offset, block.address);
+            view.setUint32(offset, block.address, true);
             offset += 4;
-            view.setUint32(offset, block.size);
+            view.setUint32(offset, block.size, true);
             offset += 4;
             buffer.set(this._memory.subarray(block.address, block.address + block.size), offset);
             offset += block.size;
@@ -213,14 +213,14 @@ export class MotorMemory {
         if (String.fromCharCode(...magicNumber) !== MotorMemory.magic) {
             throw new Error(`Invalid memory file`);
         }
-        this._version = view.getUint32(offset);
+        this._version = view.getUint32(offset, true);
         offset += 4;
 
         const blockUsed: MotorMemoryBlock[] = [];
         while (offset < buffer.length) {
-            const address = view.getUint32(offset);
+            const address = view.getUint32(offset, true);
             offset += 4;
-            const blockSize = view.getUint32(offset);
+            const blockSize = view.getUint32(offset, true);
             offset += 4;
             blockUsed.push({ address, size: blockSize });
             offset += blockSize;
@@ -291,6 +291,7 @@ export class MotorMemory {
         } else {
             this._emptyBlocks.splice(this._emptyBlocks.indexOf(block), 1);
         }
+        this.memory.fill(0, address, address + size);
         return address;
     }
 

@@ -9,7 +9,8 @@ import {
     motorDefineStruct,
     defineMotorPointer,
     MotorNull,
-    MotorString
+    MotorString,
+    defineMotorList
 } from '../src';
 import { motorSingleton } from '../src/utils/singleton';
 
@@ -229,7 +230,7 @@ describe('Type', () => {
             a: defineMotorArray(MotorFloat32, 3)
         });
         test('size', () => {
-            expect(motorSizeOf(structOnTest)).toBe(22);
+            expect(motorSizeOf(structOnTest)).toBe(22); // 4 + 4 + 1 + 1 + 12
         });
         test('init', () => {
             const struct = new structOnTest();
@@ -329,7 +330,7 @@ describe('Type', () => {
     describe('pointer', () => {
         const pointerOnTest = defineMotorPointer(MotorFloat32);
         test('size', () => {
-            expect(motorSizeOf(pointerOnTest)).toBe(4);
+            expect(motorSizeOf(pointerOnTest)).toBe(4); // pointer size is 4 bytes, record the address of the value
         });
         test('init', () => {
             const pointer = new pointerOnTest();
@@ -364,7 +365,7 @@ describe('Type', () => {
 
     describe('string', () => {
         test('size', () => {
-            expect(MotorString.size).toBe(4); // minimum size
+            expect(MotorString.size).toBe(4); // minimum size, first 4 bytes for length
         });
         test('init', () => {
             const stringOnTest = new MotorString();
@@ -378,6 +379,39 @@ describe('Type', () => {
             stringOnTest.jsVal = 'test';
             expect(stringOnTest.jsVal).toBe('test');
             expect(motorSingleton(MotorMemory).dataView.getUint32(stringOnTest.address, true)).toBe(4);
+        });
+    });
+
+    describe('list', () => {
+        test('size', () => {
+            const listOnTest = defineMotorList(MotorFloat32);
+            expect(motorSizeOf(listOnTest)).toBe(8); // minimum size, first 4 bytes for length, second 4 bytes for count
+        });
+        test('init', () => {
+            const listOnTest = defineMotorList(MotorFloat32);
+            const list = new listOnTest();
+            const list2 = new listOnTest([1.1,2.2,3.3]);
+            const jsListOnTest = list.jsVal;
+            const jsListOnTest2 = list2.jsVal;
+            expect(jsListOnTest.length).toBe(0);
+            expect(jsListOnTest2.length).toBe(3);
+            expect(motorSingleton(MotorMemory).dataView.getUint32(list2.address, true)).toBe(4); // length will be expanded to 2^2
+            expect(motorSingleton(MotorMemory).dataView.getUint32(list2.address+4, true)).toBe(3);
+        });
+        test('set', () => {
+            const listOnTest = defineMotorList(MotorFloat32);
+            const list = new listOnTest();
+            list.jsVal = [1.1,2.2,3.3];
+            const jsListOnTest = list.jsVal;
+            expect(jsListOnTest.length).toBe(3);
+        });
+        test('at', () => {
+            const listOnTest = defineMotorList(MotorFloat32);
+            const list = new listOnTest([3.3,4.4,5.5]);
+            expect(list.at(0) instanceof MotorFloat32).toBe(true);
+            expect(list.at(0).jsVal).toBeCloseTo(3.3);
+            expect(list.at(1).jsVal).toBeCloseTo(4.4);
+            expect(list.at(2).jsVal).toBeCloseTo(5.5);
         });
     });
 });
