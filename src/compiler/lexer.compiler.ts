@@ -1,9 +1,9 @@
 import { createToken, Lexer } from 'chevrotain';
 
 export const Comment = createToken({ name: 'Comment', pattern: /#[^\n]*\n/, group: Lexer.SKIPPED });
-export const Newline = createToken({ name: "Newline", pattern: /\n/ });
 export const Indent = createToken({ name: "Indent", pattern: /[ ]+/, group: "whitespace" });
 export const Dedent = createToken({ name: "Dedent", pattern: /(?<=\n)[ ]*/, group: "whitespace" });
+export const Newline = createToken({ name: "Newline", pattern: /\n/ });
 export const Identifier = createToken({ name: 'Identifier', pattern: /[a-zA-Z_]\w*/ });
 
 export const Integer = createToken({ name: 'Integer', pattern: /[+-]?\d+/ });
@@ -61,6 +61,20 @@ export const If = createToken({ name: 'If', pattern: /if/ });
 export const Else = createToken({ name: 'Else', pattern: /else/ });
 export const While = createToken({ name: 'While', pattern: /while/ });
 export const For = createToken({ name: 'For', pattern: /for/ });
+export const In = createToken({ name: 'In', pattern: /in/ });
 export const Break = createToken({ name: 'Break', pattern: /break/ });
 export const Continue = createToken({ name: 'Continue', pattern: /continue/ });
 export const Return = createToken({ name: 'Return', pattern: /return/ });
+export const Function = createToken({ name: 'Function', pattern: /fnc/ });
+export const Class = createToken({ name: 'Class', pattern: /class/ });
+
+export const tokens = [
+    Comment, Indent, Dedent, Newline, 
+    Integer, Float, Char, String, Bool,
+    LShiftEqual, RShiftEqual,
+    LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift,
+    Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
+    Comma, Semicolon, Colon, Dot,
+    If, Else, While, For, In, Break, Continue, Return, Function, Class,
+    Identifier,
+];
