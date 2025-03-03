@@ -1,16 +1,18 @@
-import { createToken, Lexer } from 'chevrotain';
+import { createToken, ILexingResult, IToken, Lexer } from 'chevrotain';
 
 export const Comment = createToken({ name: 'Comment', pattern: /#[^\n]*\n/, group: Lexer.SKIPPED });
-export const Indent = createToken({ name: "Indent", pattern: /[ ]+/, group: "whitespace" });
-export const Dedent = createToken({ name: "Dedent", pattern: /(?<=\n)[ ]*/, group: "whitespace" });
-export const Newline = createToken({ name: "Newline", pattern: /\n/ });
+export const WhiteSpace = createToken({ name: 'WhiteSpace', pattern: /\s+/, group: Lexer.SKIPPED });
+export const Newline = createToken({ name: "Newline", pattern: /\n[ \r]*/ });
+export const Indent = createToken({ name: "Indent", pattern: /\n[ \r]+/ });
+export const Dedent = createToken({ name: "Dedent", pattern: /\n[ \r]+/ });
+
 export const Identifier = createToken({ name: 'Identifier', pattern: /[a-zA-Z_]\w*/ });
 
-export const Integer = createToken({ name: 'Integer', pattern: /[+-]?\d+/ });
 export const Float = createToken({ name: 'Float', pattern: /[+-]?(\d+\.\d+f?|\.\d+f?|\d+f|\d+\.f?)/ });
+export const Integer = createToken({ name: 'Integer', pattern: /[+-]?\d+/, longer_alt: Float });
 export const Char = createToken({ name: 'Char', pattern: /'.'/ });
 export const String = createToken({ name: 'String', pattern: /".*?"/ });
-export const Bool = createToken({ name: 'Bool', pattern: /true|false/ });
+export const Bool = createToken({ name: 'Bool', pattern: /true|false/, longer_alt: Identifier });
 
 export const LShiftEqual = createToken({ name: 'LShiftEqual', pattern: /<<=/ });
 export const RShiftEqual = createToken({ name: 'RShiftEqual', pattern: />>=/ });
@@ -57,19 +59,21 @@ export const Semicolon = createToken({ name: 'Semicolon', pattern: /;/ });
 export const Colon = createToken({ name: 'Colon', pattern: /:/ });
 export const Dot = createToken({ name: 'Dot', pattern: /\./ });
 
-export const If = createToken({ name: 'If', pattern: /if/ });
-export const Else = createToken({ name: 'Else', pattern: /else/ });
-export const While = createToken({ name: 'While', pattern: /while/ });
-export const For = createToken({ name: 'For', pattern: /for/ });
-export const In = createToken({ name: 'In', pattern: /in/ });
-export const Break = createToken({ name: 'Break', pattern: /break/ });
-export const Continue = createToken({ name: 'Continue', pattern: /continue/ });
-export const Return = createToken({ name: 'Return', pattern: /return/ });
-export const Function = createToken({ name: 'Function', pattern: /fnc/ });
-export const Class = createToken({ name: 'Class', pattern: /class/ });
+export const If = createToken({ name: 'If', pattern: /if/, longer_alt: Identifier });
+export const Else = createToken({ name: 'Else', pattern: /else/, longer_alt: Identifier });
+export const While = createToken({ name: 'While', pattern: /while/, longer_alt: Identifier });
+export const For = createToken({ name: 'For', pattern: /for/, longer_alt: Identifier });
+export const In = createToken({ name: 'In', pattern: /in/, longer_alt: Identifier });
+export const Break = createToken({ name: 'Break', pattern: /break/, longer_alt: Identifier });
+export const Continue = createToken({ name: 'Continue', pattern: /continue/, longer_alt: Identifier });
+export const Return = createToken({ name: 'Return', pattern: /return/, longer_alt: Identifier });
+export const Function = createToken({ name: 'Function', pattern: /fun/, longer_alt: Identifier });
+export const Class = createToken({ name: 'Class', pattern: /class/, longer_alt: Identifier });
 
-export const tokens = [
-    Comment, Indent, Dedent, Newline, 
+export const motorTokens = [
+    Comment,
+    Newline,
+    WhiteSpace,
     Integer, Float, Char, String, Bool,
     LShiftEqual, RShiftEqual,
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift,
@@ -78,3 +82,39 @@ export const tokens = [
     If, Else, While, For, In, Break, Continue, Return, Function, Class,
     Identifier,
 ];
+
+export class MotorLexer extends Lexer {
+    tokenize(text: string, initialMode?: string): ILexingResult {
+        const result = super.tokenize(text, initialMode);
+        const tokens: IToken[] = [];
+        let dentStack = [0];
+        for(const token of result.tokens) {
+            if(token.tokenType.name !== Newline.name) {
+                tokens.push(token);
+                continue;
+            }
+            const depth = token.image.length - 1;
+            if(depth > dentStack[dentStack.length - 1]) {
+                tokens.push({
+                    ...token,
+                    tokenType: Indent,
+                })
+                dentStack.push(depth);
+            } else if(depth < dentStack[dentStack.length - 1]) {
+                while(depth < dentStack[dentStack.length - 1]) {
+                    tokens.push({
+                        ...token,
+                        tokenType: Dedent,
+                    })
+                    dentStack.pop();
+                }
+            }
+        }
+        return {
+            ...result,
+            tokens,
+        }
+    }
+}
+
+export const motorLexer = new MotorLexer(motorTokens);
