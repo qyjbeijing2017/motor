@@ -7,6 +7,8 @@ import {
     Comma, Semicolon, Colon, Dot,
     If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally,
     Identifier,
+    Indent,
+    Dedent,
 } from '../src';
 describe('Memory', () => {
 
@@ -85,6 +87,9 @@ catch
 finally
 
 identifier
+    a = 1
+        b = 2
+c = 3
 `;
         const result = motorLexer.tokenize(scriptOnTest)
         let offset = 0;
@@ -195,7 +200,7 @@ identifier
         offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Dot.name);
         offset += 1;
-        
+
         expect(result.tokens[offset].tokenType.name).toBe(If.name);
         offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Else.name);
@@ -225,5 +230,33 @@ identifier
 
         expect(result.tokens[offset].tokenType.name).toBe(Identifier.name);
         offset += 1;
+
+        // indent and dedent
+
+        expect(result.tokens[offset].tokenType.name).toBe(Indent.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Identifier.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Equal.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Integer.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Indent.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Identifier.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Equal.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Integer.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Dedent.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Dedent.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Identifier.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Equal.name);
+        offset += 1;
+        expect(result.tokens[offset].tokenType.name).toBe(Integer.name);
     });
 });
