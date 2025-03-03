@@ -9,82 +9,24 @@ import {
     Identifier,
     Indent,
     Dedent,
+    Newline,
 } from '../src';
 describe('Memory', () => {
-
     test('Lexer', () => {
         const scriptOnTest = `
 #this is a comment
 
-1.2
-1f
-1.
-0.3
-.3
-5
-'a'
-"bcd"
-true
-false
+1.2 1f 1. 0.3 .3 5 'a' "bcd" true false
 
-<<=
->>=
+<<= >>=
 
-<=
->=
-==
-!=
-+=
--=
-*=
-/=
-%=
-&=
-|=
-^=
-&&
-||
-<<
->>
+<= >= == != += -= *= /= %= &= |= ^= && || << >>
 
-=
-+
--
-*
-/
-%
-!
-^
-&
-|
-?
-<
->
-(
-)
-[
-]
-{
-}
+= + - * / % ! ^ & | ? < > ( ) [ ] { }
 
-,
-;
-:
-.
+, ; : .
 
-if
-else
-while
-for
-in
-break
-continue
-return
-fun
-class
-try
-catch
-finally
+if else while for in break continue return fun class try catch finally
 
 identifier
     a = 1
@@ -94,6 +36,8 @@ c = 3
         const result = motorLexer.tokenize(scriptOnTest)
         let offset = 0;
 
+        expect(result.tokens[offset].tokenType.name).toBe(Newline.name);
+        offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Float.name);
         offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Float.name);
@@ -115,11 +59,15 @@ c = 3
         expect(result.tokens[offset].tokenType.name).toBe(Bool.name);
         offset += 1;
 
+        expect(result.tokens[offset].tokenType.name).toBe(Newline.name);
+        offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(LShiftEqual.name);
         offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(RShiftEqual.name);
         offset += 1;
 
+        expect(result.tokens[offset].tokenType.name).toBe(Newline.name);
+        offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(LessThanEqual.name);
         offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(GreaterThanEqual.name);
@@ -153,6 +101,8 @@ c = 3
         expect(result.tokens[offset].tokenType.name).toBe(RShift.name);
         offset += 1;
 
+        expect(result.tokens[offset].tokenType.name).toBe(Newline.name);
+        offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Equal.name);
         offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Plus.name);
@@ -192,6 +142,8 @@ c = 3
         expect(result.tokens[offset].tokenType.name).toBe(RightBrace.name);
         offset += 1;
 
+        expect(result.tokens[offset].tokenType.name).toBe(Newline.name);
+        offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Comma.name);
         offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Semicolon.name);
@@ -201,6 +153,8 @@ c = 3
         expect(result.tokens[offset].tokenType.name).toBe(Dot.name);
         offset += 1;
 
+        expect(result.tokens[offset].tokenType.name).toBe(Newline.name);
+        offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(If.name);
         offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Else.name);
@@ -228,6 +182,8 @@ c = 3
         expect(result.tokens[offset].tokenType.name).toBe(Finally.name);
         offset += 1;
 
+        expect(result.tokens[offset].tokenType.name).toBe(Newline.name);
+        offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Identifier.name);
         offset += 1;
 

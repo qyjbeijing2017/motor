@@ -111,6 +111,8 @@ export class MotorLexer extends Lexer {
                     })
                     dentStack.pop();
                 }
+            } else if(tokens[tokens.length - 1]?.tokenType.name !== Newline.name) {
+                tokens.push(token);
             }
         }
         return {
