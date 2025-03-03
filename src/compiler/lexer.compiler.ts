@@ -69,6 +69,9 @@ export const Continue = createToken({ name: 'Continue', pattern: /continue/, lon
 export const Return = createToken({ name: 'Return', pattern: /return/, longer_alt: Identifier });
 export const Function = createToken({ name: 'Function', pattern: /fun/, longer_alt: Identifier });
 export const Class = createToken({ name: 'Class', pattern: /class/, longer_alt: Identifier });
+export const Try = createToken({ name: 'Try', pattern: /try/, longer_alt: Identifier });
+export const Catch = createToken({ name: 'Catch', pattern: /catch/, longer_alt: Identifier });
+export const Finally = createToken({ name: 'Finally', pattern: /finally/, longer_alt: Identifier });
 
 export const motorTokens = [
     Comment,
@@ -79,7 +82,7 @@ export const motorTokens = [
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift,
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,
-    If, Else, While, For, In, Break, Continue, Return, Function, Class,
+    If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally,
     Identifier,
 ];
 
