@@ -86,7 +86,7 @@ export const motorTokens = [
     Identifier,
 ];
 
-export class MotorLexer extends Lexer {
+class MotorLexer extends Lexer {
     tokenize(text: string, initialMode?: string): ILexingResult {
         const result = super.tokenize(text, initialMode);
         const tokens: IToken[] = [];
