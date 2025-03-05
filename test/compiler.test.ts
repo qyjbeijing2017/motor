@@ -255,7 +255,8 @@ xOr ^ 8
     rShiftEqual >>= 28
     # block End
 identity = assign
-list = [1, 2 + sub, 3]
+list = [[1, 2], [3, 4]]
+index = list[1][0]
 `
         const result = motorLexer.tokenize(scriptOnTest);
         motorParser.input = result.tokens;

@@ -17,6 +17,27 @@ class MotorParser extends CstParser {
         this.performSelfAnalysis();
     }
 
+    keyExpression = this.RULE('keyExpression', () => {
+        this.CONSUME(Dot);
+        this.CONSUME(Identifier);
+    });
+
+    indexExpression = this.RULE('indexExpression', () => {
+        this.CONSUME(LeftBracket);
+        this.SUBRULE(this.expression);
+        this.CONSUME(RightBracket);
+    });
+
+    identityExpression = this.RULE('identityExpression', () => {
+        this.CONSUME(Identifier);
+        this.MANY(() => {
+            this.OR([
+                { ALT: () => this.SUBRULE(this.keyExpression) },
+                { ALT: () => this.SUBRULE(this.indexExpression) },
+            ]);
+        });
+    });
+
     listExpression = this.RULE('list', () => {
         this.CONSUME(LeftBracket);
         this.MANY_SEP({
@@ -82,31 +103,23 @@ class MotorParser extends CstParser {
         ]);
     });
 
+    signedExpression = this.RULE('signedExpression', () => {
+        this.OPTION(() => this.SUBRULE(this.signedOperator));
+        this.OR([
+            { ALT: () => this.CONSUME(Integer) },
+            { ALT: () => this.CONSUME(Float) },
+            { ALT: () => this.SUBRULE(this.identityExpression) },
+            { ALT: () => this.SUBRULE(this.parenExpression) },
+            { ALT: () => this.SUBRULE(this.listExpression) }
+        ]);
+    });
+
     atomicExpression = this.RULE("atomicExpression", () => {
         this.OR([
-            {
-                ALT: () => {
-                    this.OPTION(() => this.SUBRULE(this.signedOperator));
-                    this.CONSUME(Float)
-                }
-            },
-            {
-                ALT: () => {
-                    this.OPTION1(() => this.SUBRULE1(this.signedOperator));
-                    this.CONSUME(Integer)
-                }
-            },
             { ALT: () => this.CONSUME(Char) },
             { ALT: () => this.CONSUME(Bool) },
             { ALT: () => this.CONSUME(String) },
-            {
-                ALT: () => {
-                    this.OPTION2(() => this.SUBRULE2(this.signedOperator));
-                    this.CONSUME(Identifier)
-                }
-            },
-            { ALT: () => this.SUBRULE(this.parenExpression) },
-            { ALT: () => this.SUBRULE(this.listExpression) }
+            { ALT: () => this.SUBRULE(this.signedExpression) },
         ]);
     });
 
