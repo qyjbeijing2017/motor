@@ -38,6 +38,14 @@ class MotorParser extends CstParser {
         });
     });
 
+    // conditionExpression = this.RULE('conditionExpression', () => {
+    //     this.SUBRULE(this.expression);
+    //     this.CONSUME(Ternary);
+    //     this.SUBRULE1(this.expression);
+    //     this.CONSUME(Colon);
+    //     this.SUBRULE2(this.expression);
+    // });
+
     listExpression = this.RULE('list', () => {
         this.CONSUME(LeftBracket);
         this.MANY_SEP({
@@ -134,35 +142,42 @@ class MotorParser extends CstParser {
         });
     });
 
-    assignExpression = this.RULE('assignExpression', () => {
-        this.CONSUME(Identifier);
+    assignStatement = this.RULE('assignStatement', () => {
         this.OPTION(() => {
+            this.CONSUME(Identifier);
             this.OR([
                 { ALT: () => this.SUBRULE(this.assignOperator) },
                 { ALT: () => this.SUBRULE(this.signedOperator) },
                 { ALT: () => this.SUBRULE(this.operator) },
             ]);
-            this.SUBRULE(this.expression);
         });
-
+        this.SUBRULE(this.expression);
     });
 
-    blockExpression = this.RULE('blockExpression', () => {
+    blockStatement = this.RULE('blockStatement', () => {
         this.CONSUME(Indent);
         this.SUBRULE(this.program);
         this.CONSUME(Dedent);
     });
 
+    whileStatement = this.RULE('whileStatement', () => {
+        this.CONSUME(While);
+        this.SUBRULE(this.expression);
+        this.SUBRULE(this.blockStatement);
+    });
+
+    statement = this.RULE('statement', () => {
+        this.OPTION(() => this.OR([
+            { ALT: () => this.SUBRULE(this.whileStatement) },
+            { ALT: () => this.SUBRULE(this.blockStatement) },
+            { ALT: () => this.SUBRULE(this.assignStatement) },
+        ]));
+    });
+
     program = this.RULE('program', () => {
         this.MANY(() => {
-            this.OPTION(() => this.OR([
-                { ALT: () => this.SUBRULE(this.assignExpression) },
-                { ALT: () => this.SUBRULE(this.blockExpression) },
-            ]));
-            this.OR1([
-                { ALT: () => this.CONSUME(Newline) },
-                { ALT: () => this.CONSUME(Semicolon) },
-            ]);
+            this.SUBRULE(this.statement);
+            this.OPTION(() => this.CONSUME(Semicolon));
         });
     });
 }

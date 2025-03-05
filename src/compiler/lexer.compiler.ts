@@ -1,12 +1,12 @@
-import { createToken, ILexingResult, IToken, Lexer } from 'chevrotain';
+import { createToken, createTokenInstance, ILexingResult, IToken, Lexer } from 'chevrotain';
 
-export const Comment = createToken({ name: 'Comment', pattern: /#[^\n]*\n/, group: Lexer.SKIPPED });
-export const WhiteSpace = createToken({ name: 'WhiteSpace', pattern: /\s+/, group: Lexer.SKIPPED });
-export const Newline = createToken({ name: "Newline", pattern: /\n[ \r]*/ });
-export const Indent = createToken({ name: "Indent", pattern: /\n[ \r]+/ });
-export const Dedent = createToken({ name: "Dedent", pattern: /\n[ \r]+/ });
-
+export const Comment = createToken({ name: 'Comment', pattern: /#[^\n]*?(?=\n)/, group: Lexer.SKIPPED });
+export const WhiteSpace = createToken({ name: 'WhiteSpace', pattern: / +/, group: Lexer.SKIPPED });
+export const Newline = createToken({ name: "Newline", pattern: /\n[\s]*/ });
 export const Identifier = createToken({ name: 'Identifier', pattern: /[a-zA-Z_]\w*/ });
+export const Indent = createToken({ name: "Indent", pattern: () => null, line_breaks: false, });
+export const Dedent = createToken({ name: "Dedent", pattern: () => null, line_breaks: false, });
+
 
 export const Float = createToken({ name: 'Float', pattern: /[+-]?(\d+\.\d+f?|\.\d+f?|\d+f|\d+\.f?)/ });
 export const Integer = createToken({ name: 'Integer', pattern: /[+-]?\d+/, longer_alt: Float });
@@ -76,6 +76,7 @@ export const Finally = createToken({ name: 'Finally', pattern: /finally/, longer
 export const motorTokens = [
     Comment,
     Newline,
+    Indent, Dedent,
     WhiteSpace,
     Integer, Float, Char, String, Bool,
     LShiftEqual, RShiftEqual,
@@ -88,37 +89,33 @@ export const motorTokens = [
 
 class MotorLexer extends Lexer {
     tokenize(text: string, initialMode?: string): ILexingResult {
-        const result = super.tokenize(text, initialMode);
+        const indentStack = [0];
+        const lexResult = super.tokenize(text, initialMode);
         const tokens: IToken[] = [];
-        let dentStack = [0];
-        for(const token of result.tokens) {
-            if(token.tokenType.name !== Newline.name) {
-                tokens.push(token);
-                continue;
-            }
-            const depth = token.image.length - 1;
-            if(depth > dentStack[dentStack.length - 1]) {
-                tokens.push({
-                    ...token,
-                    tokenType: Indent,
-                })
-                dentStack.push(depth);
-            } else if(depth < dentStack[dentStack.length - 1]) {
-                while(depth < dentStack[dentStack.length - 1]) {
-                    tokens.push({
-                        ...token,
-                        tokenType: Dedent,
-                    })
-                    dentStack.pop();
+        lexResult.tokens.forEach(token => {
+            if (token.tokenType.name === Newline.name) {
+                const depth = token.image.length - 1;
+                if (depth > indentStack[indentStack.length - 1]) {
+                    indentStack.push(depth);
+                    tokens.push(createTokenInstance(Indent, '', NaN, NaN, NaN, NaN, NaN, NaN));
+                } else if (depth < indentStack[indentStack.length - 1]) {
+                    while (depth < indentStack[indentStack.length - 1]) {
+                        indentStack.pop();
+                        tokens.push(createTokenInstance(Dedent, '', NaN, NaN, NaN, NaN, NaN, NaN));
+                    }
                 }
-            } else if(tokens[tokens.length - 1]?.tokenType.name !== Newline.name) {
+            } else {
                 tokens.push(token);
             }
+        })
+        while(indentStack.length > 1){
+            indentStack.pop();
+            tokens.push(createTokenInstance(Dedent, '', NaN, NaN, NaN, NaN, NaN, NaN));
         }
         return {
-            ...result,
+            ...lexResult,
             tokens,
-        }
+        };
     }
 }
 
