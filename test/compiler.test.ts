@@ -224,7 +224,7 @@ empty
 assign = true
 plus + 4
 sub - 5
-mul * -1. + assign - sub * -plus
+mul * -1. + assign - sub * -plus * (sub - plus)
 div / 2.
 mod % 3
 lShift << 4
