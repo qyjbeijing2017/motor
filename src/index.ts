@@ -24,3 +24,4 @@ export {
     If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally,
     Identifier,
 } from './compiler/lexer.compiler';
+export { motorParser } from './compiler/parser.compiler';

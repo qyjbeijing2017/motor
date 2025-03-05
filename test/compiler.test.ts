@@ -10,6 +10,7 @@ import {
     Indent,
     Dedent,
     Newline,
+    motorParser,
 } from '../src';
 describe('Memory', () => {
     test('Lexer', () => {
@@ -214,5 +215,53 @@ c = 3
         expect(result.tokens[offset].tokenType.name).toBe(Equal.name);
         offset += 1;
         expect(result.tokens[offset].tokenType.name).toBe(Integer.name);
+    });
+
+    test('Parser', () => {
+        const scriptOnTest = `
+# all the expressions below are valid
+empty
+assign = true
+plus + 4
+sub - 5
+mul * -1. + assign - sub * -plus
+div / 2.
+mod % 3
+lShift << 4
+rShift >> 5
+lOr | 6
+lAnd & 7
+xOr ^ 8
+    # block Start
+    and && 9
+    or || 10
+        # block Start
+        lessThan < 13
+        greaterThan > 14
+        lessThanEqual <= 15
+        greaterThanEqual >= 16
+        equalEqual == 17
+        notEqual != 18
+        # block End
+    plusEqual += -19
+    subEqual -= 20
+    mulEqual *= 21
+    divEqual /= 22
+    modEqual %= 23
+    andEqual &= 24
+    orEqual |= 25
+    xorEqual ^= 26
+    lShiftEqual <<= 27
+    rShiftEqual >>= 28
+    # block End
+identity = assign
+`
+        const result = motorLexer.tokenize(scriptOnTest);
+        motorParser.input = result.tokens;
+        motorParser.program();
+        if(motorParser.errors.length > 0) {
+            console.log(motorParser.errors);
+        }
+        expect(motorParser.errors.length).toBe(0);
     });
 });

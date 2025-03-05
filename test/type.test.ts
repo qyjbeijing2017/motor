@@ -176,7 +176,6 @@ describe('Type', () => {
             expect(jsArrayOnTest.length).toBe(2);
             expect(jsArrayOnTest[0]!.length).toBe(3);
             expect(jsArrayOnTest[1]!.length).toBe(3);
-            console.log(jsArrayOnTest);
         });
         test('define struct array', () => {
             const structOnTest = motorDefineStruct({
