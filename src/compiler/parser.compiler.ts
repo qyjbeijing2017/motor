@@ -1,4 +1,4 @@
-import { CstParser } from "chevrotain";
+import { CstParser, Option } from "chevrotain";
 import {
     Newline, Indent, Dedent,
     Integer, Float, Char, String, Bool,
@@ -37,14 +37,6 @@ class MotorParser extends CstParser {
             ]);
         });
     });
-
-    // conditionExpression = this.RULE('conditionExpression', () => {
-    //     this.SUBRULE(this.expression);
-    //     this.CONSUME(Ternary);
-    //     this.SUBRULE1(this.expression);
-    //     this.CONSUME(Colon);
-    //     this.SUBRULE2(this.expression);
-    // });
 
     listExpression = this.RULE('list', () => {
         this.CONSUME(LeftBracket);
@@ -131,7 +123,7 @@ class MotorParser extends CstParser {
         ]);
     });
 
-    expression = this.RULE('expression', () => {
+    baseExpression = this.RULE('baseExpression', () => {
         this.SUBRULE(this.atomicExpression);
         this.MANY(() => {
             this.OR1([
@@ -140,6 +132,20 @@ class MotorParser extends CstParser {
             ]);
             this.SUBRULE1(this.atomicExpression);
         });
+    });
+
+    conditionExpression = this.RULE('conditionExpression', () => {
+        this.SUBRULE(this.baseExpression);
+        this.OPTION(() => {
+            this.CONSUME(Ternary);
+            this.SUBRULE1(this.expression);
+            this.CONSUME(Colon);
+            this.SUBRULE2(this.expression);
+        });
+    });
+
+    expression = this.RULE('expression', () => {
+        this.SUBRULE(this.conditionExpression);
     });
 
     assignStatement = this.RULE('assignStatement', () => {
@@ -166,11 +172,37 @@ class MotorParser extends CstParser {
         this.SUBRULE(this.blockStatement);
     });
 
+    forStatement = this.RULE('forStatement', () => {
+        this.CONSUME(For);
+        this.CONSUME(Identifier);
+        this.CONSUME(In);
+        this.SUBRULE(this.expression);
+        this.SUBRULE(this.blockStatement);
+    });
+
+    conditionStatement = this.RULE('conditionStatement', () => {
+        this.CONSUME(If);
+        this.SUBRULE(this.expression);
+        this.SUBRULE(this.blockStatement);
+        this.MANY(() => {
+            this.CONSUME(Else);
+            this.CONSUME1(If);
+            this.SUBRULE1(this.expression);
+            this.SUBRULE1(this.blockStatement);
+        });
+        this.OPTION(() => {
+            this.CONSUME1(Else);
+            this.SUBRULE2(this.blockStatement);
+        });
+    });
+
     statement = this.RULE('statement', () => {
         this.OPTION(() => this.OR([
-            { ALT: () => this.SUBRULE(this.whileStatement) },
-            { ALT: () => this.SUBRULE(this.blockStatement) },
             { ALT: () => this.SUBRULE(this.assignStatement) },
+            { ALT: () => this.SUBRULE(this.blockStatement) },
+            { ALT: () => this.SUBRULE(this.whileStatement) },
+            { ALT: () => this.SUBRULE(this.forStatement) },
+            { ALT: () => this.SUBRULE(this.conditionStatement) },
         ]));
     });
 

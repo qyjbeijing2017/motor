@@ -101,5 +101,58 @@ while true
             }
             expect(motorParser.errors.length).toBe(0);
         })
+        test('for Statement',()=>{
+            const scriptOnTest = `
+list = [1, 2, 3, 4, 5]
+for i in list
+    block += i
+`
+            motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
+            motorParser.input.forEach(token => token.tokenType.name);
+            motorParser.program();
+            if(motorParser.errors.length > 0){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+        test('condition Statement',()=>{
+            const scriptOnTest = `
+if true
+    block += 1
+
+if false
+    block += 2
+else
+    block += 3
+
+if true
+    block += 1
+else if false
+    block += 2
+else
+    block += 3
+`
+            motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
+            motorParser.input.forEach(token => token.tokenType.name);
+            motorParser.program();
+            if(motorParser.errors.length > 0){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+        test('ternary Express',()=>{
+            const scriptOnTest = `
+identifier = true ? 1 : 2
+identifier = true ? 1 : false ? 2 : 3
+identifier = true ? false ? 1 : 2 : 3
+`
+            motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
+            motorParser.input.forEach(token => token.tokenType.name);
+            motorParser.program();
+            if(motorParser.errors.length > 0){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
     })
 });
