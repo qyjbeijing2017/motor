@@ -92,6 +92,10 @@ blockEnd = true
             const scriptOnTest = `
 while true
     block += 1
+    break
+while false
+    block += 2
+    continue
 `
             motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
             motorParser.input.forEach(token => token.tokenType.name);
@@ -106,6 +110,9 @@ while true
 list = [1, 2, 3, 4, 5]
 for i in list
     block += i
+    continue
+for i in list
+    break
 `
             motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
             motorParser.input.forEach(token => token.tokenType.name);
