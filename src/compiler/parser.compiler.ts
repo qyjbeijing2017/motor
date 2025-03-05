@@ -17,6 +17,17 @@ class MotorParser extends CstParser {
         this.performSelfAnalysis();
     }
 
+    listExpression = this.RULE('list', () => {
+        this.CONSUME(LeftBracket);
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => {
+                this.SUBRULE(this.expression);
+            }
+        });
+        this.CONSUME(RightBracket);
+    });
+
     parenExpression = this.RULE("parenExpression", () => {
         this.CONSUME(LeftParen);
         this.SUBRULE(this.expression, { LABEL: "expression" });
@@ -94,7 +105,8 @@ class MotorParser extends CstParser {
                     this.CONSUME(Identifier)
                 }
             },
-            { ALT: () => this.SUBRULE(this.parenExpression) }
+            { ALT: () => this.SUBRULE(this.parenExpression) },
+            { ALT: () => this.SUBRULE(this.listExpression) }
         ]);
     });
 
