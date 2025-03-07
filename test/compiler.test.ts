@@ -45,8 +45,8 @@ dedent
     describe('Parser',()=>{
         test('Assign Statement',()=>{
             const scriptOnTest = `
-list = [1, 2, 3, 4, 5]
-1 + (2 - 3) * 4 / 5 % 6 + list[0]
+motorList = [1, 2, 3, 4, 5]
+1 + (2 - 3) * 4 / 5 % 6 + motorList[0]
 identifier = 1
 identifier += 1
 identifier -= 1
@@ -107,11 +107,11 @@ while false
         })
         test('for Statement',()=>{
             const scriptOnTest = `
-list = [1, 2, 3, 4, 5]
-for i in list
+motorList = [1, 2, 3, 4, 5]
+for i in motorList
     block += i
     continue
-for i in list
+for i in motorList
     break
 `
             motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;

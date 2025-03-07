@@ -59,11 +59,28 @@ export const Semicolon = createToken({ name: 'Semicolon', pattern: /;/ });
 export const Colon = createToken({ name: 'Colon', pattern: /:/ });
 export const Dot = createToken({ name: 'Dot', pattern: /\./ });
 
+export const TypeFloat64 = createToken({ name: 'TypeFloat64', pattern: /float64|double/, longer_alt: Identifier });
+export const TypeFloat16 = createToken({ name: 'TypeFloat16', pattern: /float16|half/, longer_alt: Identifier });
+export const TypeFloat8 = createToken({ name: 'TypeFloat8', pattern: /float8/, longer_alt: Identifier });
+export const TypeFloat32 = createToken({ name: 'TypeFloat32', pattern: /float(32)?/, longer_alt: [Identifier, TypeFloat64, TypeFloat16, TypeFloat8] });
+export const TypeInt64 = createToken({ name: 'TypeInt64', pattern: /int64|long/, longer_alt: Identifier });
+export const TypeInt16 = createToken({ name: 'TypeInt16', pattern: /int16|short/, longer_alt: Identifier });
+export const TypeInt8 = createToken({ name: 'TypeInt8', pattern: /int8/, longer_alt: Identifier });
+export const TypeInt32 = createToken({ name: 'TypeInt32', pattern: /int(32)?/, longer_alt: [Identifier, TypeInt64, TypeInt16, TypeInt8] });
+export const TypeUint64 = createToken({ name: 'TypeUint64', pattern: /uint64|ulong/, longer_alt: Identifier });
+export const TypeUint16 = createToken({ name: 'TypeUint16', pattern: /uint16|ushort/, longer_alt: Identifier });
+export const TypeUint8 = createToken({ name: 'TypeUint8', pattern: /uint8|byte/, longer_alt: Identifier });
+export const TypeUint32 = createToken({ name: 'TypeUint32', pattern: /uint(32)?/, longer_alt: [Identifier, TypeUint64, TypeUint16, TypeUint8] });
+export const TypeBool = createToken({ name: 'TypeBool', pattern: /bool/, longer_alt: Identifier });
+export const TypeChar = createToken({ name: 'TypeChar', pattern: /char/, longer_alt: Identifier });
+export const TypeString = createToken({ name: 'TypeString', pattern: /string/, longer_alt: Identifier });
+export const TypeList = createToken({ name: 'TypeList', pattern: /list/, longer_alt: Identifier });
+
 export const If = createToken({ name: 'If', pattern: /if/, longer_alt: Identifier });
 export const Else = createToken({ name: 'Else', pattern: /else/, longer_alt: Identifier });
 export const While = createToken({ name: 'While', pattern: /while/, longer_alt: Identifier });
 export const For = createToken({ name: 'For', pattern: /for/, longer_alt: Identifier });
-export const In = createToken({ name: 'In', pattern: /in/, longer_alt: Identifier });
+export const In = createToken({ name: 'In', pattern: /in/, longer_alt: [Identifier, TypeInt64, TypeInt32, TypeInt16, TypeInt8] });
 export const Break = createToken({ name: 'Break', pattern: /break/, longer_alt: Identifier });
 export const Continue = createToken({ name: 'Continue', pattern: /continue/, longer_alt: Identifier });
 export const Return = createToken({ name: 'Return', pattern: /return/, longer_alt: Identifier });
@@ -73,11 +90,6 @@ export const Try = createToken({ name: 'Try', pattern: /try/, longer_alt: Identi
 export const Catch = createToken({ name: 'Catch', pattern: /catch/, longer_alt: Identifier });
 export const Finally = createToken({ name: 'Finally', pattern: /finally/, longer_alt: Identifier });
 
-export const TypeFloat32 = createToken({ name: 'TypeFloat', pattern: /float(32)?/, longer_alt: Identifier });
-export const TypeInt32 = createToken({ name: 'TypeInt', pattern: /int(32)?/, longer_alt: Identifier });
-export const TypeBool = createToken({ name: 'TypeBool', pattern: /bool/, longer_alt: Identifier });
-export const TypeChar = createToken({ name: 'TypeChar', pattern: /char/, longer_alt: Identifier });
-export const TypeString = createToken({ name: 'TypeString', pattern: /string/, longer_alt: Identifier });
 
 export const motorTokens = [
     Comment,
@@ -89,6 +101,7 @@ export const motorTokens = [
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift,
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,
+    TypeFloat64, TypeFloat16, TypeFloat8, TypeFloat32, TypeInt64, TypeInt16, TypeInt8, TypeInt32, TypeUint64, TypeUint16, TypeUint8, TypeUint32, TypeBool, TypeChar, TypeString, TypeList,
     If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally,
     Identifier,
 ];

@@ -32,6 +32,10 @@ export {
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,
     If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally,
+    TypeFloat64, TypeFloat16, TypeFloat8, TypeFloat32,
+    TypeInt64, TypeInt16, TypeInt8, TypeInt32,
+    TypeUint64, TypeUint16, TypeUint8, TypeUint32,
+    TypeBool, TypeChar, TypeString, TypeList,
     Identifier,
 } from './compiler/lexer.compiler';
 export { motorParser } from './compiler/parser.compiler';
