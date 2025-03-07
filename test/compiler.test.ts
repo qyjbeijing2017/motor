@@ -45,10 +45,11 @@ dedent
     describe('Parser',()=>{
         test('Assign Statement',()=>{
             const scriptOnTest = `
-motorList = [1, 2, 3, 4, 5]
+list motorList = [1, 2, 3, 4, 5]
 1 + (2 - 3) * 4 / 5 % 6 + motorList[0]
 identifier = 1
-identifier += 1
+float[8] identifier = [1.0]
+float64 identifier += 1
 identifier -= 1
 identifier *= 1
 identifier /= 1
@@ -165,6 +166,10 @@ identifier = true ? false ? 1 : 2 : 3
             const scriptOnTest = `
 fn test(param1, param2)
     return param1 + param2
+fn add(float32 param1, param2): float32
+    return param1 + param2
+fn subInt(int32 param1, int32 param2): int32
+    return param1 - param2
 `
             motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
             motorParser.input.forEach(token => token.tokenType.name);

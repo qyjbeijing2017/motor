@@ -107,35 +107,6 @@ class MotorParser extends CstParser {
         ]);
     });
 
-    typeDefineExpression = this.RULE('typeDefineExpression', () => {
-        this.OR([
-            { ALT: () => this.CONSUME(TypeFloat64) },
-            { ALT: () => this.CONSUME(TypeFloat32) },
-            { ALT: () => this.CONSUME(TypeFloat16) },
-            { ALT: () => this.CONSUME(TypeFloat8) },
-
-            { ALT: () => this.CONSUME(TypeInt64) },
-            { ALT: () => this.CONSUME(TypeInt32) },
-            { ALT: () => this.CONSUME(TypeInt16) },
-            { ALT: () => this.CONSUME(TypeInt8) },
-
-            { ALT: () => this.CONSUME(TypeUint64) },
-            { ALT: () => this.CONSUME(TypeUint32) },
-            { ALT: () => this.CONSUME(TypeUint16) },
-            { ALT: () => this.CONSUME(TypeUint8) },
-
-            { ALT: () => this.CONSUME(TypeBool) },
-            { ALT: () => this.CONSUME(TypeChar) },
-            { ALT: () => this.CONSUME(TypeString) },
-            { ALT: () => this.CONSUME(TypeList) },
-        ]);
-        this.OPTION(() => {
-            this.CONSUME(LeftBracket);
-            this.SUBRULE(this.expression);
-            this.CONSUME(RightBracket);
-        });
-    });
-
     signedExpression = this.RULE('signedExpression', () => {
         this.OPTION(() => this.SUBRULE(this.signedOperator));
         this.OR([
@@ -148,7 +119,6 @@ class MotorParser extends CstParser {
     });
 
     atomicExpression = this.RULE("atomicExpression", () => {
-        this.OPTION(() => this.SUBRULE(this.typeDefineExpression));
         this.OR([
             { ALT: () => this.CONSUME(Char) },
             { ALT: () => this.CONSUME(Bool) },
@@ -182,8 +152,38 @@ class MotorParser extends CstParser {
         this.SUBRULE(this.conditionExpression);
     });
 
+    typeDefineExpression = this.RULE('typeDefineExpression', () => {
+        this.OR([
+            { ALT: () => this.CONSUME(TypeFloat64) },
+            { ALT: () => this.CONSUME(TypeFloat32) },
+            { ALT: () => this.CONSUME(TypeFloat16) },
+            { ALT: () => this.CONSUME(TypeFloat8) },
+
+            { ALT: () => this.CONSUME(TypeInt64) },
+            { ALT: () => this.CONSUME(TypeInt32) },
+            { ALT: () => this.CONSUME(TypeInt16) },
+            { ALT: () => this.CONSUME(TypeInt8) },
+
+            { ALT: () => this.CONSUME(TypeUint64) },
+            { ALT: () => this.CONSUME(TypeUint32) },
+            { ALT: () => this.CONSUME(TypeUint16) },
+            { ALT: () => this.CONSUME(TypeUint8) },
+
+            { ALT: () => this.CONSUME(TypeBool) },
+            { ALT: () => this.CONSUME(TypeChar) },
+            { ALT: () => this.CONSUME(TypeString) },
+            { ALT: () => this.CONSUME(TypeList) },
+        ]);
+        this.OPTION(() => {
+            this.CONSUME(LeftBracket);
+            this.SUBRULE(this.expression);
+            this.CONSUME(RightBracket);
+        });
+    });
+
     assignStatement = this.RULE('assignStatement', () => {
         this.OPTION(() => {
+            this.OPTION1(() => this.SUBRULE(this.typeDefineExpression));
             this.CONSUME(Identifier);
             this.OR([
                 { ALT: () => this.SUBRULE(this.assignOperator) },
