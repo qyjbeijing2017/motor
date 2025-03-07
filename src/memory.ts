@@ -1,4 +1,3 @@
-
 /**
  * MotorVersion
  * @enum {number}

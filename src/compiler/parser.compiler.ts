@@ -201,6 +201,20 @@ class MotorParser extends CstParser {
         this.OPTION(() => this.SUBRULE(this.expression));
     });
 
+    functionDeclaration = this.RULE('functionDeclaration', () => {
+        this.CONSUME(Function);
+        this.CONSUME(Identifier);
+        this.CONSUME(LeftParen);
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => {
+                this.CONSUME1(Identifier);
+            }
+        });
+        this.CONSUME(RightParen);
+        this.SUBRULE(this.blockStatement);
+    });
+
     statement = this.RULE('statement', () => {
         this.OPTION(() => this.OR([
             { ALT: () => this.SUBRULE(this.assignStatement) },
@@ -209,6 +223,7 @@ class MotorParser extends CstParser {
             { ALT: () => this.SUBRULE(this.forStatement) },
             { ALT: () => this.SUBRULE(this.conditionStatement) },
             { ALT: () => this.SUBRULE(this.returnStatement) },
+            { ALT: () => this.SUBRULE(this.functionDeclaration) },
             { ALT: () => this.CONSUME(Break) },
             { ALT: () => this.CONSUME(Continue) },
         ]));

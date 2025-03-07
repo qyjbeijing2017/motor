@@ -67,11 +67,17 @@ export const In = createToken({ name: 'In', pattern: /in/, longer_alt: Identifie
 export const Break = createToken({ name: 'Break', pattern: /break/, longer_alt: Identifier });
 export const Continue = createToken({ name: 'Continue', pattern: /continue/, longer_alt: Identifier });
 export const Return = createToken({ name: 'Return', pattern: /return/, longer_alt: Identifier });
-export const Function = createToken({ name: 'Function', pattern: /fun/, longer_alt: Identifier });
+export const Function = createToken({ name: 'Function', pattern: /fn/, longer_alt: Identifier });
 export const Class = createToken({ name: 'Class', pattern: /class/, longer_alt: Identifier });
 export const Try = createToken({ name: 'Try', pattern: /try/, longer_alt: Identifier });
 export const Catch = createToken({ name: 'Catch', pattern: /catch/, longer_alt: Identifier });
 export const Finally = createToken({ name: 'Finally', pattern: /finally/, longer_alt: Identifier });
+
+export const TypeFloat32 = createToken({ name: 'TypeFloat', pattern: /float(32)?/, longer_alt: Identifier });
+export const TypeInt32 = createToken({ name: 'TypeInt', pattern: /int(32)?/, longer_alt: Identifier });
+export const TypeBool = createToken({ name: 'TypeBool', pattern: /bool/, longer_alt: Identifier });
+export const TypeChar = createToken({ name: 'TypeChar', pattern: /char/, longer_alt: Identifier });
+export const TypeString = createToken({ name: 'TypeString', pattern: /string/, longer_alt: Identifier });
 
 export const motorTokens = [
     Comment,

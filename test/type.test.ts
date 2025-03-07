@@ -1,7 +1,17 @@
 import { 
     MotorBool,
-    MotorFloat32, 
+    MotorFloat32,
+    MotorFloat64,
+    MotorFloat16,
+    MotorFloat8,
     MotorInt32, 
+    MotorInt64,
+    MotorInt16,
+    MotorInt8,
+    MotorUint,
+    MotorUint64,
+    MotorUint16,
+    MotorUint8,
     MotorMemory, 
     MotorChar, 
     defineMotorArray, 
@@ -13,6 +23,8 @@ import {
     defineMotorList
 } from '../src';
 import { motorSingleton } from '../src/utils/singleton';
+import { getFloat16 } from '@petamoriken/float16';
+import { getFloat8 } from '../src/utils/float8';
 
 describe('Type', () => {
     describe('float32', () => {
@@ -34,31 +46,231 @@ describe('Type', () => {
         });
     });
 
+    describe('float64', () => {
+        test('size', () => {
+            expect(MotorFloat64.size).toBe(8);
+        });
+        test('init', () => {
+            const floatOnTest = new MotorFloat64();
+            const floatOnTest2 = new MotorFloat64(1.1);
+            expect(floatOnTest.jsVal).toBeCloseTo(0);
+            expect(floatOnTest2.jsVal).toBeCloseTo(1.1);
+            expect(motorSingleton(MotorMemory).dataView.getFloat64(floatOnTest2.address, true)).toBeCloseTo(1.1);
+        })
+        test('set', () => {
+            const floatOnTest = new MotorFloat64();
+            floatOnTest.jsVal = 1.1;
+            expect(floatOnTest.jsVal).toBeCloseTo(1.1);
+            expect(motorSingleton(MotorMemory).dataView.getFloat64(floatOnTest.address, true)).toBeCloseTo(1.1);
+        });
+    });
+
+    describe('float16', () => {
+        test('size', () => {
+            expect(MotorFloat16.size).toBe(2);
+        });
+        test('init', () => {
+            const floatOnTest = new MotorFloat16();
+            const floatOnTest2 = new MotorFloat16(1.1);
+            expect(floatOnTest.jsVal).toBeCloseTo(0);
+            expect(floatOnTest2.jsVal).toBeCloseTo(1.1);
+            expect(getFloat16(motorSingleton(MotorMemory).dataView,floatOnTest2.address, true)).toBeCloseTo(1.1);
+        })
+        test('set', () => {
+            const floatOnTest = new MotorFloat16();
+            floatOnTest.jsVal = 1.1;
+            expect(floatOnTest.jsVal).toBeCloseTo(1.1);
+            expect(getFloat16(motorSingleton(MotorMemory).dataView,floatOnTest.address, true)).toBeCloseTo(1.1);
+        });
+    });
+
+    describe('float8', () => {
+        test('size', () => {
+            expect(MotorFloat8.size).toBe(1);
+        });
+        test('init', () => {
+            const floatOnTest = new MotorFloat8();
+            const floatOnTest2 = new MotorFloat8(1.1); // because of the precision, 1.1 will be rounded to 1.125
+            expect(floatOnTest.jsVal).toBeCloseTo(0);
+            expect(floatOnTest2.jsVal).toBeCloseTo(1.125);
+            expect(getFloat8(motorSingleton(MotorMemory).dataView,floatOnTest2.address)).toBeCloseTo(1.125);
+        })
+        test('set', () => {
+            const floatOnTest = new MotorFloat8();
+            floatOnTest.jsVal = 1.1;
+            expect(floatOnTest.jsVal).toBeCloseTo(1.125); // because of the precision, 1.1 will be rounded to 1.125
+            expect(getFloat8(motorSingleton(MotorMemory).dataView,floatOnTest.address)).toBeCloseTo(1.125);
+        });
+    });
+
     describe('int32', () => {
         test('size', () => {
             expect(MotorInt32.size).toBe(4);
         });
         test('init', () => {
             const intOnTest = new MotorInt32();
-            const intOnTest2 = new MotorInt32(1);
+            const intOnTest2 = new MotorInt32(-1);
             expect(intOnTest.jsVal).toBe(0);
-            expect(intOnTest2.jsVal).toBe(1);
-            expect(motorSingleton(MotorMemory).dataView.getInt32(intOnTest2.address, true)).toBe(1);
+            expect(intOnTest2.jsVal).toBe(-1);
+            expect(motorSingleton(MotorMemory).dataView.getInt32(intOnTest2.address, true)).toBe(-1);
         })
         test('set', () => {
             const intOnTest = new MotorInt32();
-            intOnTest.jsVal = 1;
-            expect(intOnTest.jsVal).toBe(1);
-            expect(motorSingleton(MotorMemory).dataView.getInt32(intOnTest.address, true)).toBe(1);
+            intOnTest.jsVal = -1;
+            expect(intOnTest.jsVal).toBe(-1);
+            expect(motorSingleton(MotorMemory).dataView.getInt32(intOnTest.address, true)).toBe(-1);
         });
         test('set float', () => {
             const intOnTest = new MotorInt32();
-            intOnTest.jsVal = 1.1;
-            expect(intOnTest.jsVal).toBe(1);
-            expect(motorSingleton(MotorMemory).dataView.getInt32(intOnTest.address, true)).toBe(1);
-            intOnTest.jsVal = 1.9;
-            expect(intOnTest.jsVal).toBe(1);
-            expect(motorSingleton(MotorMemory).dataView.getInt32(intOnTest.address, true)).toBe(1);
+            intOnTest.jsVal = -1.1;
+            expect(intOnTest.jsVal).toBe(-1);
+            expect(motorSingleton(MotorMemory).dataView.getInt32(intOnTest.address, true)).toBe(-1);
+            intOnTest.jsVal = -1.9;
+            expect(intOnTest.jsVal).toBe(-1);
+            expect(motorSingleton(MotorMemory).dataView.getInt32(intOnTest.address, true)).toBe(-1);
+        });
+    });
+
+    describe('int64', () => {
+        test('size', () => {
+            expect(MotorInt64.size).toBe(8);
+        });
+        test('init', () => {
+            const intOnTest = new MotorInt64();
+            const intOnTest2 = new MotorInt64(-1n);
+            expect(intOnTest.jsVal).toBe(0n);
+            expect(intOnTest2.jsVal).toBe(-1n);
+            expect(motorSingleton(MotorMemory).dataView.getBigInt64(intOnTest2.address, true)).toBe(-1n);
+        })
+        test('set', () => {
+            const intOnTest = new MotorInt64();
+            intOnTest.jsVal = -1n;
+            expect(intOnTest.jsVal).toBe(-1n);
+            expect(motorSingleton(MotorMemory).dataView.getBigInt64(intOnTest.address, true)).toBe(-1n);
+        });
+    });
+
+    describe('int16', () => {
+        test('size', () => {
+            expect(MotorInt16.size).toBe(2);
+        });
+        test('init', () => {
+            const intOnTest = new MotorInt16();
+            const intOnTest2 = new MotorInt16(-1);
+            expect(intOnTest.jsVal).toBe(0);
+            expect(intOnTest2.jsVal).toBe(-1);
+            expect(motorSingleton(MotorMemory).dataView.getInt16(intOnTest2.address, true)).toBe(-1);
+        })
+        test('set', () => {
+            const intOnTest = new MotorInt16();
+            intOnTest.jsVal = -1;
+            expect(intOnTest.jsVal).toBe(-1);
+            expect(motorSingleton(MotorMemory).dataView.getInt16(intOnTest.address, true)).toBe(-1);
+        });
+    });
+
+    describe('int8', () => {
+        test('size', () => {
+            expect(MotorInt8.size).toBe(1);
+        });
+        test('init', () => {
+            const intOnTest = new MotorInt8();
+            const intOnTest2 = new MotorInt8(-1);
+            expect(intOnTest.jsVal).toBe(0);
+            expect(intOnTest2.jsVal).toBe(-1);
+            expect(motorSingleton(MotorMemory).dataView.getInt8(intOnTest2.address)).toBe(-1);
+        })
+        test('set', () => {
+            const intOnTest = new MotorInt8();
+            intOnTest.jsVal = -1;
+            expect(intOnTest.jsVal).toBe(-1);
+            expect(motorSingleton(MotorMemory).dataView.getInt8(intOnTest.address)).toBe(-1);
+        });
+    });
+
+    describe('uint32', () => {
+        test('size', () => {
+            expect(MotorUint.size).toBe(4);
+        });
+        test('init', () => {
+            const uintOnTest = new MotorUint();
+            const uintOnTest2 = new MotorUint(1);
+            expect(uintOnTest.jsVal).toBe(0);
+            expect(uintOnTest2.jsVal).toBe(1);
+            expect(motorSingleton(MotorMemory).dataView.getUint32(uintOnTest2.address, true)).toBe(1);
+        })
+        test('set', () => {
+            const uintOnTest = new MotorUint();
+            uintOnTest.jsVal = 1;
+            expect(uintOnTest.jsVal).toBe(1);
+            expect(motorSingleton(MotorMemory).dataView.getUint32(uintOnTest.address, true)).toBe(1);
+        });
+        test('set float', () => {
+            const uintOnTest = new MotorUint();
+            uintOnTest.jsVal = 1.1;
+            expect(uintOnTest.jsVal).toBe(1);
+            expect(motorSingleton(MotorMemory).dataView.getUint32(uintOnTest.address, true)).toBe(1);
+            uintOnTest.jsVal = 1.9;
+            expect(uintOnTest.jsVal).toBe(1);
+            expect(motorSingleton(MotorMemory).dataView.getUint32(uintOnTest.address, true)).toBe(1);
+        });
+        
+    });
+
+    describe('uint64', () => {
+        test('size', () => {
+            expect(MotorUint64.size).toBe(8);
+        });
+        test('init', () => {
+            const uintOnTest = new MotorUint64();
+            const uintOnTest2 = new MotorUint64(1n);
+            expect(uintOnTest.jsVal).toBe(0n);
+            expect(uintOnTest2.jsVal).toBe(1n);
+            expect(motorSingleton(MotorMemory).dataView.getBigUint64(uintOnTest2.address, true)).toBe(1n);
+        })
+        test('set', () => {
+            const uintOnTest = new MotorUint64();
+            uintOnTest.jsVal = 1n;
+            expect(uintOnTest.jsVal).toBe(1n);
+            expect(motorSingleton(MotorMemory).dataView.getBigUint64(uintOnTest.address, true)).toBe(1n);
+        });
+    });
+
+    describe('uint16', () => {
+        test('size', () => {
+            expect(MotorUint16.size).toBe(2);
+        });
+        test('init', () => {
+            const uintOnTest = new MotorUint16();
+            const uintOnTest2 = new MotorUint16(1);
+            expect(uintOnTest.jsVal).toBe(0);
+            expect(uintOnTest2.jsVal).toBe(1);
+            expect(motorSingleton(MotorMemory).dataView.getUint16(uintOnTest2.address, true)).toBe(1);
+        })
+        test('set', () => {
+            const uintOnTest = new MotorUint16();
+            uintOnTest.jsVal = 1;
+            expect(uintOnTest.jsVal).toBe(1);
+            expect(motorSingleton(MotorMemory).dataView.getUint16(uintOnTest.address, true)).toBe(1);
+        });
+    });
+
+    describe('uint8', () => {
+        test('size', () => {
+            expect(MotorUint8.size).toBe(1);
+        });
+        test('init', () => {
+            const uintOnTest = new MotorUint8();
+            const uintOnTest2 = new MotorUint8(1);
+            expect(uintOnTest.jsVal).toBe(0);
+            expect(uintOnTest2.jsVal).toBe(1);
+            expect(motorSingleton(MotorMemory).dataView.getUint8(uintOnTest2.address)).toBe(1);
+        })
+        test('set', () => {
+            const uintOnTest = new MotorUint8();
+            uintOnTest.jsVal = 1;
+            expect(uintOnTest.jsVal).toBe(1);
+            expect(motorSingleton(MotorMemory).dataView.getUint8(uintOnTest.address)).toBe(1);
         });
     });
 

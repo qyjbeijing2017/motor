@@ -20,7 +20,7 @@ describe('Memory', () => {
 <= >= == != += -= *= /= %= &= |= ^= && || << >>
 = + - * / % ! ^ & | ? < > ( ) [ ] { } 
 , ; : .
-if else while for in break continue return fun class try catch finally
+if else while for in break continue return fn class try catch finally
 identifier
     indent
 dedent
@@ -152,6 +152,19 @@ else
 identifier = true ? 1 : 2
 identifier = true ? 1 : false ? 2 : 3
 identifier = true ? false ? 1 : 2 : 3
+`
+            motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
+            motorParser.input.forEach(token => token.tokenType.name);
+            motorParser.program();
+            if(motorParser.errors.length > 0){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+        test('function Declaration',()=>{
+            const scriptOnTest = `
+fn test(param1, param2)
+    return param1 + param2
 `
             motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
             motorParser.input.forEach(token => token.tokenType.name);
