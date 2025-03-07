@@ -7,9 +7,8 @@ export const Identifier = createToken({ name: 'Identifier', pattern: /[a-zA-Z_]\
 export const Indent = createToken({ name: "Indent", pattern: () => null, line_breaks: false, });
 export const Dedent = createToken({ name: "Dedent", pattern: () => null, line_breaks: false, });
 
-
-export const Float = createToken({ name: 'Float', pattern: /[+-]?(\d+\.\d+f?|\.\d+f?|\d+f|\d+\.f?)/ });
-export const Integer = createToken({ name: 'Integer', pattern: /[+-]?\d+/, longer_alt: Float });
+export const Float = createToken({ name: 'Float', pattern: /(\d+\.\d+f?|\.\d+f?|\d+f|\d+\.f?)/ });
+export const Integer = createToken({ name: 'Integer', pattern: /\d+/, longer_alt: Float });
 export const Char = createToken({ name: 'Char', pattern: /'.'/ });
 export const String = createToken({ name: 'String', pattern: /".*?"/ });
 export const Bool = createToken({ name: 'Bool', pattern: /true|false/, longer_alt: Identifier });

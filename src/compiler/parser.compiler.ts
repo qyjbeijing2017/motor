@@ -21,335 +21,139 @@ class MotorParser extends CstParser {
         this.performSelfAnalysis();
     }
 
-    keyExpression = this.RULE('keyExpression', () => {
-        this.CONSUME(Dot);
-        this.CONSUME(Identifier);
-    });
-
-    indexExpression = this.RULE('indexExpression', () => {
-        this.CONSUME(LeftBracket);
-        this.SUBRULE(this.expression);
-        this.CONSUME(RightBracket);
-    });
-
-    identityExpression = this.RULE('identityExpression', () => {
-        this.CONSUME(Identifier);
+    multiplicativeExpression = this.RULE("multiplicativeExpression", () => {
+        this.SUBRULE(this.unaryExpression, { LABEL: "left" });
         this.MANY(() => {
             this.OR([
-                { ALT: () => this.SUBRULE(this.keyExpression) },
-                { ALT: () => this.SUBRULE(this.indexExpression) },
+                { ALT: () => this.CONSUME(Multiply, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(Divide, { LABEL: "operator" }) }
             ]);
+            this.SUBRULE1(this.multiplicativeExpression, { LABEL: "right" });
         });
     });
 
-    listExpression = this.RULE('list', () => {
-        this.CONSUME(LeftBracket);
-        this.MANY_SEP({
-            SEP: Comma,
-            DEF: () => {
-                this.SUBRULE(this.expression);
-            }
-        });
-        this.CONSUME(RightBracket);
-    });
-
-    parenExpression = this.RULE("parenExpression", () => {
-        this.CONSUME(LeftParen);
-        this.SUBRULE(this.expression, { LABEL: "expression" });
-        this.CONSUME(RightParen);
-    });
-
-    assignOperator = this.RULE('assignOperator', () => {
-        this.OR([
-            { ALT: () => this.CONSUME(LShiftEqual) },
-            { ALT: () => this.CONSUME(RShiftEqual) },
-            { ALT: () => this.CONSUME(AddEqual) },
-            { ALT: () => this.CONSUME(SubEqual) },
-            { ALT: () => this.CONSUME(MulEqual) },
-            { ALT: () => this.CONSUME(DivEqual) },
-            { ALT: () => this.CONSUME(ModEqual) },
-            { ALT: () => this.CONSUME(AndEqual) },
-            { ALT: () => this.CONSUME(OrEqual) },
-            { ALT: () => this.CONSUME(XorEqual) },
-            { ALT: () => this.CONSUME(Equal) },
-        ]);
-    });
-
-    signedOperator = this.RULE('signedOperator', () => {
-        this.OR([
-            { ALT: () => this.CONSUME(Plus) },
-            { ALT: () => this.CONSUME(Minus) },
-        ]);
-    });
-
-    operator = this.RULE('operator', () => {
-        this.OR([
-
-            { ALT: () => this.CONSUME(LAnd) },
-            { ALT: () => this.CONSUME(LOr) },
-            { ALT: () => this.CONSUME(Xor) },
-            { ALT: () => this.CONSUME(LShift) },
-            { ALT: () => this.CONSUME(RShift) },
-
-            { ALT: () => this.CONSUME(LessThan) },
-            { ALT: () => this.CONSUME(GreaterThan) },
-            { ALT: () => this.CONSUME(LessThanEqual) },
-            { ALT: () => this.CONSUME(GreaterThanEqual) },
-            { ALT: () => this.CONSUME(EqualEqual) },
-            { ALT: () => this.CONSUME(NotEqual) },
-            { ALT: () => this.CONSUME(And) },
-            { ALT: () => this.CONSUME(Or) },
-
-            { ALT: () => this.CONSUME(Multiply) },
-            { ALT: () => this.CONSUME(Divide) },
-            { ALT: () => this.CONSUME(Modulo) },
-            { ALT: () => this.CONSUME(Not) },
-        ]);
-    });
-
-    signedExpression = this.RULE('signedExpression', () => {
-        this.OPTION(() => this.SUBRULE(this.signedOperator));
-        this.OR([
-            { ALT: () => this.CONSUME(Integer) },
-            { ALT: () => this.CONSUME(Float) },
-            { ALT: () => this.SUBRULE(this.identityExpression) },
-            { ALT: () => this.SUBRULE(this.parenExpression) },
-            { ALT: () => this.SUBRULE(this.listExpression) }
-        ]);
-    });
-
-    atomicExpression = this.RULE("atomicExpression", () => {
-        this.OR([
-            { ALT: () => this.CONSUME(Char) },
-            { ALT: () => this.CONSUME(Bool) },
-            { ALT: () => this.CONSUME(String) },
-            { ALT: () => this.SUBRULE(this.signedExpression) },
-        ]);
-    });
-
-    baseExpression = this.RULE('baseExpression', () => {
-        this.SUBRULE(this.atomicExpression);
+    additiveExpression = this.RULE("additiveExpression", () => {
+        this.SUBRULE(this.multiplicativeExpression, { LABEL: "left" });
         this.MANY(() => {
-            this.OR1([
-                { ALT: () => this.SUBRULE1(this.signedOperator) },
-                { ALT: () => this.SUBRULE1(this.operator) },
+            this.OR([
+                { ALT: () => this.CONSUME(Plus, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(Minus, { LABEL: "operator" }) }
             ]);
-            this.SUBRULE1(this.atomicExpression);
+            this.SUBRULE1(this.additiveExpression, { LABEL: "right" });
         });
     });
 
-    conditionExpression = this.RULE('conditionExpression', () => {
-        this.SUBRULE(this.baseExpression);
+    relationExpression = this.RULE("relationExpression", () => {
+        this.SUBRULE(this.additiveExpression, { LABEL: "left" });
+        this.MANY(() => {
+            this.OR([
+                { ALT: () => this.CONSUME(GreaterThan, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(GreaterThanEqual, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(LessThan, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(LessThanEqual, { LABEL: "operator" }) }
+            ]);
+            this.SUBRULE1(this.additiveExpression, { LABEL: "right" });
+        });
+    });
+
+    equalityExpression = this.RULE("equalityExpression", () => {
+        this.SUBRULE(this.relationExpression, { LABEL: "left" });
+        this.MANY(() => {
+            this.OR([
+                { ALT: () => this.CONSUME(Equal, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(NotEqual, { LABEL: "operator" }) },
+            ]);
+            this.SUBRULE1(this.equalityExpression, { LABEL: "right" });
+        });
+    });
+
+    andExpression = this.RULE("andExpression", () => {
+        this.SUBRULE(this.equalityExpression, { LABEL: "left" });
+        this.MANY(() => {
+            this.CONSUME(And, { LABEL: "operator" });
+            this.SUBRULE1(this.andExpression, { LABEL: "right" });
+        });
+    });
+
+    xorExpression = this.RULE("xorExpression", () => {
+        this.SUBRULE(this.andExpression, { LABEL: "left" });
+        this.MANY(() => {
+            this.CONSUME(Xor, { LABEL: "operator" });
+            this.SUBRULE1(this.xorExpression, { LABEL: "right" });
+        });
+    });
+
+    orExpression = this.RULE("orExpression", () => {
+        this.SUBRULE(this.xorExpression, { LABEL: "left" });
+        this.MANY(() => {
+            this.CONSUME(Or, { LABEL: "operator" });
+            this.SUBRULE1(this.orExpression, { LABEL: "right" });
+        });
+    });
+
+    conditionalExpression = this.RULE("conditionalExpression", () => {
+        this.SUBRULE(this.orExpression, { LABEL: "testExpression" });
         this.OPTION(() => {
             this.CONSUME(Ternary);
-            this.SUBRULE1(this.expression);
+            this.SUBRULE1(this.conditionalExpression, { LABEL: "trueExpression" });
             this.CONSUME(Colon);
-            this.SUBRULE2(this.expression);
+            this.SUBRULE2(this.conditionalExpression, { LABEL: "falseExpression" });
         });
     });
 
-    expression = this.RULE('expression', () => {
-        this.SUBRULE(this.conditionExpression);
-    });
-
-    typeDefineExpression = this.RULE('typeDefineExpression', () => {
+    typeDeclaration = this.RULE('typeDeclaration', () => {
+        this.CONSUME(Colon);
         this.OR([
-            { ALT: () => this.CONSUME(Identifier) },
-
             { ALT: () => this.CONSUME(TypeFloat64) },
             { ALT: () => this.CONSUME(TypeFloat32) },
             { ALT: () => this.CONSUME(TypeFloat16) },
             { ALT: () => this.CONSUME(TypeFloat8) },
-
             { ALT: () => this.CONSUME(TypeInt64) },
             { ALT: () => this.CONSUME(TypeInt32) },
             { ALT: () => this.CONSUME(TypeInt16) },
             { ALT: () => this.CONSUME(TypeInt8) },
-
             { ALT: () => this.CONSUME(TypeUint64) },
             { ALT: () => this.CONSUME(TypeUint32) },
             { ALT: () => this.CONSUME(TypeUint16) },
             { ALT: () => this.CONSUME(TypeUint8) },
-
             { ALT: () => this.CONSUME(TypeBool) },
             { ALT: () => this.CONSUME(TypeChar) },
             { ALT: () => this.CONSUME(TypeString) },
             { ALT: () => this.CONSUME(TypeList) },
+            { ALT: () => this.CONSUME(Identifier) },
         ]);
         this.OPTION(() => {
             this.CONSUME(LeftBracket);
-            this.SUBRULE(this.expression);
             this.CONSUME(RightBracket);
         });
     });
 
-    identityDefineExpression = this.RULE('identityDefineExpression', () => {
+    assignExpression = this.RULE('assignExpression', () => {
         this.CONSUME(Identifier);
-        this.OPTION(() => {
-            this.CONSUME(Colon);
-            this.SUBRULE(this.typeDefineExpression)
-        });
-    });
-
-    assignStatement = this.RULE('assignStatement', () => {
+        this.OPTION(() => this.SUBRULE(this.typeDeclaration));
         this.OPTION1(() => {
-            this.SUBRULE(this.identityDefineExpression);
             this.OR([
-                { ALT: () => this.SUBRULE(this.assignOperator) },
-                { ALT: () => this.SUBRULE(this.signedOperator) },
-                { ALT: () => this.SUBRULE(this.operator) },
+                { ALT: () => this.CONSUME(Equal) },
+                { ALT: () => this.CONSUME(AddEqual) },
+                { ALT: () => this.CONSUME(SubEqual) },
+                { ALT: () => this.CONSUME(MulEqual) },
+                { ALT: () => this.CONSUME(DivEqual) },
+                { ALT: () => this.CONSUME(ModEqual) },
+                { ALT: () => this.CONSUME(AndEqual) },
+                { ALT: () => this.CONSUME(OrEqual) },
+                { ALT: () => this.CONSUME(XorEqual) },
+                { ALT: () => this.CONSUME(LShiftEqual) },
+                { ALT: () => this.CONSUME(RShiftEqual) },
             ]);
-        });
-        this.SUBRULE(this.expression);
-    });
-
-    blockStatement = this.RULE('blockStatement', () => {
-        this.CONSUME(Indent);
-        this.SUBRULE(this.program);
-        this.CONSUME(Dedent);
-    });
-
-    whileStatement = this.RULE('whileStatement', () => {
-        this.CONSUME(While);
-        this.SUBRULE(this.expression);
-        this.SUBRULE(this.blockStatement);
-    });
-
-    forStatement = this.RULE('forStatement', () => {
-        this.CONSUME(For);
-        this.CONSUME(Identifier);
-        this.CONSUME(In);
-        this.SUBRULE(this.expression);
-        this.SUBRULE(this.blockStatement);
-    });
-
-    conditionStatement = this.RULE('conditionStatement', () => {
-        this.CONSUME(If);
-        this.SUBRULE(this.expression);
-        this.SUBRULE(this.blockStatement);
-        this.MANY(() => {
-            this.CONSUME(Else);
-            this.CONSUME1(If);
-            this.SUBRULE1(this.expression);
-            this.SUBRULE1(this.blockStatement);
-        });
-        this.OPTION(() => {
-            this.CONSUME1(Else);
-            this.SUBRULE2(this.blockStatement);
+            this.SUBRULE(this.conditionalExpression);
         });
     });
 
-    returnStatement = this.RULE('returnStatement', () => {
-        this.CONSUME(Return);
-        this.OPTION(() => this.SUBRULE(this.expression));
-    });
-
-    throwStatement = this.RULE('throwStatement', () => {
-        this.CONSUME(Throw);
-        this.SUBRULE(this.expression);
-    });
-
-    functionDeclaration = this.RULE('functionDeclaration', () => {
-        this.CONSUME(Function);
-        this.CONSUME(Identifier);
-        this.CONSUME(LeftParen);
-        this.MANY_SEP({
-            SEP: Comma,
-            DEF: () => this.SUBRULE(this.identityDefineExpression)
-        });
-        this.CONSUME(RightParen);
-        this.OPTION1(() => {
-            this.CONSUME1(Colon);
-            this.SUBRULE1(this.typeDefineExpression)
-        });
-        this.SUBRULE(this.blockStatement);
-    });
-
-    tryStatement = this.RULE('tryStatement', () => {
-        this.CONSUME(Try);
-        this.SUBRULE(this.blockStatement);
-        this.OPTION(() => {
-            this.CONSUME(Catch);
-            this.OPTION2(() => this.CONSUME(Identifier));
-            this.SUBRULE1(this.blockStatement);
-        });
-        this.OPTION1(() => {
-            this.CONSUME(Finally);
-            this.SUBRULE2(this.blockStatement);
-        });
-    });
-
-    importStatement = this.RULE('importStatement', () => {
-        this.CONSUME(Import);
-        this.MANY_SEP({
-            SEP: Comma,
-            DEF: () => this.CONSUME(Identifier)
-        });
-        this.CONSUME(String);
-    });
-
-    structDeclaration = this.RULE('structDeclaration', () => {
-        this.CONSUME(Struct);
-        this.CONSUME(Identifier);
-        this.CONSUME(Indent);
+    block = this.RULE('block', () => {
         this.MANY(() => {
             this.OR([
-                { ALT: () => this.SUBRULE(this.assignStatement) },
-                // { ALT: () => this.SUBRULE(this.functionDeclaration) },
+                { ALT: () => this.SUBRULE(this.assignExpression) },
             ]);
-            this.OPTION(() => this.CONSUME(Semicolon));
-        });
-        this.CONSUME(Dedent);
-    });
-
-    classDeclaration = this.RULE('classDeclaration', () => {
-        this.CONSUME(Class);
-        this.CONSUME(Identifier);
-        this.OPTION(() => {
-            this.CONSUME(Colon);
-            this.CONSUME2(Identifier);
-        });
-        this.SUBRULE(this.blockStatement);
-    });
-
-    enumDeclaration = this.RULE('enumDeclaration', () => {
-        this.CONSUME(Enum);
-        this.CONSUME(Identifier);
-        this.MANY_SEP({
-            SEP: Comma,
-            DEF: () => {
-                this.CONSUME1(Identifier);
-                this.OPTION(() => {
-                    this.CONSUME(Equal);
-                    this.SUBRULE(this.expression);
-                });
-            }
-        });
-    });
-
-    statement = this.RULE('statement', () => {
-        this.OPTION(() => this.OR([
-            { ALT: () => this.SUBRULE(this.assignStatement) },
-            { ALT: () => this.SUBRULE(this.blockStatement) },
-            { ALT: () => this.SUBRULE(this.whileStatement) },
-            { ALT: () => this.SUBRULE(this.forStatement) },
-            { ALT: () => this.SUBRULE(this.conditionStatement) },
-            { ALT: () => this.SUBRULE(this.returnStatement) },
-            { ALT: () => this.SUBRULE(this.functionDeclaration) },
-            { ALT: () => this.SUBRULE(this.tryStatement) },
-            { ALT: () => this.SUBRULE(this.throwStatement) },
-            { ALT: () => this.SUBRULE(this.importStatement) },
-            { ALT: () => this.SUBRULE(this.structDeclaration) },
-            { ALT: () => this.SUBRULE(this.classDeclaration) },
-            { ALT: () => this.SUBRULE(this.enumDeclaration) },
-            { ALT: () => this.CONSUME(Break) },
-            { ALT: () => this.CONSUME(Continue) },
-        ]));
-    });
-
-    program = this.RULE('program', () => {
-        this.MANY(() => {
-            this.SUBRULE(this.statement);
             this.OPTION(() => this.CONSUME(Semicolon));
         });
     });
