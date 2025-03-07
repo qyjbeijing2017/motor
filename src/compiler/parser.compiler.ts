@@ -6,7 +6,7 @@ import {
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift,
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,
-    If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally,
+    If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally, Throw, Struct, Enum, Import,
     TypeFloat64, TypeFloat16, TypeFloat8, TypeFloat32,
     TypeInt64, TypeInt16, TypeInt8, TypeInt32,
     TypeUint64, TypeUint16, TypeUint8, TypeUint32,
@@ -154,6 +154,8 @@ class MotorParser extends CstParser {
 
     typeDefineExpression = this.RULE('typeDefineExpression', () => {
         this.OR([
+            { ALT: () => this.CONSUME(Identifier) },
+
             { ALT: () => this.CONSUME(TypeFloat64) },
             { ALT: () => this.CONSUME(TypeFloat32) },
             { ALT: () => this.CONSUME(TypeFloat16) },
@@ -181,10 +183,17 @@ class MotorParser extends CstParser {
         });
     });
 
-    assignStatement = this.RULE('assignStatement', () => {
+    identityDefineExpression = this.RULE('identityDefineExpression', () => {
+        this.CONSUME(Identifier);
         this.OPTION(() => {
-            this.OPTION1(() => this.SUBRULE(this.typeDefineExpression));
-            this.CONSUME(Identifier);
+            this.CONSUME(Colon);
+            this.SUBRULE(this.typeDefineExpression)
+        });
+    });
+
+    assignStatement = this.RULE('assignStatement', () => {
+        this.OPTION1(() => {
+            this.SUBRULE(this.identityDefineExpression);
             this.OR([
                 { ALT: () => this.SUBRULE(this.assignOperator) },
                 { ALT: () => this.SUBRULE(this.signedOperator) },
@@ -235,20 +244,22 @@ class MotorParser extends CstParser {
         this.OPTION(() => this.SUBRULE(this.expression));
     });
 
+    throwStatement = this.RULE('throwStatement', () => {
+        this.CONSUME(Throw);
+        this.SUBRULE(this.expression);
+    });
+
     functionDeclaration = this.RULE('functionDeclaration', () => {
         this.CONSUME(Function);
         this.CONSUME(Identifier);
         this.CONSUME(LeftParen);
         this.MANY_SEP({
             SEP: Comma,
-            DEF: () => {
-                this.OPTION(() => this.SUBRULE(this.typeDefineExpression));
-                this.CONSUME1(Identifier);
-            }
+            DEF: () => this.SUBRULE(this.identityDefineExpression)
         });
         this.CONSUME(RightParen);
         this.OPTION1(() => {
-            this.CONSUME(Colon);
+            this.CONSUME1(Colon);
             this.SUBRULE1(this.typeDefineExpression)
         });
         this.SUBRULE(this.blockStatement);
@@ -268,6 +279,54 @@ class MotorParser extends CstParser {
         });
     });
 
+    importStatement = this.RULE('importStatement', () => {
+        this.CONSUME(Import);
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => this.CONSUME(Identifier)
+        });
+        this.CONSUME(String);
+    });
+
+    structDeclaration = this.RULE('structDeclaration', () => {
+        this.CONSUME(Struct);
+        this.CONSUME(Identifier);
+        this.CONSUME(Indent);
+        this.MANY(() => {
+            this.OR([
+                { ALT: () => this.SUBRULE(this.assignStatement) },
+                // { ALT: () => this.SUBRULE(this.functionDeclaration) },
+            ]);
+            this.OPTION(() => this.CONSUME(Semicolon));
+        });
+        this.CONSUME(Dedent);
+    });
+
+    classDeclaration = this.RULE('classDeclaration', () => {
+        this.CONSUME(Class);
+        this.CONSUME(Identifier);
+        this.OPTION(() => {
+            this.CONSUME(Colon);
+            this.CONSUME2(Identifier);
+        });
+        this.SUBRULE(this.blockStatement);
+    });
+
+    enumDeclaration = this.RULE('enumDeclaration', () => {
+        this.CONSUME(Enum);
+        this.CONSUME(Identifier);
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => {
+                this.CONSUME1(Identifier);
+                this.OPTION(() => {
+                    this.CONSUME(Equal);
+                    this.SUBRULE(this.expression);
+                });
+            }
+        });
+    });
+
     statement = this.RULE('statement', () => {
         this.OPTION(() => this.OR([
             { ALT: () => this.SUBRULE(this.assignStatement) },
@@ -278,6 +337,11 @@ class MotorParser extends CstParser {
             { ALT: () => this.SUBRULE(this.returnStatement) },
             { ALT: () => this.SUBRULE(this.functionDeclaration) },
             { ALT: () => this.SUBRULE(this.tryStatement) },
+            { ALT: () => this.SUBRULE(this.throwStatement) },
+            { ALT: () => this.SUBRULE(this.importStatement) },
+            { ALT: () => this.SUBRULE(this.structDeclaration) },
+            { ALT: () => this.SUBRULE(this.classDeclaration) },
+            { ALT: () => this.SUBRULE(this.enumDeclaration) },
             { ALT: () => this.CONSUME(Break) },
             { ALT: () => this.CONSUME(Continue) },
         ]));

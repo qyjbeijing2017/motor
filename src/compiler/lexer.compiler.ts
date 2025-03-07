@@ -89,7 +89,10 @@ export const Class = createToken({ name: 'Class', pattern: /class/, longer_alt: 
 export const Try = createToken({ name: 'Try', pattern: /try/, longer_alt: Identifier });
 export const Catch = createToken({ name: 'Catch', pattern: /catch/, longer_alt: Identifier });
 export const Finally = createToken({ name: 'Finally', pattern: /finally/, longer_alt: Identifier });
+export const Throw = createToken({ name: 'Throw', pattern: /throw/, longer_alt: Identifier });
 export const Struct = createToken({ name: 'Struct', pattern: /struct/, longer_alt: Identifier });
+export const Enum = createToken({ name: 'Enum', pattern: /enum/, longer_alt: Identifier });
+export const Import = createToken({ name: 'Import', pattern: /import/, longer_alt: Identifier });
 
 
 export const motorTokens = [
@@ -103,7 +106,7 @@ export const motorTokens = [
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,
     TypeFloat64, TypeFloat16, TypeFloat8, TypeFloat32, TypeInt64, TypeInt16, TypeInt8, TypeInt32, TypeUint64, TypeUint16, TypeUint8, TypeUint32, TypeBool, TypeChar, TypeString, TypeList,
-    If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally,
+    If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally, Throw, Struct, Enum, Import,
     Identifier,
 ];
 

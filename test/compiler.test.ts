@@ -45,11 +45,12 @@ dedent
     describe('Parser',()=>{
         test('Assign Statement',()=>{
             const scriptOnTest = `
-list motorList = [1, 2, 3, 4, 5]
+motorList = [1, 2, 3, 4, 5]
 1 + (2 - 3) * 4 / 5 % 6 + motorList[0]
 identifier = 1
-float[8] identifier = [1.0]
-float64 identifier += 1
+identifier = [1.0]
+identifier += 1
+identifier
 identifier -= 1
 identifier *= 1
 identifier /= 1
@@ -166,10 +167,6 @@ identifier = true ? false ? 1 : 2 : 3
             const scriptOnTest = `
 fn test(param1, param2)
     return param1 + param2
-fn add(float32 param1, param2): float32
-    return param1 + param2
-fn subInt(int32 param1, int32 param2): int32
-    return param1 - param2
 `
             motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
             motorParser.input.forEach(token => token.tokenType.name);
@@ -183,6 +180,7 @@ fn subInt(int32 param1, int32 param2): int32
             const scriptOnTest = `
 try
     block += 1
+    throw "error"
 catch
     block += 2
 finally
@@ -193,6 +191,90 @@ catch b
     block += b
 finally
     block += 3
+`
+            motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
+            motorParser.input.forEach(token => token.tokenType.name);
+            motorParser.program();
+            if(motorParser.errors.length > 0){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+        test('class Declaration',()=>{
+            const scriptOnTest = `
+class MotorClass
+    block1
+    fn MotorClass(block1)
+       block1 = block1
+    fn test()
+        return null
+class MotorClass2
+    class SubClass
+        block1
+        fn SubClass(block1)
+            block1 = block1
+        fn test()
+            return null
+`
+            motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
+            motorParser.input.forEach(token => token.tokenType.name);
+            motorParser.program();
+            if(motorParser.errors.length > 0){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+        test('struct Declaration',()=>{
+            const scriptOnTest = `
+struct MotorStruct
+    value
+    value2
+    value3
+`
+            motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
+            motorParser.input.forEach(token => token.tokenType.name);
+            motorParser.program();
+            if(motorParser.errors.length > 0){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+        test('with Type Declaration',()=>{
+            const scriptOnTest = `
+a: int = 1
+b: float = 1.0
+c: char = 'c'
+d: string = "string"
+f
+e: bool = true
+    f: int = 1
+    l: list = [1, 2, 3]
+    s
+    array: float[5] = [1.0, 2.0, 3.0, 4.0, 5.0]
+fn testFunction(a: int, b: float, c: char, d: string, e: bool, d): float
+    c
+    return b
+`
+            motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
+            motorParser.input.forEach(token => token.tokenType.name);
+            motorParser.program();
+            if(motorParser.errors.length > 0){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test('struct with Type Declaration',()=>{
+            const scriptOnTest = `
+struct MotorStruct
+    value: int
+    value2: float
+    value3: char
+    value4: string
+    value8
+    value5: bool
+    value6: list
+    value7: float[5]
 `
             motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
             motorParser.input.forEach(token => token.tokenType.name);
