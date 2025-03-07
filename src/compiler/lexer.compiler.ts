@@ -89,6 +89,7 @@ export const Class = createToken({ name: 'Class', pattern: /class/, longer_alt: 
 export const Try = createToken({ name: 'Try', pattern: /try/, longer_alt: Identifier });
 export const Catch = createToken({ name: 'Catch', pattern: /catch/, longer_alt: Identifier });
 export const Finally = createToken({ name: 'Finally', pattern: /finally/, longer_alt: Identifier });
+export const Struct = createToken({ name: 'Struct', pattern: /struct/, longer_alt: Identifier });
 
 
 export const motorTokens = [

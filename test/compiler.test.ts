@@ -179,5 +179,28 @@ fn subInt(int32 param1, int32 param2): int32
             }
             expect(motorParser.errors.length).toBe(0);
         })
+        test('try catch Statement',()=>{
+            const scriptOnTest = `
+try
+    block += 1
+catch
+    block += 2
+finally
+    block += 3
+try
+    block += 1
+catch b
+    block += b
+finally
+    block += 3
+`
+            motorParser.input = motorLexer.tokenize(scriptOnTest).tokens;
+            motorParser.input.forEach(token => token.tokenType.name);
+            motorParser.program();
+            if(motorParser.errors.length > 0){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
     })
 });
