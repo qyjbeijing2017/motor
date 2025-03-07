@@ -3,7 +3,7 @@ import {
     Newline, Indent, Dedent,
     Integer, Float, Char, String, Bool,
     LShiftEqual, RShiftEqual,
-    LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift,
+    LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift, Increment, Decrement,
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,
     If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally, Throw, Struct, Enum, Import,
@@ -32,8 +32,48 @@ class MotorParser extends CstParser {
         ]);
     });
 
+    unaryExpression = this.RULE("unaryExpression", () => {
+        this.OR([
+            {
+                ALT: () => {
+                    this.CONSUME(Minus, { LABEL: "operator" });
+                    this.SUBRULE(this.unaryExpression, { LABEL: "argument" });
+                }
+            },
+            {
+                ALT: () => {
+                    this.CONSUME(Plus, { LABEL: "operator" });
+                    this.SUBRULE1(this.unaryExpression, { LABEL: "argument" });
+                }
+            },
+            {
+                ALT: () => {
+                    this.CONSUME(Increment, { LABEL: "operator" });
+                    this.SUBRULE2(this.unaryExpression, { LABEL: "argument" });
+                }
+            },
+            {
+                ALT: () => {
+                    this.CONSUME(Decrement, { LABEL: "operator" });
+                    this.SUBRULE3(this.unaryExpression, { LABEL: "argument" });
+                }
+            },
+            {
+                ALT: () => {
+                    this.CONSUME(Not, { LABEL: "operator" });
+                    this.SUBRULE4(this.unaryExpression, { LABEL: "argument" });
+                }
+            },
+            {
+                ALT: () => {
+                    this.SUBRULE5(this.atomicExpression, { LABEL: "argument" });
+                }
+            }
+        ]);
+    });
+
     multiplicativeExpression = this.RULE("multiplicativeExpression", () => {
-        this.SUBRULE(this.atomicExpression, { LABEL: "left" });
+        this.SUBRULE(this.unaryExpression, { LABEL: "left" });
         this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(Multiply, { LABEL: "operator" }) },

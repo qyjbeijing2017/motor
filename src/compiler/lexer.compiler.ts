@@ -32,6 +32,8 @@ export const And = createToken({ name: 'And', pattern: /&&/ });
 export const Or = createToken({ name: 'Or', pattern: /\|\|/ });
 export const LShift = createToken({ name: 'LShift', pattern: /<</ });
 export const RShift = createToken({ name: 'RShift', pattern: />>/ });
+export const Increment = createToken({ name: 'Increment', pattern: /\+\+/ });
+export const Decrement = createToken({ name: 'Decrement', pattern: /--/ });
 
 export const Equal = createToken({ name: 'Equal', pattern: /=/ });
 export const Plus = createToken({ name: 'Plus', pattern: /\+/ });
@@ -101,7 +103,7 @@ export const motorTokens = [
     WhiteSpace,
     Integer, Float, Char, String, Bool,
     LShiftEqual, RShiftEqual,
-    LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift,
+    LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift, Increment, Decrement,
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,
     TypeFloat64, TypeFloat16, TypeFloat8, TypeFloat32, TypeInt64, TypeInt16, TypeInt8, TypeInt32, TypeUint64, TypeUint16, TypeUint8, TypeUint32, TypeBool, TypeChar, TypeString, TypeList,
