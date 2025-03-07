@@ -47,11 +47,37 @@ dedent
     })
 
     describe('Parser',()=>{
-        test('Type Declaration',()=>{
+        test('Assign Expression',()=>{
             const scriptOnTest = `
 a
 b: float64
 c: float32
+d = 1
+e = 1.0
+e += 1
+e -= 1
+e *= 1
+e /= 1
+e %= 1
+e &= 1
+e |= 1
+e ^= 1
+e <<= 1;e >>= 1
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if(motorParser.errors.length){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test('conditional expression',()=>{
+            const scriptOnTest = `
+b = true ? 1 : 2
+c: float64 = true ? false ? 1 : 2 : 3
+d = true ? 1 : false ? 2 : 3
 `
             const result = motorLexer.tokenize(scriptOnTest);
             motorParser.input = result.tokens;

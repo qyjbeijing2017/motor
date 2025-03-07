@@ -21,8 +21,19 @@ class MotorParser extends CstParser {
         this.performSelfAnalysis();
     }
 
+    atomicExpression = this.RULE("atomicExpression", () => {
+        this.OR([
+            { ALT: () => this.CONSUME(Float) },
+            { ALT: () => this.CONSUME(Integer) },
+            { ALT: () => this.CONSUME(Char) },
+            { ALT: () => this.CONSUME(String) },
+            { ALT: () => this.CONSUME(Bool) },
+            { ALT: () => this.CONSUME(Identifier) },
+        ]);
+    });
+
     multiplicativeExpression = this.RULE("multiplicativeExpression", () => {
-        this.SUBRULE(this.unaryExpression, { LABEL: "left" });
+        this.SUBRULE(this.atomicExpression, { LABEL: "left" });
         this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(Multiply, { LABEL: "operator" }) },
