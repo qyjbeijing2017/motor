@@ -351,6 +351,60 @@ class MotorParser extends CstParser {
         });
     });
 
+    structDeclaration = this.RULE("structDeclaration", () => {
+        this.CONSUME(Struct);
+        this.CONSUME(Identifier, { LABEL: "name" });
+        this.CONSUME(Indent);
+        this.MANY(() => {
+            this.OR([
+                {
+                    ALT: () => {
+                        this.CONSUME1(Identifier);
+                        this.OPTION(() => this.SUBRULE(this.typeDeclaration));
+                        this.OPTION1(() => {
+                            this.CONSUME(Equal);
+                            this.SUBRULE(this.conditionalExpression);
+                        })
+                    }
+                },
+                { ALT: () => this.CONSUME(Pass) },
+            ]);
+        });
+        this.CONSUME(Dedent);
+    });
+
+    enumDeclaration = this.RULE("enumDeclaration", () => {
+        this.CONSUME(Enum);
+        this.CONSUME(Identifier, { LABEL: "name" });
+        this.OPTION(() => this.SUBRULE(this.typeDeclaration));
+        this.CONSUME(Indent);
+        this.MANY(() => {
+            this.OR([
+                {
+                    ALT: () => {
+                        this.CONSUME1(Identifier)
+                        this.OPTION1(() => {
+                            this.CONSUME(Equal);
+                            this.SUBRULE(this.conditionalExpression);
+                        });
+                    }
+                },
+                { ALT: () => this.CONSUME(Pass) },
+            ]);
+        });
+        this.CONSUME(Dedent);
+    });
+
+    classDeclaration = this.RULE("classDeclaration", () => {
+        this.CONSUME(Class);
+        this.CONSUME(Identifier, { LABEL: "name" });
+        this.OPTION(() => {
+            this.CONSUME(Colon);
+            this.CONSUME1(Identifier);
+        });
+        this.SUBRULE(this.blockStatement);
+    });
+
     block = this.RULE('block', () => {
         this.MANY(() => {
             this.OR([
@@ -361,6 +415,9 @@ class MotorParser extends CstParser {
                 { ALT: () => this.SUBRULE(this.conditionalStatement) },
                 { ALT: () => this.SUBRULE(this.tryStatement) },
                 { ALT: () => this.SUBRULE(this.functionDeclaration) },
+                { ALT: () => this.SUBRULE(this.structDeclaration) },
+                { ALT: () => this.SUBRULE(this.enumDeclaration) },
+                { ALT: () => this.SUBRULE(this.classDeclaration) },
                 { ALT: () => this.CONSUME(Continue) },
                 { ALT: () => this.CONSUME(Break) },
                 { ALT: () => this.CONSUME(Pass) },
