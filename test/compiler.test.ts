@@ -26,6 +26,9 @@ identifier
 dedent
 -1. -2 +3
 1+2
+# test empty line
+
+
 `;
         const tokenExpected = [
             Integer, Float, Float, Float, Float, Char, String, Bool, Bool,
@@ -80,6 +83,22 @@ c: float64 = true ? false ? 1 : 2 : 3
 d = true ? 1 : false ? 2 : 3
 `
             const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if(motorParser.errors.length){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test('or Expression',()=>{
+            const scriptOnTest = `
+b = true || false
+c = true && false
+
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            console.log(result.tokens.map(token=>token.tokenType.name));
             motorParser.input = result.tokens;
             motorParser.block();
             if(motorParser.errors.length){

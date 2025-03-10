@@ -32,6 +32,37 @@ class MotorParser extends CstParser {
         ]);
     });
 
+    indexExpression = this.RULE("indexExpression", () => {
+        this.CONSUME(LeftBracket);
+        this.OPTION(() => this.SUBRULE(this.assignExpression, { LABEL: 'index' }));
+        this.CONSUME(RightBracket);
+    });
+
+    callExpression = this.RULE("callExpression", () => {
+        this.CONSUME(LeftParen);
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => this.SUBRULE(this.assignExpression, { LABEL: 'args' }),
+        });
+        this.CONSUME(RightParen);
+    });
+
+    getExpression = this.RULE("getExpression", () => {
+        this.CONSUME(Dot);
+        this.CONSUME(Identifier);
+    });
+
+    postfixExpression = this.RULE("postfixExpression", () => {
+        this.SUBRULE(this.atomicExpression, { LABEL: "argument" });
+        this.MANY(() => {
+            this.OR([
+                { ALT: () => this.SUBRULE(this.getExpression, { LABEL: "operator" }) },
+                { ALT: () => this.SUBRULE(this.callExpression, { LABEL: "operator" }) },
+                { ALT: () => this.SUBRULE(this.indexExpression, { LABEL: "operator" }) },
+            ]);
+        });
+    });
+
     unaryExpression = this.RULE("unaryExpression", () => {
         this.OR([
             {
@@ -66,7 +97,7 @@ class MotorParser extends CstParser {
             },
             {
                 ALT: () => {
-                    this.SUBRULE5(this.atomicExpression, { LABEL: "argument" });
+                    this.SUBRULE5(this.postfixExpression, { LABEL: "argument" });
                 }
             }
         ]);

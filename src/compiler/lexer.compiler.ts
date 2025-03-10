@@ -2,7 +2,7 @@ import { createToken, createTokenInstance, ILexingResult, IToken, Lexer } from '
 
 export const Comment = createToken({ name: 'Comment', pattern: /#[^\n]*?(?=\n)/, group: Lexer.SKIPPED });
 export const WhiteSpace = createToken({ name: 'WhiteSpace', pattern: / +/, group: Lexer.SKIPPED });
-export const Newline = createToken({ name: "Newline", pattern: /\n[\s]*/ });
+export const Newline = createToken({ name: "Newline", pattern: /\n[^\n\S]*/ });
 export const Identifier = createToken({ name: 'Identifier', pattern: /[a-zA-Z_]\w*/ });
 export const Indent = createToken({ name: "Indent", pattern: () => null, line_breaks: false, });
 export const Dedent = createToken({ name: "Dedent", pattern: () => null, line_breaks: false, });
