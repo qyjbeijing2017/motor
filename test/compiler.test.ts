@@ -344,4 +344,8 @@ class b : a
             expect(motorParser.errors.length).toBe(0);
         })
     })
+
+    describe('Code gen', () =>{
+        
+    })
 });

@@ -1,6 +1,6 @@
-import { CstParser, Option } from "chevrotain";
+import { CstParser, EmbeddedActionsParser  } from "chevrotain";
 import {
-    Newline, Indent, Dedent,
+    Indent, Dedent,
     Integer, Float, Char, String, Bool,
     LShiftEqual, RShiftEqual,
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift, Increment, Decrement,
@@ -17,8 +17,10 @@ import {
     Exponent,
     Pass,
 } from "./lexer.compiler";
+import { MotorIntermediate } from "./Intermediate.compiler";
 
-class MotorParser extends CstParser {
+class MotorParser extends EmbeddedActionsParser {
+    readonly out: MotorIntermediate[] = [];
     constructor() {
         super(motorTokens);
         this.performSelfAnalysis();
@@ -425,6 +427,8 @@ class MotorParser extends CstParser {
             this.OPTION(() => this.CONSUME(Semicolon));
         });
     });
+
+    
 }
 
 export const motorParser = new MotorParser();
