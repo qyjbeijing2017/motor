@@ -13,6 +13,8 @@ import {
     TypeBool, TypeChar, TypeString, TypeList,
     Identifier,
     motorTokens,
+    Tilde,
+    Exponent,
 } from "./lexer.compiler";
 
 class MotorParser extends CstParser {
@@ -63,6 +65,14 @@ class MotorParser extends CstParser {
         });
     });
 
+    exponentiationExpression = this.RULE("exponentiationExpression", () => {
+        this.SUBRULE(this.postfixExpression, { LABEL: "left" });
+        this.MANY(() => {
+            this.CONSUME(Exponent, { LABEL: "operator" });
+            this.SUBRULE1(this.exponentiationExpression, { LABEL: "right" });
+        });
+    });
+
     unaryExpression = this.RULE("unaryExpression", () => {
         this.OR([
             {
@@ -97,9 +107,15 @@ class MotorParser extends CstParser {
             },
             {
                 ALT: () => {
-                    this.SUBRULE5(this.postfixExpression, { LABEL: "argument" });
+                    this.CONSUME(Tilde, { LABEL: "operator" });
+                    this.SUBRULE5(this.unaryExpression, { LABEL: "argument" });
                 }
-            }
+            },
+            {
+                ALT: () => {
+                    this.SUBRULE5(this.exponentiationExpression, { LABEL: "argument" });
+                }
+            },
         ]);
     });
 
@@ -108,7 +124,8 @@ class MotorParser extends CstParser {
         this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(Multiply, { LABEL: "operator" }) },
-                { ALT: () => this.CONSUME(Divide, { LABEL: "operator" }) }
+                { ALT: () => this.CONSUME(Divide, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(Modulo, { LABEL: "operator" }) }
             ]);
             this.SUBRULE1(this.multiplicativeExpression, { LABEL: "right" });
         });
@@ -125,8 +142,19 @@ class MotorParser extends CstParser {
         });
     });
 
-    relationExpression = this.RULE("relationExpression", () => {
+    moveExpression = this.RULE("moveExpression", () => {
         this.SUBRULE(this.additiveExpression, { LABEL: "left" });
+        this.MANY(() => {
+            this.OR([
+                { ALT: () => this.CONSUME(LShift, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(RShift, { LABEL: "operator" }) }
+            ]);
+            this.SUBRULE1(this.moveExpression, { LABEL: "right" });
+        });
+    });
+
+    relationExpression = this.RULE("relationExpression", () => {
+        this.SUBRULE(this.moveExpression, { LABEL: "left" });
         this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(GreaterThan, { LABEL: "operator" }) },
@@ -134,7 +162,7 @@ class MotorParser extends CstParser {
                 { ALT: () => this.CONSUME(LessThan, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(LessThanEqual, { LABEL: "operator" }) }
             ]);
-            this.SUBRULE1(this.additiveExpression, { LABEL: "right" });
+            this.SUBRULE1(this.relationExpression, { LABEL: "right" });
         });
     });
 
@@ -142,31 +170,47 @@ class MotorParser extends CstParser {
         this.SUBRULE(this.relationExpression, { LABEL: "left" });
         this.MANY(() => {
             this.OR([
-                { ALT: () => this.CONSUME(Equal, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(EqualEqual, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(NotEqual, { LABEL: "operator" }) },
             ]);
             this.SUBRULE1(this.equalityExpression, { LABEL: "right" });
         });
     });
 
-    andExpression = this.RULE("andExpression", () => {
+    lAndExpression = this.RULE("lAndExpression", () => {
         this.SUBRULE(this.equalityExpression, { LABEL: "left" });
         this.MANY(() => {
-            this.CONSUME(And, { LABEL: "operator" });
-            this.SUBRULE1(this.andExpression, { LABEL: "right" });
+            this.CONSUME(LAnd, { LABEL: "operator" });
+            this.SUBRULE1(this.lAndExpression, { LABEL: "right" });
         });
     });
 
     xorExpression = this.RULE("xorExpression", () => {
-        this.SUBRULE(this.andExpression, { LABEL: "left" });
+        this.SUBRULE(this.lAndExpression, { LABEL: "left" });
         this.MANY(() => {
             this.CONSUME(Xor, { LABEL: "operator" });
             this.SUBRULE1(this.xorExpression, { LABEL: "right" });
         });
     });
 
-    orExpression = this.RULE("orExpression", () => {
+    lOrExpression = this.RULE("lOrExpression", () => {
         this.SUBRULE(this.xorExpression, { LABEL: "left" });
+        this.MANY(() => {
+            this.CONSUME(LOr, { LABEL: "operator" });
+            this.SUBRULE1(this.lOrExpression, { LABEL: "right" });
+        });
+    });
+
+    andExpression = this.RULE("andExpression", () => {
+        this.SUBRULE(this.lOrExpression, { LABEL: "left" });
+        this.MANY(() => {
+            this.CONSUME(And, { LABEL: "operator" });
+            this.SUBRULE1(this.andExpression, { LABEL: "right" });
+        });
+    });
+
+    orExpression = this.RULE("orExpression", () => {
+        this.SUBRULE(this.andExpression, { LABEL: "left" });
         this.MANY(() => {
             this.CONSUME(Or, { LABEL: "operator" });
             this.SUBRULE1(this.orExpression, { LABEL: "right" });

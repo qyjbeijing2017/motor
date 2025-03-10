@@ -91,14 +91,59 @@ d = true ? 1 : false ? 2 : 3
             expect(motorParser.errors.length).toBe(0);
         })
 
-        test('or Expression',()=>{
+        test('logic Expression',()=>{
             const scriptOnTest = `
 b = true || false
 c = true && false
-
+d = false ^ true
+e = !true
+f = true == false
+g = true != false
+h = true < false
+i = true > false
+j = true <= false
+k = true >= false
+f = !false || true && false ^ true == false != true < false > true <= false >= true
 `
             const result = motorLexer.tokenize(scriptOnTest);
-            console.log(result.tokens.map(token=>token.tokenType.name));
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if(motorParser.errors.length){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test('Bitwise Expression',()=>{
+            const scriptOnTest = `
+b = 1 & 2
+c = 1 | 2
+d = 1 ^ 2
+e = ~1
+f = 1 << 2
+g = 1 >> 2
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if(motorParser.errors.length){
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test('Math Expression',()=>{
+            const scriptOnTest = `
+b = 1 + 2
+c = 1 - 2
+d = 1 * 2
+e = 1 / 2
+f = 1 % 2
+g = 1 ** 2
+h = 1 + 2 - 3 * 4 / 5 % 6 ** 7
+i = 1 + 2 - 3 * 4 / 5 % 6 ** 7 + 8 - 9 * 10 / 11 % 12 ** 13
+`
+            const result = motorLexer.tokenize(scriptOnTest);
             motorParser.input = result.tokens;
             motorParser.block();
             if(motorParser.errors.length){
