@@ -13,7 +13,7 @@ import {
     motorParser,
 } from '../src';
 describe('Memory', () => {
-    test('Lexer',()=>{
+    test('Lexer', () => {
         const scriptOnTest = `
 1 2. 3.4 5f .6 '7' "8" true false
 <<= >>=
@@ -49,8 +49,8 @@ dedent
         })
     })
 
-    describe('Parser',()=>{
-        test('Assign Expression',()=>{
+    describe('Parser', () => {
+        test('Assign Expression', () => {
             const scriptOnTest = `
 a
 b: float64
@@ -70,13 +70,13 @@ e <<= 1;e >>= 1
             const result = motorLexer.tokenize(scriptOnTest);
             motorParser.input = result.tokens;
             motorParser.block();
-            if(motorParser.errors.length){
+            if (motorParser.errors.length) {
                 console.log(motorParser.errors);
             }
             expect(motorParser.errors.length).toBe(0);
         })
 
-        test('conditional expression',()=>{
+        test('conditional expression', () => {
             const scriptOnTest = `
 b = true ? 1 : 2
 c: float64 = true ? false ? 1 : 2 : 3
@@ -85,13 +85,13 @@ d = true ? 1 : false ? 2 : 3
             const result = motorLexer.tokenize(scriptOnTest);
             motorParser.input = result.tokens;
             motorParser.block();
-            if(motorParser.errors.length){
+            if (motorParser.errors.length) {
                 console.log(motorParser.errors);
             }
             expect(motorParser.errors.length).toBe(0);
         })
 
-        test('logic Expression',()=>{
+        test('logic Expression', () => {
             const scriptOnTest = `
 b = true || false
 c = true && false
@@ -108,13 +108,13 @@ f = !false || true && false ^ true == false != true < false > true <= false >= t
             const result = motorLexer.tokenize(scriptOnTest);
             motorParser.input = result.tokens;
             motorParser.block();
-            if(motorParser.errors.length){
+            if (motorParser.errors.length) {
                 console.log(motorParser.errors);
             }
             expect(motorParser.errors.length).toBe(0);
         })
 
-        test('Bitwise Expression',()=>{
+        test('Bitwise Expression', () => {
             const scriptOnTest = `
 b = 1 & 2
 c = 1 | 2
@@ -126,13 +126,13 @@ g = 1 >> 2
             const result = motorLexer.tokenize(scriptOnTest);
             motorParser.input = result.tokens;
             motorParser.block();
-            if(motorParser.errors.length){
+            if (motorParser.errors.length) {
                 console.log(motorParser.errors);
             }
             expect(motorParser.errors.length).toBe(0);
         })
 
-        test('Math Expression',()=>{
+        test('Math Expression', () => {
             const scriptOnTest = `
 b = 1 + 2
 c = 1 - 2
@@ -146,7 +146,125 @@ i = 1 + 2 - 3 * 4 / 5 % 6 ** 7 + 8 - 9 * 10 / 11 % 12 ** 13
             const result = motorLexer.tokenize(scriptOnTest);
             motorParser.input = result.tokens;
             motorParser.block();
-            if(motorParser.errors.length){
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test('Unary Expression', () => {
+            const scriptOnTest = `
+b = -1
+c = +1
+d = ~1
+e = !true
+f = !false
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test(`Postfix Expression`, () => {
+            const scriptOnTest = `
+b = a++
+c = a--
+d = a[1]
+e = a.b
+f = b()
+g = b(1)
+h = b(1, 2)
+i = a.b.c
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test(`Block Statement`, () => {
+            const scriptOnTest = `
+    b
+     # this is block statement depth = 1
+     c = 1
+            # this is block statement depth = 3
+            d = 2
+            e
+            f
+    g
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test(`loop Statement`, () => {
+            const scriptOnTest = `
+while true
+    a
+    for b in a
+        continue
+    return a
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test(`if Statement`, () => {
+            const scriptOnTest = `
+if true
+    a
+else
+    b
+if true
+    a
+else if false
+    pass
+else
+    pass
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+        })
+
+        test(`try Statement`, () => {
+            const scriptOnTest = `
+try
+    pass
+catch e
+    pass
+finally
+    pass
+try
+    pass
+catch
+    pass
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            motorParser.block();
+            if (motorParser.errors.length) {
                 console.log(motorParser.errors);
             }
             expect(motorParser.errors.length).toBe(0);

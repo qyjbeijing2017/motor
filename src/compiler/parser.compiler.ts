@@ -15,6 +15,7 @@ import {
     motorTokens,
     Tilde,
     Exponent,
+    Pass,
 } from "./lexer.compiler";
 
 class MotorParser extends CstParser {
@@ -36,7 +37,7 @@ class MotorParser extends CstParser {
 
     indexExpression = this.RULE("indexExpression", () => {
         this.CONSUME(LeftBracket);
-        this.OPTION(() => this.SUBRULE(this.assignExpression, { LABEL: 'index' }));
+        this.OPTION(() => this.SUBRULE(this.conditionalExpression, { LABEL: 'index' }));
         this.CONSUME(RightBracket);
     });
 
@@ -44,7 +45,7 @@ class MotorParser extends CstParser {
         this.CONSUME(LeftParen);
         this.MANY_SEP({
             SEP: Comma,
-            DEF: () => this.SUBRULE(this.assignExpression, { LABEL: 'args' }),
+            DEF: () => this.SUBRULE(this.conditionalExpression, { LABEL: 'args' }),
         });
         this.CONSUME(RightParen);
     });
@@ -61,6 +62,8 @@ class MotorParser extends CstParser {
                 { ALT: () => this.SUBRULE(this.getExpression, { LABEL: "operator" }) },
                 { ALT: () => this.SUBRULE(this.callExpression, { LABEL: "operator" }) },
                 { ALT: () => this.SUBRULE(this.indexExpression, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(Increment, { LABEL: "operator" }) },
+                { ALT: () => this.CONSUME(Decrement, { LABEL: "operator" }) },
             ]);
         });
     });
@@ -275,10 +278,92 @@ class MotorParser extends CstParser {
         });
     });
 
+    blockStatement = this.RULE('blockStatement', () => {
+        this.CONSUME(Indent);
+        this.SUBRULE(this.block);
+        this.CONSUME(Dedent);
+    });
+
+    whileStatement = this.RULE("whileStatement", () => {
+        this.CONSUME(While);
+        this.SUBRULE(this.conditionalExpression);
+        this.SUBRULE(this.blockStatement);
+    });
+
+    forStatement = this.RULE("forStatement", () => {
+        this.CONSUME(For);
+        this.CONSUME(Identifier);
+        this.CONSUME(In);
+        this.SUBRULE(this.conditionalExpression);
+        this.SUBRULE(this.blockStatement);
+    });
+
+    loopStatement = this.RULE("loopStatement", () => {
+        this.OR([
+            { ALT: () => this.SUBRULE(this.whileStatement) },
+            { ALT: () => this.SUBRULE(this.forStatement) },
+        ]);
+    });
+
+    returnStatement = this.RULE("returnStatement", () => {
+        this.CONSUME(Return);
+        this.OPTION(() => this.SUBRULE(this.conditionalExpression));
+    });
+
+    conditionalStatement = this.RULE("conditionalStatement", () => {
+        this.CONSUME(If);
+        this.SUBRULE(this.conditionalExpression);
+        this.SUBRULE(this.blockStatement);
+        this.OPTION(() => {
+            this.CONSUME(Else);
+            this.OR([
+                { ALT: () => this.SUBRULE1(this.blockStatement) },
+                { ALT: () => this.SUBRULE2(this.conditionalStatement) },
+            ])
+        });
+    });
+
+    functionDeclaration = this.RULE("functionDeclaration", () => {
+        this.CONSUME(Function);
+        this.CONSUME(Identifier);
+        this.CONSUME(LeftParen);
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => {
+                this.CONSUME1(Identifier);
+                this.OPTION(() => this.SUBRULE(this.typeDeclaration));
+            }
+        });
+        this.CONSUME(RightParen);
+        this.OPTION1(() => this.SUBRULE1(this.typeDeclaration));
+        this.SUBRULE(this.blockStatement);
+    });
+
+    tryStatement = this.RULE("tryStatement", () => {
+        this.CONSUME(Try);
+        this.SUBRULE(this.blockStatement);
+        this.CONSUME(Catch);
+        this.OPTION(() => this.CONSUME(Identifier));
+        this.SUBRULE1(this.blockStatement);
+        this.OPTION1(() => {
+            this.CONSUME(Finally);
+            this.SUBRULE2(this.blockStatement);
+        });
+    });
+
     block = this.RULE('block', () => {
         this.MANY(() => {
             this.OR([
                 { ALT: () => this.SUBRULE(this.assignExpression) },
+                { ALT: () => this.SUBRULE(this.blockStatement) },
+                { ALT: () => this.SUBRULE(this.loopStatement) },
+                { ALT: () => this.SUBRULE(this.returnStatement) },
+                { ALT: () => this.SUBRULE(this.conditionalStatement) },
+                { ALT: () => this.SUBRULE(this.tryStatement) },
+                { ALT: () => this.SUBRULE(this.functionDeclaration) },
+                { ALT: () => this.CONSUME(Continue) },
+                { ALT: () => this.CONSUME(Break) },
+                { ALT: () => this.CONSUME(Pass) },
             ]);
             this.OPTION(() => this.CONSUME(Semicolon));
         });
