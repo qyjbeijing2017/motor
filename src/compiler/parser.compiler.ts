@@ -1,4 +1,4 @@
-import { CstParser, EmbeddedActionsParser  } from "chevrotain";
+import { CstParser, EmbeddedActionsParser } from "chevrotain";
 import {
     Indent, Dedent,
     Integer, Float, Char, String, Bool,
@@ -16,10 +16,10 @@ import {
     Tilde,
     Exponent,
     Pass,
+    ExponentEqual,
 } from "./lexer.compiler";
-import { MotorCSTBlock } from "./cst.compiler";
 
-class MotorParser extends EmbeddedActionsParser {
+class MotorParser extends CstParser {
     constructor() {
         super(motorTokens);
         this.performSelfAnalysis();
@@ -240,7 +240,7 @@ class MotorParser extends EmbeddedActionsParser {
             { ALT: () => this.CONSUME(TypeFloat8) },
             { ALT: () => this.CONSUME(TypeInt64) },
             { ALT: () => this.CONSUME(TypeInt32) },
-            { ALT: () => this.CONSUME(TypeInt16) },
+            { ALT: () => this.CONSUME(TypeInt16)},
             { ALT: () => this.CONSUME(TypeInt8) },
             { ALT: () => this.CONSUME(TypeUint64) },
             { ALT: () => this.CONSUME(TypeUint32) },
@@ -254,26 +254,27 @@ class MotorParser extends EmbeddedActionsParser {
         ]);
         this.OPTION(() => {
             this.CONSUME(LeftBracket);
+            this.OPTION1(() => this.SUBRULE(this.conditionalExpression));
             this.CONSUME(RightBracket);
         });
     });
 
     assignExpression = this.RULE('assignExpression', () => {
-        this.CONSUME(Identifier);
         this.OPTION(() => this.SUBRULE(this.typeDeclaration));
         this.OPTION1(() => {
             this.OR([
-                { ALT: () => this.CONSUME(Equal) },
-                { ALT: () => this.CONSUME(AddEqual) },
-                { ALT: () => this.CONSUME(SubEqual) },
-                { ALT: () => this.CONSUME(MulEqual) },
-                { ALT: () => this.CONSUME(DivEqual) },
-                { ALT: () => this.CONSUME(ModEqual) },
-                { ALT: () => this.CONSUME(AndEqual) },
-                { ALT: () => this.CONSUME(OrEqual) },
-                { ALT: () => this.CONSUME(XorEqual) },
-                { ALT: () => this.CONSUME(LShiftEqual) },
-                { ALT: () => this.CONSUME(RShiftEqual) },
+                { ALT: () => { this.CONSUME(Equal); } },
+                { ALT: () => { this.CONSUME(AddEqual); } },
+                { ALT: () => { this.CONSUME(SubEqual); } },
+                { ALT: () => { this.CONSUME(MulEqual); } },
+                { ALT: () => { this.CONSUME(DivEqual); } },
+                { ALT: () => { this.CONSUME(ModEqual); } },
+                { ALT: () => { this.CONSUME(AndEqual); } },
+                { ALT: () => { this.CONSUME(OrEqual); } },
+                { ALT: () => { this.CONSUME(XorEqual); } },
+                { ALT: () => { this.CONSUME(LShiftEqual); } },
+                { ALT: () => { this.CONSUME(RShiftEqual); } },
+                { ALT: () => { this.CONSUME(ExponentEqual); } },
             ]);
             this.SUBRULE(this.conditionalExpression);
         });
@@ -407,10 +408,6 @@ class MotorParser extends EmbeddedActionsParser {
     });
 
     block = this.RULE('block', () => {
-        // const block: MotorCSTBlock = {
-        //     name: "block",
-        //     lines: [],
-        // }
         this.MANY(() => {
             this.OR([
                 { ALT: () => this.SUBRULE(this.assignExpression) },
@@ -429,7 +426,6 @@ class MotorParser extends EmbeddedActionsParser {
             ]);
             this.OPTION(() => this.CONSUME(Semicolon));
         });
-        // return block;
     });
 }
 

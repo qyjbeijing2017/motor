@@ -2,12 +2,18 @@ export interface MotorCST {
     name: string;
 }
 
-export type MotorAssignOperation = "=" | "+=" | "-=" | "*=" | "/=" | "%=";
+export type MotorAssignOperation = "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>=" | '**=';
 
 export type MotorBinaryOperator = "+" | "-" | "*" | "/" | "%" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "&&" | "||" | "&" | "|" | "^" | "<<" | ">>" | ">>>" | "===" | "!==";
 
 export type MotorUnaryOperator = "!" | "~" | "+" | "-" | "++" | "--";
 
+export interface MotorCSTTypeDeclaration extends MotorCST {
+    name: "typeDeclaration";
+    type: string;
+    list?: boolean;
+    count?: MotorCST;
+}
 
 export interface MotorCSTConst extends MotorCST {
     name: "const";
@@ -65,7 +71,7 @@ export interface MotorCSTConditionalExpression extends MotorCST {
 export interface MotorCSTAssignExpression extends MotorCST {
     name: "assignExpression";
     identifier: string;
-    type?: string;
+    type?: MotorCSTTypeDeclaration;
     optional?: MotorAssignOperation;
     expression: MotorCST;
 }

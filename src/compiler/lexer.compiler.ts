@@ -15,6 +15,7 @@ export const Bool = createToken({ name: 'Bool', pattern: /true|false/, longer_al
 
 export const LShiftEqual = createToken({ name: 'LShiftEqual', pattern: /<<=/ });
 export const RShiftEqual = createToken({ name: 'RShiftEqual', pattern: />>=/ });
+export const ExponentEqual = createToken({ name: 'ExponentEqual', pattern: /\*\*=/ });
 
 export const LessThanEqual = createToken({ name: 'LessThanEqual', pattern: /<=/ });
 export const GreaterThanEqual = createToken({ name: 'GreaterThanEqual', pattern: />=/ });
@@ -104,7 +105,7 @@ export const motorTokens = [
     Indent, Dedent,
     WhiteSpace,
     Integer, Float, Char, String, Bool,
-    LShiftEqual, RShiftEqual,
+    LShiftEqual, RShiftEqual, ExponentEqual,
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift, Increment, Decrement, Exponent,
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Tilde, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,

@@ -46,4 +46,9 @@ export enum MotorInstructionType {
     UINT16,
     UINT32,
     UINT64,
+    BOOL,
+    CHAR,
+    STRING,
+    LIST,
+    IDENTIFIER,
 }
