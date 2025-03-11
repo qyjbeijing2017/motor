@@ -240,7 +240,7 @@ class MotorParser extends CstParser {
             { ALT: () => this.CONSUME(TypeFloat8) },
             { ALT: () => this.CONSUME(TypeInt64) },
             { ALT: () => this.CONSUME(TypeInt32) },
-            { ALT: () => this.CONSUME(TypeInt16)},
+            { ALT: () => this.CONSUME(TypeInt16) },
             { ALT: () => this.CONSUME(TypeInt8) },
             { ALT: () => this.CONSUME(TypeUint64) },
             { ALT: () => this.CONSUME(TypeUint32) },
@@ -260,21 +260,22 @@ class MotorParser extends CstParser {
     });
 
     assignExpression = this.RULE('assignExpression', () => {
+        this.CONSUME(Identifier);
         this.OPTION(() => this.SUBRULE(this.typeDeclaration));
         this.OPTION1(() => {
             this.OR([
-                { ALT: () => { this.CONSUME(Equal); } },
-                { ALT: () => { this.CONSUME(AddEqual); } },
-                { ALT: () => { this.CONSUME(SubEqual); } },
-                { ALT: () => { this.CONSUME(MulEqual); } },
-                { ALT: () => { this.CONSUME(DivEqual); } },
-                { ALT: () => { this.CONSUME(ModEqual); } },
-                { ALT: () => { this.CONSUME(AndEqual); } },
-                { ALT: () => { this.CONSUME(OrEqual); } },
-                { ALT: () => { this.CONSUME(XorEqual); } },
-                { ALT: () => { this.CONSUME(LShiftEqual); } },
-                { ALT: () => { this.CONSUME(RShiftEqual); } },
-                { ALT: () => { this.CONSUME(ExponentEqual); } },
+                { ALT: () => this.CONSUME(Equal) },
+                { ALT: () => this.CONSUME(AddEqual) },
+                { ALT: () => this.CONSUME(SubEqual) },
+                { ALT: () => this.CONSUME(MulEqual) },
+                { ALT: () => this.CONSUME(DivEqual) },
+                { ALT: () => this.CONSUME(ModEqual) },
+                { ALT: () => this.CONSUME(AndEqual) },
+                { ALT: () => this.CONSUME(OrEqual) },
+                { ALT: () => this.CONSUME(XorEqual) },
+                { ALT: () => this.CONSUME(LShiftEqual) },
+                { ALT: () => this.CONSUME(RShiftEqual) },
+                { ALT: () => this.CONSUME(ExponentEqual) },
             ]);
             this.SUBRULE(this.conditionalExpression);
         });
