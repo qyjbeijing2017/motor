@@ -32,13 +32,16 @@ class MotorParser extends CstParser {
             { ALT: () => this.CONSUME(Char) },
             { ALT: () => this.CONSUME(String) },
             { ALT: () => this.CONSUME(Bool) },
-            { ALT: () => this.CONSUME(Identifier) },
+            { ALT: () => {
+                this.CONSUME(Identifier)
+                this.OPTION(() => this.SUBRULE(this.typeDeclaration));
+            } },
         ]);
     });
 
     indexExpression = this.RULE("indexExpression", () => {
         this.CONSUME(LeftBracket);
-        this.OPTION(() => this.SUBRULE(this.conditionalExpression, { LABEL: 'index' }));
+        this.OPTION(() => this.SUBRULE(this.assignExpression, { LABEL: 'index' }));
         this.CONSUME(RightBracket);
     });
 
@@ -46,7 +49,7 @@ class MotorParser extends CstParser {
         this.CONSUME(LeftParen);
         this.MANY_SEP({
             SEP: Comma,
-            DEF: () => this.SUBRULE(this.conditionalExpression, { LABEL: 'args' }),
+            DEF: () => this.SUBRULE(this.assignExpression, { LABEL: 'args' }),
         });
         this.CONSUME(RightParen);
     });
@@ -254,15 +257,14 @@ class MotorParser extends CstParser {
         ]);
         this.OPTION(() => {
             this.CONSUME(LeftBracket);
-            this.OPTION1(() => this.SUBRULE(this.conditionalExpression));
+            this.OPTION1(() => this.SUBRULE(this.assignExpression));
             this.CONSUME(RightBracket);
         });
     });
 
     assignExpression = this.RULE('assignExpression', () => {
-        this.CONSUME(Identifier);
-        this.OPTION(() => this.SUBRULE(this.typeDeclaration));
-        this.OPTION1(() => {
+        this.SUBRULE(this.conditionalExpression);
+        this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(Equal) },
                 { ALT: () => this.CONSUME(AddEqual) },
@@ -277,7 +279,7 @@ class MotorParser extends CstParser {
                 { ALT: () => this.CONSUME(RShiftEqual) },
                 { ALT: () => this.CONSUME(ExponentEqual) },
             ]);
-            this.SUBRULE(this.conditionalExpression);
+            this.SUBRULE(this.assignExpression);
         });
     });
 
@@ -289,7 +291,7 @@ class MotorParser extends CstParser {
 
     whileStatement = this.RULE("whileStatement", () => {
         this.CONSUME(While);
-        this.SUBRULE(this.conditionalExpression);
+        this.SUBRULE(this.assignExpression);
         this.SUBRULE(this.blockStatement);
     });
 
@@ -297,7 +299,7 @@ class MotorParser extends CstParser {
         this.CONSUME(For);
         this.CONSUME(Identifier);
         this.CONSUME(In);
-        this.SUBRULE(this.conditionalExpression);
+        this.SUBRULE(this.assignExpression);
         this.SUBRULE(this.blockStatement);
     });
 
@@ -310,12 +312,17 @@ class MotorParser extends CstParser {
 
     returnStatement = this.RULE("returnStatement", () => {
         this.CONSUME(Return);
-        this.OPTION(() => this.SUBRULE(this.conditionalExpression));
+        this.OPTION(() => this.SUBRULE(this.assignExpression));
+    });
+
+    throwStatement = this.RULE("throwStatement", () => {
+        this.CONSUME(Throw);
+        this.SUBRULE(this.assignExpression);
     });
 
     conditionalStatement = this.RULE("conditionalStatement", () => {
         this.CONSUME(If);
-        this.SUBRULE(this.conditionalExpression);
+        this.SUBRULE(this.assignExpression);
         this.SUBRULE(this.blockStatement);
         this.OPTION(() => {
             this.CONSUME(Else);
@@ -366,7 +373,7 @@ class MotorParser extends CstParser {
                         this.OPTION(() => this.SUBRULE(this.typeDeclaration));
                         this.OPTION1(() => {
                             this.CONSUME(Equal);
-                            this.SUBRULE(this.conditionalExpression);
+                            this.SUBRULE(this.assignExpression);
                         })
                     }
                 },
@@ -388,7 +395,7 @@ class MotorParser extends CstParser {
                         this.CONSUME1(Identifier)
                         this.OPTION1(() => {
                             this.CONSUME(Equal);
-                            this.SUBRULE(this.conditionalExpression);
+                            this.SUBRULE(this.assignExpression);
                         });
                     }
                 },
@@ -417,6 +424,7 @@ class MotorParser extends CstParser {
                 { ALT: () => this.SUBRULE(this.returnStatement) },
                 { ALT: () => this.SUBRULE(this.conditionalStatement) },
                 { ALT: () => this.SUBRULE(this.tryStatement) },
+                { ALT: () => this.SUBRULE(this.throwStatement) },
                 { ALT: () => this.SUBRULE(this.functionDeclaration) },
                 { ALT: () => this.SUBRULE(this.structDeclaration) },
                 { ALT: () => this.SUBRULE(this.enumDeclaration) },
