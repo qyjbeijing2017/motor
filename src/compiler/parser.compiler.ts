@@ -17,10 +17,9 @@ import {
     Exponent,
     Pass,
 } from "./lexer.compiler";
-import { MotorIntermediate } from "./Intermediate.compiler";
+import { MotorCSTBlock } from "./cst.compiler";
 
 class MotorParser extends EmbeddedActionsParser {
-    readonly out: MotorIntermediate[] = [];
     constructor() {
         super(motorTokens);
         this.performSelfAnalysis();
@@ -408,6 +407,10 @@ class MotorParser extends EmbeddedActionsParser {
     });
 
     block = this.RULE('block', () => {
+        // const block: MotorCSTBlock = {
+        //     name: "block",
+        //     lines: [],
+        // }
         this.MANY(() => {
             this.OR([
                 { ALT: () => this.SUBRULE(this.assignExpression) },
@@ -426,9 +429,8 @@ class MotorParser extends EmbeddedActionsParser {
             ]);
             this.OPTION(() => this.CONSUME(Semicolon));
         });
+        // return block;
     });
-
-    
 }
 
 export const motorParser = new MotorParser();

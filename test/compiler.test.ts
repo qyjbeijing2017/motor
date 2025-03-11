@@ -346,6 +346,18 @@ class b : a
     })
 
     describe('Code gen', () =>{
-        
+        test('CST', () => {
+            const scriptOnTest = `
+re = 1 + 2
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            console.log(JSON.stringify(cst, null, 2));
+        })
     })
 });

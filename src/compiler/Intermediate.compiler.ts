@@ -1,6 +1,7 @@
-import { MotorInstruction } from "../runtime/instruction";
+import { MotorInstruction, MotorInstructionType } from "../runtime/instruction";
 
 export interface MotorIntermediate {
     instruction: MotorInstruction;
-    operand: number;
+    type?: MotorInstructionType;
+    operand?: number;
 }
