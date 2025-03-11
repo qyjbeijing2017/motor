@@ -25,6 +25,12 @@ class MotorParser extends CstParser {
         this.performSelfAnalysis();
     }
 
+    parenExpression = this.RULE("parenExpression", () => {
+        this.CONSUME(LeftParen);
+        this.SUBRULE(this.assignExpression, { LABEL: 'expression' });
+        this.CONSUME(RightParen);
+    });
+
     atomicExpression = this.RULE("atomicExpression", () => {
         this.OR([
             { ALT: () => this.CONSUME(Float) },
@@ -36,6 +42,7 @@ class MotorParser extends CstParser {
                 this.CONSUME(Identifier)
                 this.OPTION(() => this.SUBRULE(this.typeDeclaration));
             } },
+            { ALT: () => this.SUBRULE(this.parenExpression) },
         ]);
     });
 
