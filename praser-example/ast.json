@@ -1,24 +1,32 @@
 {
-    "variables": {
-        "a": {
-            "identifier": "a"
-        }
-    },
+    "variables": {},
     "classes": {},
     "structs": {},
     "functions": {},
     "statements": [
         {
             "left": {
-                "identifier": "a"
+                "left": {
+                    "value": "1",
+                    "type": {
+                        "typeName": "TypeInt32"
+                    }
+                },
+                "right": {
+                    "value": "2",
+                    "type": {
+                        "typeName": "TypeInt32"
+                    }
+                },
+                "operator": "+"
             },
             "right": {
-                "value": "1",
+                "value": "3",
                 "type": {
                     "typeName": "TypeInt32"
                 }
             },
-            "operator": "="
+            "operator": "-"
         }
     ]
 }

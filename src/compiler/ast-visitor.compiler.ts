@@ -138,11 +138,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
     multiplicativeExpression(cst: CstMultiplicativeExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
         return left;
     }
@@ -150,11 +154,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
     additiveExpression(cst: CstAdditiveExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
         return left;
     }
@@ -162,11 +170,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
     moveExpression(cst: CstMoveExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
         return left;
     }
@@ -174,35 +186,47 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
     relationExpression(cst: CstRelationExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
-        return left
+        return left;
     }
 
     equalityExpression(cst: CstEqualExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
-        return left
+        return left;
     }
 
     lAndExpression(cst: CstLAndExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
         return left;
     }
@@ -210,35 +234,47 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
     xorExpression(cst: CstXOrExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
-        return left
+        return left;
     }
 
     lOrExpression(cst: CstLOrExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
-        return left
+        return left;
     }
 
     andExpression(cst: CstAndExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
         return left;
     }
@@ -246,11 +282,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
     orExpression(cst: CstOrExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
-            return {
-                left,
-                right: this.visit(cst.right[0], block),
-                operator: cst.operator[0].image
-            } as AstBinary;
+            let last = left;
+            for(let i = 0; i < cst.operator.length; i++) {
+                last = {
+                    left: last,
+                    right: this.visit(cst.right[i], block),
+                    operator: cst.operator[i].image
+                } as AstBinary;
+            }
+            return last;
         }
         return left;
     }

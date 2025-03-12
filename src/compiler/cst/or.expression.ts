@@ -5,7 +5,7 @@ export interface CstOrExpression extends CstNode {
     name: "xorExpression"
     children: {
         left: [CstAndExpression]
-        operator?: [IToken]
-        right?: [CstOrExpression]
+        operator?: IToken[]
+        right?: CstOrExpression[]
     }
 }

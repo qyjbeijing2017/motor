@@ -137,99 +137,99 @@ class MotorParser extends CstParser {
 
     multiplicativeExpression = this.RULE("multiplicativeExpression", () => {
         this.SUBRULE(this.unaryExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(Multiply, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(Divide, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(Modulo, { LABEL: "operator" }) }
             ]);
-            this.SUBRULE1(this.multiplicativeExpression, { LABEL: "right" });
+            this.SUBRULE1(this.unaryExpression, { LABEL: "right" });
         });
     });
 
     additiveExpression = this.RULE("additiveExpression", () => {
         this.SUBRULE(this.multiplicativeExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(Plus, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(Minus, { LABEL: "operator" }) }
             ]);
-            this.SUBRULE1(this.additiveExpression, { LABEL: "right" });
+            this.SUBRULE1(this.multiplicativeExpression, { LABEL: "right" });
         });
     });
 
     moveExpression = this.RULE("moveExpression", () => {
         this.SUBRULE(this.additiveExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(LShift, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(RShift, { LABEL: "operator" }) }
             ]);
-            this.SUBRULE1(this.moveExpression, { LABEL: "right" });
+            this.SUBRULE1(this.additiveExpression, { LABEL: "right" });
         });
     });
 
     relationExpression = this.RULE("relationExpression", () => {
         this.SUBRULE(this.moveExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(GreaterThan, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(GreaterThanEqual, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(LessThan, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(LessThanEqual, { LABEL: "operator" }) }
             ]);
-            this.SUBRULE1(this.relationExpression, { LABEL: "right" });
+            this.SUBRULE1(this.moveExpression, { LABEL: "right" });
         });
     });
 
     equalityExpression = this.RULE("equalityExpression", () => {
         this.SUBRULE(this.relationExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.OR([
                 { ALT: () => this.CONSUME(EqualEqual, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(NotEqual, { LABEL: "operator" }) },
             ]);
-            this.SUBRULE1(this.equalityExpression, { LABEL: "right" });
+            this.SUBRULE1(this.relationExpression, { LABEL: "right" });
         });
     });
 
     lAndExpression = this.RULE("lAndExpression", () => {
         this.SUBRULE(this.equalityExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.CONSUME(LAnd, { LABEL: "operator" });
-            this.SUBRULE1(this.lAndExpression, { LABEL: "right" });
+            this.SUBRULE1(this.equalityExpression, { LABEL: "right" });
         });
     });
 
     xorExpression = this.RULE("xorExpression", () => {
         this.SUBRULE(this.lAndExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.CONSUME(Xor, { LABEL: "operator" });
-            this.SUBRULE1(this.xorExpression, { LABEL: "right" });
+            this.SUBRULE1(this.lAndExpression, { LABEL: "right" });
         });
     });
 
     lOrExpression = this.RULE("lOrExpression", () => {
         this.SUBRULE(this.xorExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.CONSUME(LOr, { LABEL: "operator" });
-            this.SUBRULE1(this.lOrExpression, { LABEL: "right" });
+            this.SUBRULE1(this.xorExpression, { LABEL: "right" });
         });
     });
 
     andExpression = this.RULE("andExpression", () => {
         this.SUBRULE(this.lOrExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.CONSUME(And, { LABEL: "operator" });
-            this.SUBRULE1(this.andExpression, { LABEL: "right" });
+            this.SUBRULE1(this.lOrExpression, { LABEL: "right" });
         });
     });
 
     orExpression = this.RULE("orExpression", () => {
         this.SUBRULE(this.andExpression, { LABEL: "left" });
-        this.OPTION(() => {
+        this.MANY(() => {
             this.CONSUME(Or, { LABEL: "operator" });
-            this.SUBRULE1(this.orExpression, { LABEL: "right" });
+            this.SUBRULE1(this.andExpression, { LABEL: "right" });
         });
     });
 

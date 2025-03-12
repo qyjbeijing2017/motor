@@ -359,6 +359,7 @@ class b : a
             expect(motorParser.errors.length).toBe(0);
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
+            console.log(JSON.stringify(ast))
             expect(ast).toEqual({
                 "variables": {},
                 "classes": {},
@@ -367,27 +368,27 @@ class b : a
                 "statements": [
                     {
                         "left": {
-                            "value": "1",
-                            "type": {
-                                "typeName": "TypeInt32"
-                            }
-                        },
-                        "right": {
                             "left": {
-                                "value": "2",
+                                "value": "1",
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
                             },
                             "right": {
-                                "value": "3",
+                                "value": "2",
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
                             },
-                            "operator": "-"
+                            "operator": "+"
                         },
-                        "operator": "+"
+                        "right": {
+                            "value": "3",
+                            "type": {
+                                "typeName": "TypeInt32"
+                            }
+                        },
+                        "operator": "-"
                     }
                 ]
             })
