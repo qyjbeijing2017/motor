@@ -1,10 +1,11 @@
-import { CstNode } from "chevrotain"
+import { CstNode, IToken } from "chevrotain"
+import { CstConditionExpression } from "./condition.expression"
 
 export interface CstAssignmentExpression extends CstNode {
     name: "assignExpression"
     children: {
-        left: [CstNode]
-        operator: CstNode[]
-        right: CstNode[]
+        left: [CstConditionExpression]
+        operator?: [IToken]
+        right?: [CstAssignmentExpression]
     }
 }

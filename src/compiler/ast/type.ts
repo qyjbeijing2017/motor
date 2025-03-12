@@ -1,5 +1,5 @@
 export interface AstType {
-    type: string;
+    typeName: string;
     isList?: boolean;
     count?: number;
 }

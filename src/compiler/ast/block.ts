@@ -1,8 +1,11 @@
 import { AstClass } from "./class";
+import { AstFunction } from "./function";
+import { AstStatement } from "./statement";
 import { AstStruct } from "./struct";
-import { AstVariable } from "./variable";
+import { AstVariable } from "./variable.expression";
 
-export interface AstBlock {
+export interface AstBlock extends AstStatement {
+    parent?: AstBlock;
     variables: {
         [name: string]: AstVariable
     };
@@ -12,5 +15,8 @@ export interface AstBlock {
     structs: {
         [name: string]: AstStruct
     };
-    statements: [];
+    functions: {
+        [name: string]: AstFunction
+    };
+    statements: AstStatement[];
 }

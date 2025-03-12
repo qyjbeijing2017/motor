@@ -33,18 +33,18 @@ class MotorParser extends CstParser {
 
     atomicExpression = this.RULE("atomicExpression", () => {
         this.OR([
-            { ALT: () => this.CONSUME(Float) },
-            { ALT: () => this.CONSUME(Integer) },
-            { ALT: () => this.CONSUME(Char) },
-            { ALT: () => this.CONSUME(String) },
-            { ALT: () => this.CONSUME(Bool) },
+            { ALT: () => this.CONSUME(Float, { LABEL: 'const' }) },
+            { ALT: () => this.CONSUME(Integer, { LABEL: 'const' }) },
+            { ALT: () => this.CONSUME(Char, { LABEL: 'const' }) },
+            { ALT: () => this.CONSUME(String, { LABEL: 'const' }) },
+            { ALT: () => this.CONSUME(Bool, { LABEL: 'const' }) },
             {
                 ALT: () => {
-                    this.CONSUME(Identifier)
+                    this.CONSUME(Identifier, { LABEL: 'variable' })
                     this.OPTION(() => this.SUBRULE(this.typeDeclaration));
                 }
             },
-            { ALT: () => this.SUBRULE(this.parenExpression) },
+            { ALT: () => this.SUBRULE(this.parenExpression, { LABEL: 'paren' }) },
         ]);
     });
 
@@ -69,7 +69,7 @@ class MotorParser extends CstParser {
     });
 
     postfixExpression = this.RULE("postfixExpression", () => {
-        this.SUBRULE(this.atomicExpression, { LABEL: "argument" });
+        this.SUBRULE(this.atomicExpression, { LABEL: "left" });
         this.MANY(() => {
             this.OR([
                 { ALT: () => this.SUBRULE(this.getExpression, { LABEL: "operator" }) },
@@ -83,7 +83,7 @@ class MotorParser extends CstParser {
 
     exponentiationExpression = this.RULE("exponentiationExpression", () => {
         this.SUBRULE(this.postfixExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.CONSUME(Exponent, { LABEL: "operator" });
             this.SUBRULE1(this.exponentiationExpression, { LABEL: "right" });
         });
@@ -94,42 +94,42 @@ class MotorParser extends CstParser {
             {
                 ALT: () => {
                     this.CONSUME(Minus, { LABEL: "operator" });
-                    this.SUBRULE(this.unaryExpression, { LABEL: "argument" });
+                    this.SUBRULE(this.unaryExpression, { LABEL: "right" });
                 }
             },
             {
                 ALT: () => {
                     this.CONSUME(Plus, { LABEL: "operator" });
-                    this.SUBRULE1(this.unaryExpression, { LABEL: "argument" });
+                    this.SUBRULE1(this.unaryExpression, { LABEL: "right" });
                 }
             },
             {
                 ALT: () => {
                     this.CONSUME(Increment, { LABEL: "operator" });
-                    this.SUBRULE2(this.unaryExpression, { LABEL: "argument" });
+                    this.SUBRULE2(this.unaryExpression, { LABEL: "right" });
                 }
             },
             {
                 ALT: () => {
                     this.CONSUME(Decrement, { LABEL: "operator" });
-                    this.SUBRULE3(this.unaryExpression, { LABEL: "argument" });
+                    this.SUBRULE3(this.unaryExpression, { LABEL: "right" });
                 }
             },
             {
                 ALT: () => {
                     this.CONSUME(Not, { LABEL: "operator" });
-                    this.SUBRULE4(this.unaryExpression, { LABEL: "argument" });
+                    this.SUBRULE4(this.unaryExpression, { LABEL: "right" });
                 }
             },
             {
                 ALT: () => {
                     this.CONSUME(Tilde, { LABEL: "operator" });
-                    this.SUBRULE5(this.unaryExpression, { LABEL: "argument" });
+                    this.SUBRULE5(this.unaryExpression, { LABEL: "right" });
                 }
             },
             {
                 ALT: () => {
-                    this.SUBRULE5(this.exponentiationExpression, { LABEL: "argument" });
+                    this.SUBRULE5(this.exponentiationExpression, { LABEL: "right" });
                 }
             },
         ]);
@@ -137,7 +137,7 @@ class MotorParser extends CstParser {
 
     multiplicativeExpression = this.RULE("multiplicativeExpression", () => {
         this.SUBRULE(this.unaryExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.OR([
                 { ALT: () => this.CONSUME(Multiply, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(Divide, { LABEL: "operator" }) },
@@ -149,7 +149,7 @@ class MotorParser extends CstParser {
 
     additiveExpression = this.RULE("additiveExpression", () => {
         this.SUBRULE(this.multiplicativeExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.OR([
                 { ALT: () => this.CONSUME(Plus, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(Minus, { LABEL: "operator" }) }
@@ -160,7 +160,7 @@ class MotorParser extends CstParser {
 
     moveExpression = this.RULE("moveExpression", () => {
         this.SUBRULE(this.additiveExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.OR([
                 { ALT: () => this.CONSUME(LShift, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(RShift, { LABEL: "operator" }) }
@@ -171,7 +171,7 @@ class MotorParser extends CstParser {
 
     relationExpression = this.RULE("relationExpression", () => {
         this.SUBRULE(this.moveExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.OR([
                 { ALT: () => this.CONSUME(GreaterThan, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(GreaterThanEqual, { LABEL: "operator" }) },
@@ -184,7 +184,7 @@ class MotorParser extends CstParser {
 
     equalityExpression = this.RULE("equalityExpression", () => {
         this.SUBRULE(this.relationExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.OR([
                 { ALT: () => this.CONSUME(EqualEqual, { LABEL: "operator" }) },
                 { ALT: () => this.CONSUME(NotEqual, { LABEL: "operator" }) },
@@ -195,7 +195,7 @@ class MotorParser extends CstParser {
 
     lAndExpression = this.RULE("lAndExpression", () => {
         this.SUBRULE(this.equalityExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.CONSUME(LAnd, { LABEL: "operator" });
             this.SUBRULE1(this.lAndExpression, { LABEL: "right" });
         });
@@ -203,7 +203,7 @@ class MotorParser extends CstParser {
 
     xorExpression = this.RULE("xorExpression", () => {
         this.SUBRULE(this.lAndExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.CONSUME(Xor, { LABEL: "operator" });
             this.SUBRULE1(this.xorExpression, { LABEL: "right" });
         });
@@ -211,7 +211,7 @@ class MotorParser extends CstParser {
 
     lOrExpression = this.RULE("lOrExpression", () => {
         this.SUBRULE(this.xorExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.CONSUME(LOr, { LABEL: "operator" });
             this.SUBRULE1(this.lOrExpression, { LABEL: "right" });
         });
@@ -219,7 +219,7 @@ class MotorParser extends CstParser {
 
     andExpression = this.RULE("andExpression", () => {
         this.SUBRULE(this.lOrExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.CONSUME(And, { LABEL: "operator" });
             this.SUBRULE1(this.andExpression, { LABEL: "right" });
         });
@@ -227,19 +227,19 @@ class MotorParser extends CstParser {
 
     orExpression = this.RULE("orExpression", () => {
         this.SUBRULE(this.andExpression, { LABEL: "left" });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.CONSUME(Or, { LABEL: "operator" });
             this.SUBRULE1(this.orExpression, { LABEL: "right" });
         });
     });
 
     conditionalExpression = this.RULE("conditionalExpression", () => {
-        this.SUBRULE(this.orExpression, { LABEL: "testExpression" });
+        this.SUBRULE(this.orExpression, { LABEL: "test" });
         this.OPTION(() => {
             this.CONSUME(Ternary);
-            this.SUBRULE1(this.conditionalExpression, { LABEL: "trueExpression" });
+            this.SUBRULE1(this.conditionalExpression, { LABEL: "true" });
             this.CONSUME(Colon);
-            this.SUBRULE2(this.conditionalExpression, { LABEL: "falseExpression" });
+            this.SUBRULE2(this.conditionalExpression, { LABEL: "false" });
         });
     });
 
@@ -273,7 +273,7 @@ class MotorParser extends CstParser {
 
     assignExpression = this.RULE('assignExpression', () => {
         this.SUBRULE(this.conditionalExpression, { LABEL: 'left' });
-        this.MANY(() => {
+        this.OPTION(() => {
             this.OR([
                 { ALT: () => this.CONSUME(Equal, { LABEL: 'operator' }) },
                 { ALT: () => this.CONSUME(AddEqual, { LABEL: 'operator' }) },

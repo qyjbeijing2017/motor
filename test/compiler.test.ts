@@ -346,12 +346,10 @@ class b : a
         })
     })
 
-    describe('Code gen', () =>{
-        test('CST', () => {
+    describe('AST', () => {
+        test('Const', () => {
             const scriptOnTest = `
-re = 1 + 2
-    im = 3 + 4
-ea = 1 - 2
+1 + 2 - 3
 `
             const result = motorLexer.tokenize(scriptOnTest);
             motorParser.input = result.tokens;
@@ -361,6 +359,38 @@ ea = 1 - 2
             expect(motorParser.errors.length).toBe(0);
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
+            expect(ast).toEqual({
+                "variables": {},
+                "classes": {},
+                "structs": {},
+                "functions": {},
+                "statements": [
+                    {
+                        "left": {
+                            "value": "1",
+                            "type": {
+                                "typeName": "TypeInt32"
+                            }
+                        },
+                        "right": {
+                            "left": {
+                                "value": "2",
+                                "type": {
+                                    "typeName": "TypeInt32"
+                                }
+                            },
+                            "right": {
+                                "value": "3",
+                                "type": {
+                                    "typeName": "TypeInt32"
+                                }
+                            },
+                            "operator": "-"
+                        },
+                        "operator": "+"
+                    }
+                ]
+            })
         })
     })
 });

@@ -1,4 +1,4 @@
-import { AstExpression } from "./expression";
+import { AstExpression } from "./expression.statement";
 
 export interface AstBinary extends AstExpression {
     left: AstExpression;

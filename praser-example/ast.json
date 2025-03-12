@@ -1,0 +1,31 @@
+{
+    "variables": {},
+    "classes": {},
+    "structs": {},
+    "statements": [
+        {
+            "left": {
+                "value": "1",
+                "type": {
+                    "typeName": "TypeInt32"
+                }
+            },
+            "right": {
+                "left": {
+                    "value": "2",
+                    "type": {
+                        "typeName": "TypeInt32"
+                    }
+                },
+                "right": {
+                    "value": "3",
+                    "type": {
+                        "typeName": "TypeInt32"
+                    }
+                },
+                "operator": "-"
+            },
+            "operator": "+"
+        }
+    ]
+}
