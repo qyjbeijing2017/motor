@@ -1,0 +1,1203 @@
+{
+    "statements": [
+        {
+            "name": "assignExpression",
+            "children": {
+                "left": [
+                    {
+                        "name": "conditionalExpression",
+                        "children": {
+                            "testExpression": [
+                                {
+                                    "name": "orExpression",
+                                    "children": {
+                                        "left": [
+                                            {
+                                                "name": "andExpression",
+                                                "children": {
+                                                    "left": [
+                                                        {
+                                                            "name": "lOrExpression",
+                                                            "children": {
+                                                                "left": [
+                                                                    {
+                                                                        "name": "xorExpression",
+                                                                        "children": {
+                                                                            "left": [
+                                                                                {
+                                                                                    "name": "lAndExpression",
+                                                                                    "children": {
+                                                                                        "left": [
+                                                                                            {
+                                                                                                "name": "equalityExpression",
+                                                                                                "children": {
+                                                                                                    "left": [
+                                                                                                        {
+                                                                                                            "name": "relationExpression",
+                                                                                                            "children": {
+                                                                                                                "left": [
+                                                                                                                    {
+                                                                                                                        "name": "moveExpression",
+                                                                                                                        "children": {
+                                                                                                                            "left": [
+                                                                                                                                {
+                                                                                                                                    "name": "additiveExpression",
+                                                                                                                                    "children": {
+                                                                                                                                        "left": [
+                                                                                                                                            {
+                                                                                                                                                "name": "multiplicativeExpression",
+                                                                                                                                                "children": {
+                                                                                                                                                    "left": [
+                                                                                                                                                        {
+                                                                                                                                                            "name": "unaryExpression",
+                                                                                                                                                            "children": {
+                                                                                                                                                                "argument": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "name": "exponentiationExpression",
+                                                                                                                                                                        "children": {
+                                                                                                                                                                            "left": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "postfixExpression",
+                                                                                                                                                                                    "children": {
+                                                                                                                                                                                        "argument": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "name": "atomicExpression",
+                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                    "Identifier": [{
+                                                                                                                                                                                                            "image": "re",
+                                                                                                                                                                                                            "startOffset": 1,
+                                                                                                                                                                                                            "endOffset": 2,
+                                                                                                                                                                                                            "startLine": 2,
+                                                                                                                                                                                                            "endLine": 2,
+                                                                                                                                                                                                            "startColumn": 1,
+                                                                                                                                                                                                            "endColumn": 2,
+                                                                                                                                                                                                            "tokenTypeIdx": 6,
+                                                                                                                                                                                                            "tokenType": {
+                                                                                                                                                                                                                "name": "Identifier",
+                                                                                                                                                                                                                "PATTERN": {},
+                                                                                                                                                                                                                "tokenTypeIdx": 6,
+                                                                                                                                                                                                                "CATEGORIES": [],
+                                                                                                                                                                                                                "categoryMatches": [],
+                                                                                                                                                                                                                "categoryMatchesMap": {},
+                                                                                                                                                                                                                "isParent": false
+                                                                                                                                                                                                            }}
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                ]
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "operator": [
+                    {
+                        "image": "=",
+                        "startOffset": 4,
+                        "endOffset": 4,
+                        "startLine": 2,
+                        "endLine": 2,
+                        "startColumn": 4,
+                        "endColumn": 4,
+                        "tokenTypeIdx": 36,
+                        "tokenType": {
+                            "name": "Equal",
+                            "PATTERN": {},
+                            "tokenTypeIdx": 36,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false
+                        }
+                    }
+                ],
+                "right": [
+                    {
+                        "name": "assignExpression",
+                        "children": {
+                            "left": [
+                                {
+                                    "name": "conditionalExpression",
+                                    "children": {
+                                        "testExpression": [
+                                            {
+                                                "name": "orExpression",
+                                                "children": {
+                                                    "left": [
+                                                        {
+                                                            "name": "andExpression",
+                                                            "children": {
+                                                                "left": [
+                                                                    {
+                                                                        "name": "lOrExpression",
+                                                                        "children": {
+                                                                            "left": [
+                                                                                {
+                                                                                    "name": "xorExpression",
+                                                                                    "children": {
+                                                                                        "left": [
+                                                                                            {
+                                                                                                "name": "lAndExpression",
+                                                                                                "children": {
+                                                                                                    "left": [
+                                                                                                        {
+                                                                                                            "name": "equalityExpression",
+                                                                                                            "children": {
+                                                                                                                "left": [
+                                                                                                                    {
+                                                                                                                        "name": "relationExpression",
+                                                                                                                        "children": {
+                                                                                                                            "left": [
+                                                                                                                                {
+                                                                                                                                    "name": "moveExpression",
+                                                                                                                                    "children": {
+                                                                                                                                        "left": [
+                                                                                                                                            {
+                                                                                                                                                "name": "additiveExpression",
+                                                                                                                                                "children": {
+                                                                                                                                                    "left": [
+                                                                                                                                                        {
+                                                                                                                                                            "name": "multiplicativeExpression",
+                                                                                                                                                            "children": {
+                                                                                                                                                                "left": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "name": "unaryExpression",
+                                                                                                                                                                        "children": {
+                                                                                                                                                                            "argument": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "exponentiationExpression",
+                                                                                                                                                                                    "children": {
+                                                                                                                                                                                        "left": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "name": "postfixExpression",
+                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                    "argument": [{
+                                                                                                                                                                                                            "name": "atomicExpression",
+                                                                                                                                                                                                            "children": {
+                                                                                                                                                                                                                "Integer": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        "image": "1",
+                                                                                                                                                                                                                        "startOffset": 6,
+                                                                                                                                                                                                                        "endOffset": 6,
+                                                                                                                                                                                                                        "startLine": 2,
+                                                                                                                                                                                                                        "endLine": 2,
+                                                                                                                                                                                                                        "startColumn": 6,
+                                                                                                                                                                                                                        "endColumn": 6,
+                                                                                                                                                                                                                        "tokenTypeIdx": 10,
+                                                                                                                                                                                                                        "tokenType": {
+                                                                                                                                                                                                                            "name": "Integer",
+                                                                                                                                                                                                                            "PATTERN": {},
+                                                                                                                                                                                                                            "tokenTypeIdx": 10,
+                                                                                                                                                                                                                            "CATEGORIES": [],
+                                                                                                                                                                                                                            "categoryMatches": [],
+                                                                                                                                                                                                                            "categoryMatchesMap": {},
+                                                                                                                                                                                                                            "isParent": false,
+                                                                                                                                                                                                                            "LONGER_ALT": {
+                                                                                                                                                                                                                                "name": "Float",
+                                                                                                                                                                                                                                "PATTERN": {},
+                                                                                                                                                                                                                                "tokenTypeIdx": 9,
+                                                                                                                                                                                                                                "CATEGORIES": [],
+                                                                                                                                                                                                                                "categoryMatches": [],
+                                                                                                                                                                                                                                "categoryMatchesMap": {},
+                                                                                                                                                                                                                                "isParent": false
+                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                ]
+                                                                                                                                                                                                            }}
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                ]
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "operator": [
+                                                                                                                                                        {
+                                                                                                                                                            "image": "+",
+                                                                                                                                                            "startOffset": 8,
+                                                                                                                                                            "endOffset": 8,
+                                                                                                                                                            "startLine": 2,
+                                                                                                                                                            "endLine": 2,
+                                                                                                                                                            "startColumn": 8,
+                                                                                                                                                            "endColumn": 8,
+                                                                                                                                                            "tokenTypeIdx": 37,
+                                                                                                                                                            "tokenType": {
+                                                                                                                                                                "name": "Plus",
+                                                                                                                                                                "PATTERN": {},
+                                                                                                                                                                "tokenTypeIdx": 37,
+                                                                                                                                                                "CATEGORIES": [],
+                                                                                                                                                                "categoryMatches": [],
+                                                                                                                                                                "categoryMatchesMap": {},
+                                                                                                                                                                "isParent": false
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "right": [
+                                                                                                                                                        {
+                                                                                                                                                            "name": "additiveExpression",
+                                                                                                                                                            "children": {
+                                                                                                                                                                "left": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "name": "multiplicativeExpression",
+                                                                                                                                                                        "children": {
+                                                                                                                                                                            "left": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "unaryExpression",
+                                                                                                                                                                                    "children": {
+                                                                                                                                                                                        "argument": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "name": "exponentiationExpression",
+                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                    "left": [{
+                                                                                                                                                                                                            "name": "postfixExpression",
+                                                                                                                                                                                                            "children": {
+                                                                                                                                                                                                                "argument": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        "name": "atomicExpression",
+                                                                                                                                                                                                                        "children": {
+                                                                                                                                                                                                                            "Integer": [
+                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                    "image": "2",
+                                                                                                                                                                                                                                    "startOffset": 10,
+                                                                                                                                                                                                                                    "endOffset": 10,
+                                                                                                                                                                                                                                    "startLine": 2,
+                                                                                                                                                                                                                                    "endLine": 2,
+                                                                                                                                                                                                                                    "startColumn": 10,
+                                                                                                                                                                                                                                    "endColumn": 10,
+                                                                                                                                                                                                                                    "tokenTypeIdx": 10,
+                                                                                                                                                                                                                                    "tokenType": {
+                                                                                                                                                                                                                                        "name": "Integer",
+                                                                                                                                                                                                                                        "PATTERN": {},
+                                                                                                                                                                                                                                        "tokenTypeIdx": 10,
+                                                                                                                                                                                                                                        "CATEGORIES": [],
+                                                                                                                                                                                                                                        "categoryMatches": [],
+                                                                                                                                                                                                                                        "categoryMatchesMap": {},
+                                                                                                                                                                                                                                        "isParent": false,
+                                                                                                                                                                                                                                        "LONGER_ALT": {
+                                                                                                                                                                                                                                            "name": "Float",
+                                                                                                                                                                                                                                            "PATTERN": {},
+                                                                                                                                                                                                                                            "tokenTypeIdx": 9,
+                                                                                                                                                                                                                                            "CATEGORIES": [],
+                                                                                                                                                                                                                                            "categoryMatches": [],
+                                                                                                                                                                                                                                            "categoryMatchesMap": {},
+                                                                                                                                                                                                                                            "isParent": false
+                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                            ]
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                ]
+                                                                                                                                                                                                            }}
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                ]
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "blockStatement",
+            "children": {
+                "Indent": [
+                    {
+                        "image": "",
+                        "startOffset": null,
+                        "endOffset": null,
+                        "startLine": null,
+                        "endLine": null,
+                        "startColumn": null,
+                        "endColumn": null,
+                        "tokenTypeIdx": 7,
+                        "tokenType": {
+                            "name": "Indent",
+                            "tokenTypeIdx": 7,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false,
+                            "LINE_BREAKS": false
+                        }
+                    }
+                ],
+                "block": [
+                    {
+                        "name": "block",
+                        "children": {
+                            "statements": [
+                                {
+                                    "name": "assignExpression",
+                                    "children": {
+                                        "left": [
+                                            {
+                                                "name": "conditionalExpression",
+                                                "children": {
+                                                    "testExpression": [
+                                                        {
+                                                            "name": "orExpression",
+                                                            "children": {
+                                                                "left": [
+                                                                    {
+                                                                        "name": "andExpression",
+                                                                        "children": {
+                                                                            "left": [
+                                                                                {
+                                                                                    "name": "lOrExpression",
+                                                                                    "children": {
+                                                                                        "left": [
+                                                                                            {
+                                                                                                "name": "xorExpression",
+                                                                                                "children": {
+                                                                                                    "left": [
+                                                                                                        {
+                                                                                                            "name": "lAndExpression",
+                                                                                                            "children": {
+                                                                                                                "left": [
+                                                                                                                    {
+                                                                                                                        "name": "equalityExpression",
+                                                                                                                        "children": {
+                                                                                                                            "left": [
+                                                                                                                                {
+                                                                                                                                    "name": "relationExpression",
+                                                                                                                                    "children": {
+                                                                                                                                        "left": [
+                                                                                                                                            {
+                                                                                                                                                "name": "moveExpression",
+                                                                                                                                                "children": {
+                                                                                                                                                    "left": [
+                                                                                                                                                        {
+                                                                                                                                                            "name": "additiveExpression",
+                                                                                                                                                            "children": {
+                                                                                                                                                                "left": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "name": "multiplicativeExpression",
+                                                                                                                                                                        "children": {
+                                                                                                                                                                            "left": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "unaryExpression",
+                                                                                                                                                                                    "children": {
+                                                                                                                                                                                        "argument": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "name": "exponentiationExpression",
+                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                    "left": [{
+                                                                                                                                                                                                            "name": "postfixExpression",
+                                                                                                                                                                                                            "children": {
+                                                                                                                                                                                                                "argument": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        "name": "atomicExpression",
+                                                                                                                                                                                                                        "children": {
+                                                                                                                                                                                                                            "Identifier": [
+                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                    "image": "im",
+                                                                                                                                                                                                                                    "startOffset": 16,
+                                                                                                                                                                                                                                    "endOffset": 17,
+                                                                                                                                                                                                                                    "startLine": 3,
+                                                                                                                                                                                                                                    "endLine": 3,
+                                                                                                                                                                                                                                    "startColumn": 5,
+                                                                                                                                                                                                                                    "endColumn": 6,
+                                                                                                                                                                                                                                    "tokenTypeIdx": 6,
+                                                                                                                                                                                                                                    "tokenType": {
+                                                                                                                                                                                                                                        "name": "Identifier",
+                                                                                                                                                                                                                                        "PATTERN": {},
+                                                                                                                                                                                                                                        "tokenTypeIdx": 6,
+                                                                                                                                                                                                                                        "CATEGORIES": [],
+                                                                                                                                                                                                                                        "categoryMatches": [],
+                                                                                                                                                                                                                                        "categoryMatchesMap": {},
+                                                                                                                                                                                                                                        "isParent": false
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                            ]
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                ]
+                                                                                                                                                                                                            }}
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                ]
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ],
+                                        "operator": [
+                                            {
+                                                "image": "=",
+                                                "startOffset": 19,
+                                                "endOffset": 19,
+                                                "startLine": 3,
+                                                "endLine": 3,
+                                                "startColumn": 8,
+                                                "endColumn": 8,
+                                                "tokenTypeIdx": 36,
+                                                "tokenType": {
+                                                    "name": "Equal",
+                                                    "PATTERN": {},
+                                                    "tokenTypeIdx": 36,
+                                                    "CATEGORIES": [],
+                                                    "categoryMatches": [],
+                                                    "categoryMatchesMap": {},
+                                                    "isParent": false
+                                                }
+                                            }
+                                        ],
+                                        "right": [
+                                            {
+                                                "name": "assignExpression",
+                                                "children": {
+                                                    "left": [
+                                                        {
+                                                            "name": "conditionalExpression",
+                                                            "children": {
+                                                                "testExpression": [
+                                                                    {
+                                                                        "name": "orExpression",
+                                                                        "children": {
+                                                                            "left": [
+                                                                                {
+                                                                                    "name": "andExpression",
+                                                                                    "children": {
+                                                                                        "left": [
+                                                                                            {
+                                                                                                "name": "lOrExpression",
+                                                                                                "children": {
+                                                                                                    "left": [
+                                                                                                        {
+                                                                                                            "name": "xorExpression",
+                                                                                                            "children": {
+                                                                                                                "left": [
+                                                                                                                    {
+                                                                                                                        "name": "lAndExpression",
+                                                                                                                        "children": {
+                                                                                                                            "left": [
+                                                                                                                                {
+                                                                                                                                    "name": "equalityExpression",
+                                                                                                                                    "children": {
+                                                                                                                                        "left": [
+                                                                                                                                            {
+                                                                                                                                                "name": "relationExpression",
+                                                                                                                                                "children": {
+                                                                                                                                                    "left": [
+                                                                                                                                                        {
+                                                                                                                                                            "name": "moveExpression",
+                                                                                                                                                            "children": {
+                                                                                                                                                                "left": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "name": "additiveExpression",
+                                                                                                                                                                        "children": {
+                                                                                                                                                                            "left": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "multiplicativeExpression",
+                                                                                                                                                                                    "children": {
+                                                                                                                                                                                        "left": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "name": "unaryExpression",
+                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                    "argument": [{
+                                                                                                                                                                                                            "name": "exponentiationExpression",
+                                                                                                                                                                                                            "children": {
+                                                                                                                                                                                                                "left": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        "name": "postfixExpression",
+                                                                                                                                                                                                                        "children": {
+                                                                                                                                                                                                                            "argument": [
+                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                    "name": "atomicExpression",
+                                                                                                                                                                                                                                    "children": {
+                                                                                                                                                                                                                                        "Integer": [
+                                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                                                "image": "3",
+                                                                                                                                                                                                                                                "startOffset": 21,
+                                                                                                                                                                                                                                                "endOffset": 21,
+                                                                                                                                                                                                                                                "startLine": 3,
+                                                                                                                                                                                                                                                "endLine": 3,
+                                                                                                                                                                                                                                                "startColumn": 10,
+                                                                                                                                                                                                                                                "endColumn": 10,
+                                                                                                                                                                                                                                                "tokenTypeIdx": 10,
+                                                                                                                                                                                                                                                "tokenType": {
+                                                                                                                                                                                                                                                    "name": "Integer",
+                                                                                                                                                                                                                                                    "PATTERN": {},
+                                                                                                                                                                                                                                                    "tokenTypeIdx": 10,
+                                                                                                                                                                                                                                                    "CATEGORIES": [],
+                                                                                                                                                                                                                                                    "categoryMatches": [],
+                                                                                                                                                                                                                                                    "categoryMatchesMap": {},
+                                                                                                                                                                                                                                                    "isParent": false,
+                                                                                                                                                                                                                                                    "LONGER_ALT": {
+                                                                                                                                                                                                                                                        "name": "Float",
+                                                                                                                                                                                                                                                        "PATTERN": {},
+                                                                                                                                                                                                                                                        "tokenTypeIdx": 9,
+                                                                                                                                                                                                                                                        "CATEGORIES": [],
+                                                                                                                                                                                                                                                        "categoryMatches": [],
+                                                                                                                                                                                                                                                        "categoryMatchesMap": {},
+                                                                                                                                                                                                                                                        "isParent": false
+                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                        ]
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                            ]
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                ]
+                                                                                                                                                                                                            }}
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ],
+                                                                                                                                                                            "operator": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "image": "+",
+                                                                                                                                                                                    "startOffset": 23,
+                                                                                                                                                                                    "endOffset": 23,
+                                                                                                                                                                                    "startLine": 3,
+                                                                                                                                                                                    "endLine": 3,
+                                                                                                                                                                                    "startColumn": 12,
+                                                                                                                                                                                    "endColumn": 12,
+                                                                                                                                                                                    "tokenTypeIdx": 37,
+                                                                                                                                                                                    "tokenType": {
+                                                                                                                                                                                        "name": "Plus",
+                                                                                                                                                                                        "PATTERN": {},
+                                                                                                                                                                                        "tokenTypeIdx": 37,
+                                                                                                                                                                                        "CATEGORIES": [],
+                                                                                                                                                                                        "categoryMatches": [],
+                                                                                                                                                                                        "categoryMatchesMap": {},
+                                                                                                                                                                                        "isParent": false
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ],
+                                                                                                                                                                            "right": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "additiveExpression",
+                                                                                                                                                                                    "children": {
+                                                                                                                                                                                        "left": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "name": "multiplicativeExpression",
+                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                    "left": [{
+                                                                                                                                                                                                            "name": "unaryExpression",
+                                                                                                                                                                                                            "children": {
+                                                                                                                                                                                                                "argument": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        "name": "exponentiationExpression",
+                                                                                                                                                                                                                        "children": {
+                                                                                                                                                                                                                            "left": [
+                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                    "name": "postfixExpression",
+                                                                                                                                                                                                                                    "children": {
+                                                                                                                                                                                                                                        "argument": [
+                                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                                                "name": "atomicExpression",
+                                                                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                                                                    "Integer": [
+                                                                                                                                                                                                                                                        {
+                                                                                                                                                                                                                                                            "image": "4",
+                                                                                                                                                                                                                                                            "startOffset": 25,
+                                                                                                                                                                                                                                                            "endOffset": 25,
+                                                                                                                                                                                                                                                            "startLine": 3,
+                                                                                                                                                                                                                                                            "endLine": 3,
+                                                                                                                                                                                                                                                            "startColumn": 14,
+                                                                                                                                                                                                                                                            "endColumn": 14,
+                                                                                                                                                                                                                                                            "tokenTypeIdx": 10,
+                                                                                                                                                                                                                                                            "tokenType": {
+                                                                                                                                                                                                                                                                "name": "Integer",
+                                                                                                                                                                                                                                                                "PATTERN": {},
+                                                                                                                                                                                                                                                                "tokenTypeIdx": 10,
+                                                                                                                                                                                                                                                                "CATEGORIES": [],
+                                                                                                                                                                                                                                                                "categoryMatches": [],
+                                                                                                                                                                                                                                                                "categoryMatchesMap": {},
+                                                                                                                                                                                                                                                                "isParent": false,
+                                                                                                                                                                                                                                                                "LONGER_ALT": {
+                                                                                                                                                                                                                                                                    "name": "Float",
+                                                                                                                                                                                                                                                                    "PATTERN": {},
+                                                                                                                                                                                                                                                                    "tokenTypeIdx": 9,
+                                                                                                                                                                                                                                                                    "CATEGORIES": [],
+                                                                                                                                                                                                                                                                    "categoryMatches": [],
+                                                                                                                                                                                                                                                                    "categoryMatchesMap": {},
+                                                                                                                                                                                                                                                                    "isParent": false
+                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                    ]
+                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                        ]
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                            ]
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                ]
+                                                                                                                                                                                                            }}
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                ]
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "Dedent": [
+                    {
+                        "image": "",
+                        "startOffset": null,
+                        "endOffset": null,
+                        "startLine": null,
+                        "endLine": null,
+                        "startColumn": null,
+                        "endColumn": null,
+                        "tokenTypeIdx": 8,
+                        "tokenType": {
+                            "name": "Dedent",
+                            "tokenTypeIdx": 8,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false,
+                            "LINE_BREAKS": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "assignExpression",
+            "children": {
+                "left": [
+                    {
+                        "name": "conditionalExpression",
+                        "children": {
+                            "testExpression": [
+                                {
+                                    "name": "orExpression",
+                                    "children": {
+                                        "left": [
+                                            {
+                                                "name": "andExpression",
+                                                "children": {
+                                                    "left": [
+                                                        {
+                                                            "name": "lOrExpression",
+                                                            "children": {
+                                                                "left": [
+                                                                    {
+                                                                        "name": "xorExpression",
+                                                                        "children": {
+                                                                            "left": [
+                                                                                {
+                                                                                    "name": "lAndExpression",
+                                                                                    "children": {
+                                                                                        "left": [
+                                                                                            {
+                                                                                                "name": "equalityExpression",
+                                                                                                "children": {
+                                                                                                    "left": [
+                                                                                                        {
+                                                                                                            "name": "relationExpression",
+                                                                                                            "children": {
+                                                                                                                "left": [
+                                                                                                                    {
+                                                                                                                        "name": "moveExpression",
+                                                                                                                        "children": {
+                                                                                                                            "left": [
+                                                                                                                                {
+                                                                                                                                    "name": "additiveExpression",
+                                                                                                                                    "children": {
+                                                                                                                                        "left": [
+                                                                                                                                            {
+                                                                                                                                                "name": "multiplicativeExpression",
+                                                                                                                                                "children": {
+                                                                                                                                                    "left": [
+                                                                                                                                                        {
+                                                                                                                                                            "name": "unaryExpression",
+                                                                                                                                                            "children": {
+                                                                                                                                                                "argument": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "name": "exponentiationExpression",
+                                                                                                                                                                        "children": {
+                                                                                                                                                                            "left": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "postfixExpression",
+                                                                                                                                                                                    "children": {
+                                                                                                                                                                                        "argument": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "name": "atomicExpression",
+                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                    "Identifier": [{
+                                                                                                                                                                                                            "image": "ea",
+                                                                                                                                                                                                            "startOffset": 27,
+                                                                                                                                                                                                            "endOffset": 28,
+                                                                                                                                                                                                            "startLine": 4,
+                                                                                                                                                                                                            "endLine": 4,
+                                                                                                                                                                                                            "startColumn": 1,
+                                                                                                                                                                                                            "endColumn": 2,
+                                                                                                                                                                                                            "tokenTypeIdx": 6,
+                                                                                                                                                                                                            "tokenType": {
+                                                                                                                                                                                                                "name": "Identifier",
+                                                                                                                                                                                                                "PATTERN": {},
+                                                                                                                                                                                                                "tokenTypeIdx": 6,
+                                                                                                                                                                                                                "CATEGORIES": [],
+                                                                                                                                                                                                                "categoryMatches": [],
+                                                                                                                                                                                                                "categoryMatchesMap": {},
+                                                                                                                                                                                                                "isParent": false
+                                                                                                                                                                                                            }}
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                ]
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "operator": [
+                    {
+                        "image": "=",
+                        "startOffset": 30,
+                        "endOffset": 30,
+                        "startLine": 4,
+                        "endLine": 4,
+                        "startColumn": 4,
+                        "endColumn": 4,
+                        "tokenTypeIdx": 36,
+                        "tokenType": {
+                            "name": "Equal",
+                            "PATTERN": {},
+                            "tokenTypeIdx": 36,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false
+                        }
+                    }
+                ],
+                "right": [
+                    {
+                        "name": "assignExpression",
+                        "children": {
+                            "left": [
+                                {
+                                    "name": "conditionalExpression",
+                                    "children": {
+                                        "testExpression": [
+                                            {
+                                                "name": "orExpression",
+                                                "children": {
+                                                    "left": [
+                                                        {
+                                                            "name": "andExpression",
+                                                            "children": {
+                                                                "left": [
+                                                                    {
+                                                                        "name": "lOrExpression",
+                                                                        "children": {
+                                                                            "left": [
+                                                                                {
+                                                                                    "name": "xorExpression",
+                                                                                    "children": {
+                                                                                        "left": [
+                                                                                            {
+                                                                                                "name": "lAndExpression",
+                                                                                                "children": {
+                                                                                                    "left": [
+                                                                                                        {
+                                                                                                            "name": "equalityExpression",
+                                                                                                            "children": {
+                                                                                                                "left": [
+                                                                                                                    {
+                                                                                                                        "name": "relationExpression",
+                                                                                                                        "children": {
+                                                                                                                            "left": [
+                                                                                                                                {
+                                                                                                                                    "name": "moveExpression",
+                                                                                                                                    "children": {
+                                                                                                                                        "left": [
+                                                                                                                                            {
+                                                                                                                                                "name": "additiveExpression",
+                                                                                                                                                "children": {
+                                                                                                                                                    "left": [
+                                                                                                                                                        {
+                                                                                                                                                            "name": "multiplicativeExpression",
+                                                                                                                                                            "children": {
+                                                                                                                                                                "left": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "name": "unaryExpression",
+                                                                                                                                                                        "children": {
+                                                                                                                                                                            "argument": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "exponentiationExpression",
+                                                                                                                                                                                    "children": {
+                                                                                                                                                                                        "left": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "name": "postfixExpression",
+                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                    "argument": [{
+                                                                                                                                                                                                            "name": "atomicExpression",
+                                                                                                                                                                                                            "children": {
+                                                                                                                                                                                                                "Integer": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        "image": "1",
+                                                                                                                                                                                                                        "startOffset": 32,
+                                                                                                                                                                                                                        "endOffset": 32,
+                                                                                                                                                                                                                        "startLine": 4,
+                                                                                                                                                                                                                        "endLine": 4,
+                                                                                                                                                                                                                        "startColumn": 6,
+                                                                                                                                                                                                                        "endColumn": 6,
+                                                                                                                                                                                                                        "tokenTypeIdx": 10,
+                                                                                                                                                                                                                        "tokenType": {
+                                                                                                                                                                                                                            "name": "Integer",
+                                                                                                                                                                                                                            "PATTERN": {},
+                                                                                                                                                                                                                            "tokenTypeIdx": 10,
+                                                                                                                                                                                                                            "CATEGORIES": [],
+                                                                                                                                                                                                                            "categoryMatches": [],
+                                                                                                                                                                                                                            "categoryMatchesMap": {},
+                                                                                                                                                                                                                            "isParent": false,
+                                                                                                                                                                                                                            "LONGER_ALT": {
+                                                                                                                                                                                                                                "name": "Float",
+                                                                                                                                                                                                                                "PATTERN": {},
+                                                                                                                                                                                                                                "tokenTypeIdx": 9,
+                                                                                                                                                                                                                                "CATEGORIES": [],
+                                                                                                                                                                                                                                "categoryMatches": [],
+                                                                                                                                                                                                                                "categoryMatchesMap": {},
+                                                                                                                                                                                                                                "isParent": false
+                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                ]
+                                                                                                                                                                                                            }}
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                ]
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "operator": [
+                                                                                                                                                        {
+                                                                                                                                                            "image": "-",
+                                                                                                                                                            "startOffset": 34,
+                                                                                                                                                            "endOffset": 34,
+                                                                                                                                                            "startLine": 4,
+                                                                                                                                                            "endLine": 4,
+                                                                                                                                                            "startColumn": 8,
+                                                                                                                                                            "endColumn": 8,
+                                                                                                                                                            "tokenTypeIdx": 38,
+                                                                                                                                                            "tokenType": {
+                                                                                                                                                                "name": "Minus",
+                                                                                                                                                                "PATTERN": {},
+                                                                                                                                                                "tokenTypeIdx": 38,
+                                                                                                                                                                "CATEGORIES": [],
+                                                                                                                                                                "categoryMatches": [],
+                                                                                                                                                                "categoryMatchesMap": {},
+                                                                                                                                                                "isParent": false
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "right": [
+                                                                                                                                                        {
+                                                                                                                                                            "name": "additiveExpression",
+                                                                                                                                                            "children": {
+                                                                                                                                                                "left": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "name": "multiplicativeExpression",
+                                                                                                                                                                        "children": {
+                                                                                                                                                                            "left": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "unaryExpression",
+                                                                                                                                                                                    "children": {
+                                                                                                                                                                                        "argument": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "name": "exponentiationExpression",
+                                                                                                                                                                                                "children": {
+                                                                                                                                                                                                    "left": [{
+                                                                                                                                                                                                            "name": "postfixExpression",
+                                                                                                                                                                                                            "children": {
+                                                                                                                                                                                                                "argument": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        "name": "atomicExpression",
+                                                                                                                                                                                                                        "children": {
+                                                                                                                                                                                                                            "Integer": [
+                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                    "image": "2",
+                                                                                                                                                                                                                                    "startOffset": 36,
+                                                                                                                                                                                                                                    "endOffset": 36,
+                                                                                                                                                                                                                                    "startLine": 4,
+                                                                                                                                                                                                                                    "endLine": 4,
+                                                                                                                                                                                                                                    "startColumn": 10,
+                                                                                                                                                                                                                                    "endColumn": 10,
+                                                                                                                                                                                                                                    "tokenTypeIdx": 10,
+                                                                                                                                                                                                                                    "tokenType": {
+                                                                                                                                                                                                                                        "name": "Integer",
+                                                                                                                                                                                                                                        "PATTERN": {},
+                                                                                                                                                                                                                                        "tokenTypeIdx": 10,
+                                                                                                                                                                                                                                        "CATEGORIES": [],
+                                                                                                                                                                                                                                        "categoryMatches": [],
+                                                                                                                                                                                                                                        "categoryMatchesMap": {},
+                                                                                                                                                                                                                                        "isParent": false,
+                                                                                                                                                                                                                                        "LONGER_ALT": {
+                                                                                                                                                                                                                                            "name": "Float",
+                                                                                                                                                                                                                                            "PATTERN": {},
+                                                                                                                                                                                                                                            "tokenTypeIdx": 9,
+                                                                                                                                                                                                                                            "CATEGORIES": [],
+                                                                                                                                                                                                                                            "categoryMatches": [],
+                                                                                                                                                                                                                                            "categoryMatchesMap": {},
+                                                                                                                                                                                                                                            "isParent": false
+                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                            ]
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                ]
+                                                                                                                                                                                                            }}
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                ]
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

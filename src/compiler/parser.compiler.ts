@@ -38,10 +38,12 @@ class MotorParser extends CstParser {
             { ALT: () => this.CONSUME(Char) },
             { ALT: () => this.CONSUME(String) },
             { ALT: () => this.CONSUME(Bool) },
-            { ALT: () => {
-                this.CONSUME(Identifier)
-                this.OPTION(() => this.SUBRULE(this.typeDeclaration));
-            } },
+            {
+                ALT: () => {
+                    this.CONSUME(Identifier)
+                    this.OPTION(() => this.SUBRULE(this.typeDeclaration));
+                }
+            },
             { ALT: () => this.SUBRULE(this.parenExpression) },
         ]);
     });
@@ -270,23 +272,23 @@ class MotorParser extends CstParser {
     });
 
     assignExpression = this.RULE('assignExpression', () => {
-        this.SUBRULE(this.conditionalExpression);
+        this.SUBRULE(this.conditionalExpression, { LABEL: 'left' });
         this.MANY(() => {
             this.OR([
-                { ALT: () => this.CONSUME(Equal) },
-                { ALT: () => this.CONSUME(AddEqual) },
-                { ALT: () => this.CONSUME(SubEqual) },
-                { ALT: () => this.CONSUME(MulEqual) },
-                { ALT: () => this.CONSUME(DivEqual) },
-                { ALT: () => this.CONSUME(ModEqual) },
-                { ALT: () => this.CONSUME(AndEqual) },
-                { ALT: () => this.CONSUME(OrEqual) },
-                { ALT: () => this.CONSUME(XorEqual) },
-                { ALT: () => this.CONSUME(LShiftEqual) },
-                { ALT: () => this.CONSUME(RShiftEqual) },
-                { ALT: () => this.CONSUME(ExponentEqual) },
+                { ALT: () => this.CONSUME(Equal, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(AddEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(SubEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(MulEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(DivEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(ModEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(AndEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(OrEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(XorEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(LShiftEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(RShiftEqual, { LABEL: 'operator' }) },
+                { ALT: () => this.CONSUME(ExponentEqual, { LABEL: 'operator' }) },
             ]);
-            this.SUBRULE(this.assignExpression);
+            this.SUBRULE(this.assignExpression, { LABEL: 'right' });
         });
     });
 
@@ -425,20 +427,20 @@ class MotorParser extends CstParser {
     block = this.RULE('block', () => {
         this.MANY(() => {
             this.OR([
-                { ALT: () => this.SUBRULE(this.assignExpression) },
-                { ALT: () => this.SUBRULE(this.blockStatement) },
-                { ALT: () => this.SUBRULE(this.loopStatement) },
-                { ALT: () => this.SUBRULE(this.returnStatement) },
-                { ALT: () => this.SUBRULE(this.conditionalStatement) },
-                { ALT: () => this.SUBRULE(this.tryStatement) },
-                { ALT: () => this.SUBRULE(this.throwStatement) },
-                { ALT: () => this.SUBRULE(this.functionDeclaration) },
-                { ALT: () => this.SUBRULE(this.structDeclaration) },
-                { ALT: () => this.SUBRULE(this.enumDeclaration) },
-                { ALT: () => this.SUBRULE(this.classDeclaration) },
-                { ALT: () => this.CONSUME(Continue) },
-                { ALT: () => this.CONSUME(Break) },
-                { ALT: () => this.CONSUME(Pass) },
+                { ALT: () => this.SUBRULE(this.assignExpression, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.blockStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.loopStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.returnStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.conditionalStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.tryStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.throwStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.functionDeclaration, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.structDeclaration, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.enumDeclaration, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.classDeclaration, { LABEL: 'statements' }) },
+                { ALT: () => this.CONSUME(Continue, { LABEL: 'statements' }) },
+                { ALT: () => this.CONSUME(Break, { LABEL: 'statements' }) },
+                { ALT: () => this.CONSUME(Pass, { LABEL: 'statements' }) },
             ]);
             this.OPTION(() => this.CONSUME(Semicolon));
         });

@@ -39,3 +39,4 @@ export {
     Identifier,
 } from './compiler/lexer.compiler';
 export { motorParser } from './compiler/parser.compiler';
+export { motorAstVisitor } from './compiler/ast-visitor.compiler';

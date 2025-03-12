@@ -11,6 +11,7 @@ import {
     Dedent,
     Newline,
     motorParser,
+    motorAstVisitor,
 } from '../src';
 describe('Memory', () => {
     test('Lexer', () => {
@@ -349,6 +350,8 @@ class b : a
         test('CST', () => {
             const scriptOnTest = `
 re = 1 + 2
+    im = 3 + 4
+ea = 1 - 2
 `
             const result = motorLexer.tokenize(scriptOnTest);
             motorParser.input = result.tokens;
@@ -357,7 +360,7 @@ re = 1 + 2
             }
             expect(motorParser.errors.length).toBe(0);
             const cst = motorParser.block();
-            console.log(JSON.stringify(cst, null, 2));
+            const ast = motorAstVisitor.visit(cst);
         })
     })
 });
