@@ -392,5 +392,152 @@ class b : a
                 ]
             })
         })
+
+        test('Variable', () => {
+            const scriptOnTest = `
+a = 1
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(ast).toEqual({
+                "variables": {
+                    "a": {
+                        "identifier": "a"
+                    }
+                },
+                "classes": {},
+                "structs": {},
+                "functions": {},
+                "statements": [
+                    {
+                        "left": {
+                            "identifier": "a"
+                        },
+                        "right": {
+                            "value": "1",
+                            "type": {
+                                "typeName": "TypeInt32"
+                            }
+                        },
+                        "operator": "="
+                    }
+                ]
+            })
+        })
+
+        test('Conditional', () => {
+            const scriptOnTest = `
+a = true ? 1 : 2
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(ast).toEqual({
+                "variables": {
+                    "a": {
+                        "identifier": "a"
+                    }
+                },
+                "classes": {},
+                "structs": {},
+                "functions": {},
+                "statements": [
+                    {
+                        "left": {
+                            "identifier": "a"
+                        },
+                        "right": {
+                            "condition": {
+                                "value": "true",
+                                "type": {
+                                    "typeName": "TypeBool"
+                                }
+                            },
+                            "true": {
+                                "value": "1",
+                                "type": {
+                                    "typeName": "TypeInt32"
+                                }
+                            },
+                            "false": {
+                                "value": "2",
+                                "type": {
+                                    "typeName": "TypeInt32"
+                                }
+                            }
+                        },
+                        "operator": "="
+                    }
+                ]
+            })
+        })
+
+        test('Paren', () => {
+            const scriptOnTest = `
+a = (1 + 2) * 3
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(ast).toEqual({
+                "variables": {
+                    "a": {
+                        "identifier": "a"
+                    }
+                },
+                "classes": {},
+                "structs": {},
+                "functions": {},
+                "statements": [
+                    {
+                        "left": {
+                            "identifier": "a"
+                        },
+                        "right": {
+                            "left": {
+                                "left": {
+                                    "value": "1",
+                                    "type": {
+                                        "typeName": "TypeInt32"
+                                    }
+                                },
+                                "right": {
+                                    "value": "2",
+                                    "type": {
+                                        "typeName": "TypeInt32"
+                                    }
+                                },
+                                "operator": "+"
+                            },
+                            "right": {
+                                "value": "3",
+                                "type": {
+                                    "typeName": "TypeInt32"
+                                }
+                            },
+                            "operator": "*"
+                        },
+                        "operator": "="
+                    }
+                ]
+            })
+        })
+
     })
 });

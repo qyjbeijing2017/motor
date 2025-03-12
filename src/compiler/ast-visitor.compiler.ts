@@ -27,6 +27,7 @@ import { Integer, Float, Char, String, Bool, TypeInt32, TypeFloat32, TypeBool, T
 import { AstConst } from "./ast/const.expression";
 import { AstVariable } from "./ast/variable.expression";
 import { CstXOrExpression } from "./cst/xor.expression";
+import { CstParenExpression } from "./cst/paren.expression";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 const BaseVisitorWithDefaults = motorParser.getBaseCstVisitorConstructorWithDefaults();
@@ -45,6 +46,10 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             return this.findVariable(name, block.parent);
         }
         return null;
+    }
+
+    parenExpression(cst: CstParenExpression['children'], block: AstBlock) {
+        return this.visit(cst.expression[0], block);
     }
 
     atomicExpression(cst: CstAtomicExpression['children'], block: AstBlock) {
@@ -96,6 +101,9 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
                 block.variables[cst.variable[0].image] = variable;
             }
             return variable;
+        }
+        if (cst.paren) {
+            return this.visit(cst.paren[0], block);
         }
     }
 
@@ -210,7 +218,6 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         }
         return left
     }
-
 
     lOrExpression(cst: CstLOrExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
