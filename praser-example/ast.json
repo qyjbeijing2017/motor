@@ -1,12 +1,15 @@
 {
+    "astType": "block",
     "variables": {},
     "classes": {},
     "structs": {},
     "functions": {},
     "statements": [
         {
+            "astType": "function",
             "variables": {
                 "b": {
+                    "astType": "variable",
                     "identifier": "b",
                     "type": {
                         "typeName": "float64",
@@ -19,7 +22,9 @@
             "functions": {},
             "statements": [
                 {
+                    "astType": "return",
                     "expression": {
+                        "astType": "variable",
                         "identifier": "b",
                         "type": {
                             "typeName": "float64",
@@ -31,6 +36,7 @@
             "identifier": "a",
             "params": [
                 {
+                    "astType": "variable",
                     "identifier": "b",
                     "type": {
                         "typeName": "float64",

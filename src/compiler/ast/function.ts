@@ -1,13 +1,10 @@
 import { AstBlock } from "./block";
 import { AstType } from "./type";
-
-export interface AstParam {
-    type: AstType;
-    identifier: string;
-}
+import { AstVariable } from "./variable.expression";
 
 export interface AstFunction extends AstBlock {
+    astType: 'function';
     returnType?: AstType;
-    params?: AstParam[];
+    params?: AstVariable[];
     identifier: string;
 }

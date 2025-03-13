@@ -360,20 +360,25 @@ class b : a
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
             expect(ast).toEqual({
+                "astType": "block",
                 "variables": {},
                 "classes": {},
                 "structs": {},
                 "functions": {},
                 "statements": [
                     {
+                        "astType": "binary",
                         "left": {
+                            "astType": "binary",
                             "left": {
+                                "astType": "const",
                                 "value": "1",
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
                             },
                             "right": {
+                                "astType": "const",
                                 "value": "2",
                                 "type": {
                                     "typeName": "TypeInt32"
@@ -382,6 +387,7 @@ class b : a
                             "operator": "+"
                         },
                         "right": {
+                            "astType": "const",
                             "value": "3",
                             "type": {
                                 "typeName": "TypeInt32"
@@ -406,8 +412,10 @@ a = 1
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
             expect(ast).toEqual({
+                "astType": "block",
                 "variables": {
                     "a": {
+                        "astType": "variable",
                         "identifier": "a"
                     }
                 },
@@ -416,10 +424,13 @@ a = 1
                 "functions": {},
                 "statements": [
                     {
+                        "astType": "binary",
                         "left": {
+                            "astType": "variable",
                             "identifier": "a"
                         },
                         "right": {
+                            "astType": "const",
                             "value": "1",
                             "type": {
                                 "typeName": "TypeInt32"
@@ -444,8 +455,10 @@ a = true ? 1 : 2
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
             expect(ast).toEqual({
+                "astType": "block",
                 "variables": {
                     "a": {
+                        "astType": "variable",
                         "identifier": "a"
                     }
                 },
@@ -454,23 +467,29 @@ a = true ? 1 : 2
                 "functions": {},
                 "statements": [
                     {
+                        "astType": "binary",
                         "left": {
+                            "astType": "variable",
                             "identifier": "a"
                         },
                         "right": {
+                            "astType": "ternary",
                             "condition": {
+                                "astType": "const",
                                 "value": "true",
                                 "type": {
                                     "typeName": "TypeBool"
                                 }
                             },
                             "true": {
+                                "astType": "const",
                                 "value": "1",
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
                             },
                             "false": {
+                                "astType": "const",
                                 "value": "2",
                                 "type": {
                                     "typeName": "TypeInt32"
@@ -496,8 +515,10 @@ a = (1 + 2) * 3
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
             expect(ast).toEqual({
+                "astType": "block",
                 "variables": {
                     "a": {
+                        "astType": "variable",
                         "identifier": "a"
                     }
                 },
@@ -506,18 +527,24 @@ a = (1 + 2) * 3
                 "functions": {},
                 "statements": [
                     {
+                        "astType": "binary",
                         "left": {
+                            "astType": "variable",
                             "identifier": "a"
                         },
                         "right": {
+                            "astType": "binary",
                             "left": {
+                                "astType": "binary",
                                 "left": {
+                                    "astType": "const",
                                     "value": "1",
                                     "type": {
                                         "typeName": "TypeInt32"
                                     }
                                 },
                                 "right": {
+                                    "astType": "const",
                                     "value": "2",
                                     "type": {
                                         "typeName": "TypeInt32"
@@ -526,6 +553,7 @@ a = (1 + 2) * 3
                                 "operator": "+"
                             },
                             "right": {
+                                "astType": "const",
                                 "value": "3",
                                 "type": {
                                     "typeName": "TypeInt32"
@@ -552,8 +580,10 @@ a(1,2).b[3]++
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
             expect(ast).toEqual({
+                "astType": "block",
                 "variables": {
                     "a": {
+                        "astType": "variable",
                         "identifier": "a"
                     }
                 },
@@ -562,20 +592,27 @@ a(1,2).b[3]++
                 "functions": {},
                 "statements": [
                     {
+                        "astType": "increment",
                         "left": {
+                            "astType": "index",
                             "base": {
+                                "astType": "get",
                                 "base": {
+                                    "astType": "call",
                                     "base": {
+                                        "astType": "variable",
                                         "identifier": "a"
                                     },
                                     "params": [
                                         {
+                                            "astType": "const",
                                             "value": "1",
                                             "type": {
                                                 "typeName": "TypeInt32"
                                             }
                                         },
                                         {
+                                            "astType": "const",
                                             "value": "2",
                                             "type": {
                                                 "typeName": "TypeInt32"
@@ -586,6 +623,7 @@ a(1,2).b[3]++
                                 "identifier": "b"
                             },
                             "index": {
+                                "astType": "const",
                                 "value": "3",
                                 "type": {
                                     "typeName": "TypeInt32"
@@ -611,7 +649,7 @@ while true
             expect(motorParser.errors.length).toBe(0);
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
-            // console.log(JSON.stringify(ast));
+            // console.log(JSON.stringify(cst));
         })
 
         test('function', () => {
@@ -627,7 +665,7 @@ fn a(b: float64): float32
             expect(motorParser.errors.length).toBe(0);
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
-            expect({
+            const astDeLoop = {
                 ...ast,
                 statements: [
                     {
@@ -635,15 +673,20 @@ fn a(b: float64): float32
                         parent: undefined
                     }
                 ]
-            }).toEqual({
+            }
+            console.log(JSON.stringify(astDeLoop));
+            expect(astDeLoop).toEqual({
+                "astType": "block",
                 "variables": {},
                 "classes": {},
                 "structs": {},
                 "functions": {},
                 "statements": [
                     {
+                        "astType": "function",
                         "variables": {
                             "b": {
+                                "astType": "variable",
                                 "identifier": "b",
                                 "type": {
                                     "typeName": "float64",
@@ -656,7 +699,9 @@ fn a(b: float64): float32
                         "functions": {},
                         "statements": [
                             {
+                                "astType": "return",
                                 "expression": {
+                                    "astType": "variable",
                                     "identifier": "b",
                                     "type": {
                                         "typeName": "float64",
@@ -668,6 +713,7 @@ fn a(b: float64): float32
                         "identifier": "a",
                         "params": [
                             {
+                                "astType": "variable",
                                 "identifier": "b",
                                 "type": {
                                     "typeName": "float64",

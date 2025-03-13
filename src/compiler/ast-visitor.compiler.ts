@@ -72,6 +72,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             switch (cst.const[0].tokenType.name) {
                 case Integer.name:
                     return {
+                        astType: 'const',
                         value: cst.const[0].image,
                         type: {
                             typeName: TypeInt32.name,
@@ -79,6 +80,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
                     } as AstConst
                 case Float.name:
                     return {
+                        astType: 'const',
                         value: cst.const[0].image,
                         type: {
                             typeName: TypeFloat32.name,
@@ -86,6 +88,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
                     } as AstConst
                 case Char.name:
                     return {
+                        astType: 'const',
                         value: cst.const[0].image,
                         type: {
                             typeName: TypeChar.name,
@@ -93,6 +96,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
                     } as AstConst
                 case String.name:
                     return {
+                        astType: 'const',
                         value: cst.const[0].image,
                         type: {
                             typeName: TypeString.name,
@@ -100,6 +104,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
                     } as AstConst
                 case Bool.name:
                     return {
+                        astType: 'const',
                         value: cst.const[0].image,
                         type: {
                             typeName: TypeBool.name,
@@ -111,6 +116,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let variable = this.findVariable(cst.variable[0].image, block);
             if (!variable) {
                 variable = {
+                    astType: 'variable',
                     identifier: cst.variable[0].image,
                 }
                 block.variables[cst.variable[0].image] = variable;
@@ -124,6 +130,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
 
     indexExpression(cst: CstIndexExpression['children'], { block, base }: { block: AstBlock, base: AstExpression }) {
         return {
+            astType: 'index',
             base,
             index: this.visit(cst.index[0], block)
         } as AstIndex;
@@ -131,6 +138,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
 
     getExpression(cst: CstGetExpression['children'], { base }: { block: AstBlock, base: AstExpression }) {
         return {
+            astType: 'get',
             base,
             identifier: cst.identifier[0].image
         } as AstGet;
@@ -138,6 +146,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
 
     callExpression(cst: CstCallExpression['children'], { block, base }: { block: AstBlock, base: AstExpression }) {
         return {
+            astType: 'call',
             base,
             params: cst.args?.map(arg => this.visit(arg, block)) ?? []
         } as AstCall;
@@ -152,6 +161,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
                     base = this.visit(operator, { block, base });
                 } else {
                     base = {
+                        astType: 'increment',
                         left: base,
                         operator: operator.image
                     } as AstIncrement;
@@ -166,6 +176,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             return {
+                astType: 'binary',
                 left,
                 right: this.visit(cst.right[0], block),
                 operator: cst.operator[0].image
@@ -178,6 +189,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const right: AstExpression = this.visit(cst.right[0], block);
         if (cst.operator) {
             return {
+                astType: 'unary',
                 right,
                 operator: cst.operator[0].image
             } as AstUnary;
@@ -191,6 +203,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -207,6 +220,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -223,6 +237,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -239,6 +254,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -255,6 +271,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -271,6 +288,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -287,6 +305,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -303,6 +322,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -319,6 +339,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -335,6 +356,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
+                    astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], block),
                     operator: cst.operator[i].image
@@ -349,6 +371,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const test: AstExpression = this.visit(cst.test[0], block);
         if (cst.true && cst.false) {
             return {
+                astType: 'ternary',
                 condition: test,
                 true: this.visit(cst.true[0], block),
                 false: this.visit(cst.false[0], block)
@@ -361,6 +384,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             return {
+                astType: 'binary',
                 left,
                 right: this.visit(cst.right[0], block),
                 operator: cst.operator[0].image
@@ -378,7 +402,8 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const whileBlock: AstBlock = this.visit(cst.block[0], block)
         return {
             test: this.visit(cst.test[0], block),
-            ...whileBlock
+            ...whileBlock,
+            astType: 'while',
         } as AstWhile;
     }
 
@@ -392,12 +417,14 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
 
     returnStatement(cst: CstReturnStatement['children'], block: AstBlock) {
         return {
+            astType: 'return',
             expression: cst.expression ? this.visit(cst.expression[0], block) : undefined,
         } as AstReturn;
     }
 
     functionDeclaration(cst: CstFunctionDeclaration['children'], block: AstBlock) {
         const astFunction: AstFunction = {
+            astType: 'function',
             parent: block,
             variables: {},
             classes: {},
@@ -409,9 +436,10 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         }
         for (let i = 0; i < (cst.paramIdentifiers?.length ?? 0); i++) {
             const param = {
+                astType: 'variable',
                 identifier: cst.paramIdentifiers![i].image,
                 type: cst.paramTypes?.[i] ? this.visit(cst.paramTypes[i], block) : undefined
-            }
+            } as AstVariable;
             astFunction.params!.push(param);
             astFunction.variables[param.identifier] = param;
         }
@@ -424,6 +452,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
 
     block(cst: CstBlock['children'], block?: AstBlock) {
         const astBlock: AstBlock = {
+            astType: 'block',
             parent: block,
             variables: {},
             classes: {},
