@@ -7,7 +7,7 @@ import { AstExpression } from "./ast/expression.statement";
 import { AstBinary } from "./ast/binary.expression";
 import { AstStatement } from "./ast/statement";
 import { CstConditionExpression } from "./cst/condition.expression";
-import { AstTernary } from "./ast/ternary.statement";
+import { AstTernary } from "./ast/ternary.expression";
 import { CstOrExpression } from "./cst/or.expression";
 import { CstAndExpression } from "./cst/and.expression";
 import { CstLOrExpression } from "./cst/lor.expression";
@@ -28,6 +28,21 @@ import { AstConst } from "./ast/const.expression";
 import { AstVariable } from "./ast/variable.expression";
 import { CstXOrExpression } from "./cst/xor.expression";
 import { CstParenExpression } from "./cst/paren.expression";
+import { CstCallExpression } from "./cst/call.expression";
+import { CstGetExpression } from "./cst/get.expression";
+import { AstIncrement } from "./ast/increment.expression";
+import { AstCall } from "./ast/call.posfix";
+import { AstGet } from "./ast/get.postfix";
+import { CstIndexExpression } from "./cst/index.expression";
+import { AstIndex } from "./ast/index.postfix";
+import { CstWhileStatement } from "./cst/while.statement";
+import { AstWhile } from "./ast/while.statement";
+import { CstFunctionDeclaration } from "./cst/function";
+import { AstFunction } from "./ast/function";
+import { CstTypeDeclaration } from "./cst/type.declaration";
+import { AstType } from "./ast/type";
+import { CstReturnStatement } from "./cst/return.statement";
+import { AstReturn } from "./ast/return.expression";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 const BaseVisitorWithDefaults = motorParser.getBaseCstVisitorConstructorWithDefaults();
@@ -107,8 +122,43 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         }
     }
 
+    indexExpression(cst: CstIndexExpression['children'], { block, base }: { block: AstBlock, base: AstExpression }) {
+        return {
+            base,
+            index: this.visit(cst.index[0], block)
+        } as AstIndex;
+    }
+
+    getExpression(cst: CstGetExpression['children'], { base }: { block: AstBlock, base: AstExpression }) {
+        return {
+            base,
+            identifier: cst.identifier[0].image
+        } as AstGet;
+    }
+
+    callExpression(cst: CstCallExpression['children'], { block, base }: { block: AstBlock, base: AstExpression }) {
+        return {
+            base,
+            params: cst.args?.map(arg => this.visit(arg, block)) ?? []
+        } as AstCall;
+    }
+
     postfixExpression(cst: CstPostFixExpression['children'], block: AstBlock) {
         const left: AstExpression = this.visit(cst.left[0], block);
+        if (cst.operators) {
+            let base = left;
+            for (let operator of cst.operators) {
+                if ('name' in operator) {
+                    base = this.visit(operator, { block, base });
+                } else {
+                    base = {
+                        left: base,
+                        operator: operator.image
+                    } as AstIncrement;
+                }
+            }
+            return base;
+        }
         return left;
     }
 
@@ -139,7 +189,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -155,7 +205,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -171,7 +221,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -187,7 +237,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -203,7 +253,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -219,7 +269,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -235,7 +285,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -251,7 +301,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -267,7 +317,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -283,7 +333,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const left: AstExpression = this.visit(cst.left[0], block);
         if (cst.operator && cst.right) {
             let last = left;
-            for(let i = 0; i < cst.operator.length; i++) {
+            for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     left: last,
                     right: this.visit(cst.right[i], block),
@@ -322,6 +372,54 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
     blockStatement(cst: CstBlockStatement['children'], block: AstBlock) {
         const result = this.visit(cst.block, block) as AstBlock;
         return result;
+    }
+
+    whileStatement(cst: CstWhileStatement['children'], block: AstBlock) {
+        const whileBlock: AstBlock = this.visit(cst.block[0], block)
+        return {
+            test: this.visit(cst.test[0], block),
+            ...whileBlock
+        } as AstWhile;
+    }
+
+    typeDeclaration(cst: CstTypeDeclaration['children'], block: AstBlock) {
+        return {
+            typeName: cst.type[0].image,
+            isList: !!cst.isList,
+            index: cst.index ? this.visit(cst.index[0], block) : undefined
+        } as AstType;
+    }
+
+    returnStatement(cst: CstReturnStatement['children'], block: AstBlock) {
+        return {
+            expression: cst.expression ? this.visit(cst.expression[0], block) : undefined,
+        } as AstReturn;
+    }
+
+    functionDeclaration(cst: CstFunctionDeclaration['children'], block: AstBlock) {
+        const astFunction: AstFunction = {
+            parent: block,
+            variables: {},
+            classes: {},
+            structs: {},
+            functions: {},
+            statements: [],
+            identifier: cst.identifier[0].image,
+            params: [],
+        }
+        for (let i = 0; i < (cst.paramIdentifiers?.length ?? 0); i++) {
+            const param = {
+                identifier: cst.paramIdentifiers![i].image,
+                type: cst.paramTypes?.[i] ? this.visit(cst.paramTypes[i], block) : undefined
+            }
+            astFunction.params!.push(param);
+            astFunction.variables[param.identifier] = param;
+        }
+        for (const statement of cst.body[0].children.block[0].children.statements ?? []) {
+            const result: AstStatement = this.visit(statement, astFunction);
+            astFunction.statements.push(result);
+        }
+        return astFunction;
     }
 
     block(cst: CstBlock['children'], block?: AstBlock) {

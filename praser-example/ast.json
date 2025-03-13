@@ -5,28 +5,39 @@
     "functions": {},
     "statements": [
         {
-            "left": {
-                "left": {
-                    "value": "1",
+            "variables": {
+                "b": {
+                    "identifier": "b",
                     "type": {
-                        "typeName": "TypeInt32"
+                        "typeName": "float64",
+                        "isList": false
                     }
-                },
-                "right": {
-                    "value": "2",
-                    "type": {
-                        "typeName": "TypeInt32"
-                    }
-                },
-                "operator": "+"
-            },
-            "right": {
-                "value": "3",
-                "type": {
-                    "typeName": "TypeInt32"
                 }
             },
-            "operator": "-"
+            "classes": {},
+            "structs": {},
+            "functions": {},
+            "statements": [
+                {
+                    "expression": {
+                        "identifier": "b",
+                        "type": {
+                            "typeName": "float64",
+                            "isList": false
+                        }
+                    }
+                }
+            ],
+            "identifier": "a",
+            "params": [
+                {
+                    "identifier": "b",
+                    "type": {
+                        "typeName": "float64",
+                        "isList": false
+                    }
+                }
+            ]
         }
     ]
 }

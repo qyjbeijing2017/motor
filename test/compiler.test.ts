@@ -359,7 +359,6 @@ class b : a
             expect(motorParser.errors.length).toBe(0);
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
-            console.log(JSON.stringify(ast))
             expect(ast).toEqual({
                 "variables": {},
                 "classes": {},
@@ -535,6 +534,147 @@ a = (1 + 2) * 3
                             "operator": "*"
                         },
                         "operator": "="
+                    }
+                ]
+            })
+        })
+
+        test('Postfix', () => {
+            const scriptOnTest = `
+a(1,2).b[3]++
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(ast).toEqual({
+                "variables": {
+                    "a": {
+                        "identifier": "a"
+                    }
+                },
+                "classes": {},
+                "structs": {},
+                "functions": {},
+                "statements": [
+                    {
+                        "left": {
+                            "base": {
+                                "base": {
+                                    "base": {
+                                        "identifier": "a"
+                                    },
+                                    "params": [
+                                        {
+                                            "value": "1",
+                                            "type": {
+                                                "typeName": "TypeInt32"
+                                            }
+                                        },
+                                        {
+                                            "value": "2",
+                                            "type": {
+                                                "typeName": "TypeInt32"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "identifier": "b"
+                            },
+                            "index": {
+                                "value": "3",
+                                "type": {
+                                    "typeName": "TypeInt32"
+                                }
+                            }
+                        },
+                        "operator": "++"
+                    }
+                ]
+            })
+        })
+
+        test('while', () => {
+            const scriptOnTest = `
+while true
+    1 + 2
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            // console.log(JSON.stringify(ast));
+        })
+
+        test('function', () => {
+            const scriptOnTest = `
+fn a(b: float64): float32
+    return b
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect({
+                ...ast,
+                statements: [
+                    {
+                        ...ast.statements[0],
+                        parent: undefined
+                    }
+                ]
+            }).toEqual({
+                "variables": {},
+                "classes": {},
+                "structs": {},
+                "functions": {},
+                "statements": [
+                    {
+                        "variables": {
+                            "b": {
+                                "identifier": "b",
+                                "type": {
+                                    "typeName": "float64",
+                                    "isList": false
+                                }
+                            }
+                        },
+                        "classes": {},
+                        "structs": {},
+                        "functions": {},
+                        "statements": [
+                            {
+                                "expression": {
+                                    "identifier": "b",
+                                    "type": {
+                                        "typeName": "float64",
+                                        "isList": false
+                                    }
+                                }
+                            }
+                        ],
+                        "identifier": "a",
+                        "params": [
+                            {
+                                "identifier": "b",
+                                "type": {
+                                    "typeName": "float64",
+                                    "isList": false
+                                }
+                            }
+                        ]
                     }
                 ]
             })
