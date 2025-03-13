@@ -43,6 +43,9 @@ import { CstTypeDeclaration } from "./cst/type.declaration";
 import { AstType } from "./ast/type";
 import { CstReturnStatement } from "./cst/return.statement";
 import { AstReturn } from "./ast/return.expression";
+import { CstNode } from "chevrotain";
+import { AstContinue } from "./ast/continue.expression";
+import { AstBreak } from "./ast/break.expression";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 const BaseVisitorWithDefaults = motorParser.getBaseCstVisitorConstructorWithDefaults();
@@ -401,8 +404,8 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
     whileStatement(cst: CstWhileStatement['children'], block: AstBlock) {
         const whileBlock: AstBlock = this.visit(cst.block[0], block)
         return {
-            test: this.visit(cst.test[0], block),
             ...whileBlock,
+            test: this.visit(cst.test[0], block),
             astType: 'while',
         } as AstWhile;
     }
@@ -448,6 +451,18 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             astFunction.statements.push(result);
         }
         return astFunction;
+    }
+
+    continueStatement(cst: CstNode['children'], block: AstBlock) {
+        return {
+            astType: 'continue',
+        } as AstContinue;
+    }
+
+    breakStatement(cst: CstNode['children'], block: AstBlock) {
+        return {
+            astType: 'break',
+        } as AstBreak;
     }
 
     block(cst: CstBlock['children'], block?: AstBlock) {

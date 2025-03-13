@@ -312,13 +312,6 @@ class MotorParser extends CstParser {
         this.SUBRULE(this.blockStatement);
     });
 
-    loopStatement = this.RULE("loopStatement", () => {
-        this.OR([
-            { ALT: () => this.SUBRULE(this.whileStatement) },
-            { ALT: () => this.SUBRULE(this.forStatement) },
-        ]);
-    });
-
     returnStatement = this.RULE("returnStatement", () => {
         this.CONSUME(Return);
         this.OPTION(() => this.SUBRULE(this.assignExpression, { LABEL: 'expression' }));
@@ -424,12 +417,21 @@ class MotorParser extends CstParser {
         this.SUBRULE(this.blockStatement);
     });
 
+    continueStatement = this.RULE("continueStatement", () => {
+        this.CONSUME(Continue);
+    });
+
+    breakStatement = this.RULE("breakStatement", () => {
+        this.CONSUME(Break);
+    });
+
     block = this.RULE('block', () => {
         this.MANY(() => {
             this.OR([
                 { ALT: () => this.SUBRULE(this.assignExpression, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.blockStatement, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.loopStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.whileStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.forStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.returnStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.conditionalStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.tryStatement, { LABEL: 'statements' }) },
@@ -438,9 +440,8 @@ class MotorParser extends CstParser {
                 { ALT: () => this.SUBRULE(this.structDeclaration, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.enumDeclaration, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.classDeclaration, { LABEL: 'statements' }) },
-                { ALT: () => this.CONSUME(Continue, { LABEL: 'statements' }) },
-                { ALT: () => this.CONSUME(Break, { LABEL: 'statements' }) },
-                { ALT: () => this.CONSUME(Pass, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.continueStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.breakStatement, { LABEL: 'statements' }) },
             ]);
             this.OPTION(() => this.CONSUME(Semicolon));
         });

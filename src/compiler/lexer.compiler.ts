@@ -97,7 +97,7 @@ export const Throw = createToken({ name: 'Throw', pattern: /throw/, longer_alt: 
 export const Struct = createToken({ name: 'Struct', pattern: /struct/, longer_alt: Identifier });
 export const Enum = createToken({ name: 'Enum', pattern: /enum/, longer_alt: Identifier });
 export const Import = createToken({ name: 'Import', pattern: /import/, longer_alt: Identifier });
-export const Pass = createToken({ name: 'Pass', pattern: /pass/, longer_alt: Identifier });
+export const Pass = createToken({ name: 'Pass', pattern: /pass/, longer_alt: Identifier, group: Lexer.SKIPPED });
 
 export const motorTokens = [
     Comment,
