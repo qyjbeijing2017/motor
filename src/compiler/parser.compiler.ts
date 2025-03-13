@@ -324,14 +324,14 @@ class MotorParser extends CstParser {
 
     conditionalStatement = this.RULE("conditionalStatement", () => {
         this.CONSUME(If);
-        this.SUBRULE(this.assignExpression);
-        this.SUBRULE(this.blockStatement);
+        this.SUBRULE(this.assignExpression, { LABEL: 'test' });
+        this.SUBRULE(this.blockStatement, { LABEL: 'true'});
         this.OPTION(() => {
             this.CONSUME(Else);
             this.OR([
-                { ALT: () => this.SUBRULE1(this.blockStatement) },
-                { ALT: () => this.SUBRULE2(this.conditionalStatement) },
-            ])
+                { ALT: () => this.SUBRULE1(this.blockStatement, { LABEL: "alternate" }) },
+                { ALT: () => this.SUBRULE(this.conditionalStatement, { LABEL: "alternate" }) },
+            ]);
         });
     });
 

@@ -826,6 +826,7 @@ while true
             expect(motorParser.errors.length).toBe(0);
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
+            console.log(JSON.stringify(deLoop(ast)));
             // expect(deLoop(ast)).toEqual({
             //     "astType": "block",
             //     "variables": {
