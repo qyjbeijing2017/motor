@@ -55,7 +55,7 @@ import { AstThrow } from "./ast/throw.statement";
 import { CstTryStatement } from "./cst/try.statement";
 import { AstTry } from "./ast/try.statement";
 import { CstStructDeclaration } from "./cst/struct.declaration";
-import { CstStructMemberDeclaration } from "./cst/struct-member.declearation";
+import { CstStructMemberDeclaration } from "./cst/struct-member.declaration";
 import { AstStruct } from "./ast/struct";
 import { CstFunctionParamDeclaration } from "./cst/function-params.declaration";
 import { CstEnumDeclaration } from "./cst/enum.declaration";
@@ -67,9 +67,8 @@ import { CstClassMemberDeclaration } from "./cst/class-member.declaration";
 import { CstClassVariableDeclaration } from "./cst/class-variable.declaration";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
-const BaseVisitorWithDefaults = motorParser.getBaseCstVisitorConstructorWithDefaults();
 
-class MotorAstVisitor extends BaseVisitorWithDefaults {
+class MotorAstVisitor extends BaseVisitor {
     constructor() {
         super();
         this.validateVisitor();

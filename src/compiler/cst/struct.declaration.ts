@@ -1,5 +1,5 @@
 import { CstNode, IToken } from "chevrotain"
-import { CstStructMemberDeclaration } from "./struct-member.declearation"
+import { CstStructMemberDeclaration } from "./struct-member.declaration"
 
 export interface CstStructDeclaration extends CstNode {
     name: "structDeclaration"
