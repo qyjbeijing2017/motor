@@ -31,6 +31,15 @@ class MotorParser extends CstParser {
         this.CONSUME(RightParen);
     });
 
+    listExpression = this.RULE("listExpression", () => {
+        this.CONSUME(LeftBracket);
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => this.SUBRULE(this.assignExpression, { LABEL: 'elements' }),
+        });
+        this.CONSUME(RightBracket);
+    });
+
     atomicExpression = this.RULE("atomicExpression", () => {
         this.OR([
             { ALT: () => this.CONSUME(Float, { LABEL: 'const' }) },
@@ -45,6 +54,7 @@ class MotorParser extends CstParser {
                 }
             },
             { ALT: () => this.SUBRULE(this.parenExpression, { LABEL: 'paren' }) },
+            { ALT: () => this.SUBRULE(this.listExpression, { LABEL: 'list' }) },
         ]);
     });
 

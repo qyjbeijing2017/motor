@@ -65,6 +65,8 @@ import { CstClassDeclaration } from "./cst/class.declaration";
 import { AstClass } from "./ast/class";
 import { CstClassMemberDeclaration } from "./cst/class-member.declaration";
 import { CstClassVariableDeclaration } from "./cst/class-variable.declaration";
+import { CstListExpression } from "./cst/list.expression";
+import { AstList } from "./ast/list.expression";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 
@@ -82,6 +84,14 @@ class MotorAstVisitor extends BaseVisitor {
             return this.hasVariable(name, block.parent);
         }
         return false;
+    }
+
+    listExpression(cst: CstListExpression['children'], parent: AstBlock | AstClass) {
+        const list: AstList = {
+            astType: 'list',
+            elements: cst.elements?.map(element => this.visit(element, parent)) ?? []
+        };
+        return list;
     }
 
     parenExpression(cst: CstParenExpression['children'], parent: AstBlock | AstClass) {
@@ -145,6 +155,10 @@ class MotorAstVisitor extends BaseVisitor {
         if (cst.paren) {
             return this.visit(cst.paren[0], parent);
         }
+        if (cst.list) {
+            return this.visit(cst.list[0], parent);
+        }
+
     }
 
     indexExpression(cst: CstIndexExpression['children'], { parent, base }: { parent: AstBlock | AstClass, base: AstExpression }) {
@@ -462,7 +476,7 @@ class MotorAstVisitor extends BaseVisitor {
         } as AstReturn;
     }
 
-    functionParam(cst: CstFunctionParamDeclaration['children'],  fn: AstFunction ) {
+    functionParam(cst: CstFunctionParamDeclaration['children'], fn: AstFunction) {
         const identifier = cst.identifier[0].image;
         if (identifier in fn.members) {
             throw new Error(`Identifier ${identifier} already declared`);

@@ -13,7 +13,6 @@ import {
     motorAstVisitor,
     AstBlock,
     AstBranch,
-    AstStatement,
     AstClass,
 } from '../src';
 import { AstTry } from '../src/compiler/ast/try.statement';
@@ -1318,6 +1317,138 @@ class c1
                     }
                 },
                 "statements": []
+            });
+        })
+
+        test('list', () => {
+            const scriptOnTest = `
+a = []
+b = [1,2,3]
+c = [[1,2],[3,4]]
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(deLoop(ast)).toEqual({
+                "astType": "block",
+                "members": {
+                    "a": {
+                        "astType": "variable",
+                        "identifier": "a"
+                    },
+                    "b": {
+                        "astType": "variable",
+                        "identifier": "b"
+                    },
+                    "c": {
+                        "astType": "variable",
+                        "identifier": "c"
+                    }
+                },
+                "statements": [
+                    {
+                        "astType": "binary",
+                        "left": {
+                            "astType": "variable",
+                            "identifier": "a"
+                        },
+                        "right": {
+                            "astType": "list",
+                            "elements": []
+                        },
+                        "operator": "="
+                    },
+                    {
+                        "astType": "binary",
+                        "left": {
+                            "astType": "variable",
+                            "identifier": "b"
+                        },
+                        "right": {
+                            "astType": "list",
+                            "elements": [
+                                {
+                                    "astType": "const",
+                                    "value": "1",
+                                    "type": {
+                                        "typeName": "TypeInt32"
+                                    }
+                                },
+                                {
+                                    "astType": "const",
+                                    "value": "2",
+                                    "type": {
+                                        "typeName": "TypeInt32"
+                                    }
+                                },
+                                {
+                                    "astType": "const",
+                                    "value": "3",
+                                    "type": {
+                                        "typeName": "TypeInt32"
+                                    }
+                                }
+                            ]
+                        },
+                        "operator": "="
+                    },
+                    {
+                        "astType": "binary",
+                        "left": {
+                            "astType": "variable",
+                            "identifier": "c"
+                        },
+                        "right": {
+                            "astType": "list",
+                            "elements": [
+                                {
+                                    "astType": "list",
+                                    "elements": [
+                                        {
+                                            "astType": "const",
+                                            "value": "1",
+                                            "type": {
+                                                "typeName": "TypeInt32"
+                                            }
+                                        },
+                                        {
+                                            "astType": "const",
+                                            "value": "2",
+                                            "type": {
+                                                "typeName": "TypeInt32"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "astType": "list",
+                                    "elements": [
+                                        {
+                                            "astType": "const",
+                                            "value": "3",
+                                            "type": {
+                                                "typeName": "TypeInt32"
+                                            }
+                                        },
+                                        {
+                                            "astType": "const",
+                                            "value": "4",
+                                            "type": {
+                                                "typeName": "TypeInt32"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "operator": "="
+                    }
+                ]
             });
         })
     })

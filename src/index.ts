@@ -62,3 +62,4 @@ export { AstReturn } from './compiler/ast/return.statement';
 export { AstTernary } from './compiler/ast/ternary.expression';
 export { AstConst } from './compiler/ast/const.expression';
 export { AstType } from './compiler/ast/type';
+export { AstList as AstListExpression } from './compiler/ast/list.expression';
