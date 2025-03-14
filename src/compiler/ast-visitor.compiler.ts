@@ -31,8 +31,8 @@ import { CstParenExpression } from "./cst/paren.expression";
 import { CstCallExpression } from "./cst/call.expression";
 import { CstGetExpression } from "./cst/get.expression";
 import { AstIncrement } from "./ast/increment.expression";
-import { AstCall } from "./ast/call.posfix";
-import { AstGet } from "./ast/get.postfix";
+import { AstCall } from "./ast/call.postfix";
+import { AstMember } from "./ast/member.postfix";
 import { CstIndexExpression } from "./cst/index.expression";
 import { AstIndex } from "./ast/index.postfix";
 import { CstWhileStatement } from "./cst/while.statement";
@@ -42,10 +42,18 @@ import { AstFunction } from "./ast/function";
 import { CstTypeDeclaration } from "./cst/type.declaration";
 import { AstType } from "./ast/type";
 import { CstReturnStatement } from "./cst/return.statement";
-import { AstReturn } from "./ast/return.expression";
+import { AstReturn } from "./ast/return.statement";
 import { CstNode } from "chevrotain";
 import { AstContinue } from "./ast/continue.expression";
 import { AstBreak } from "./ast/break.expression";
+import { CstConditionalStatement } from "./cst/conditional.statement";
+import { AstBranch } from "./ast/branch.statement";
+import { CstForStatement } from "./cst/for.statement";
+import { AstFor } from "./ast/for.statement";
+import { CstThrowStatement } from "./cst/throw.statement";
+import { AstThrow } from "./ast/throw.statement";
+import { CstTryStatement } from "./cst/try.statement";
+import { AstTry } from "./ast/try.statement";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 const BaseVisitorWithDefaults = motorParser.getBaseCstVisitorConstructorWithDefaults();
@@ -139,12 +147,12 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         } as AstIndex;
     }
 
-    getExpression(cst: CstGetExpression['children'], { base }: { block: AstBlock, base: AstExpression }) {
+    memberExpression(cst: CstGetExpression['children'], { base }: { block: AstBlock, base: AstExpression }) {
         return {
             astType: 'get',
             base,
             identifier: cst.identifier[0].image
-        } as AstGet;
+        } as AstMember;
     }
 
     callExpression(cst: CstCallExpression['children'], { block, base }: { block: AstBlock, base: AstExpression }) {
@@ -410,6 +418,31 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         } as AstWhile;
     }
 
+    forStatement(cst: CstForStatement['children'], block: AstBlock) {
+        const forBlock: AstFor = {
+            astType: 'for',
+            parent: block,
+            variables: {},
+            classes: {},
+            structs: {},
+            functions: {},
+            statements: [],
+            iterable: this.visit(cst.iterable[0], block) as AstExpression,
+        }
+        const identifier = cst.identifier[0].image;
+        const variable = {
+            astType: 'variable',
+            identifier,
+        } as AstVariable;
+        forBlock.variables[identifier] = variable;
+        forBlock.statements.push(variable);
+        for (const statement of cst.body[0].children.block[0].children.statements ?? []) {
+            const result: AstStatement = this.visit(statement, forBlock);
+            forBlock.statements.push(result);
+        }
+        return forBlock;
+    }
+
     typeDeclaration(cst: CstTypeDeclaration['children'], block: AstBlock) {
         return {
             typeName: cst.type[0].image,
@@ -463,6 +496,53 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return {
             astType: 'break',
         } as AstBreak;
+    }
+
+    throwStatement(cst: CstThrowStatement['children'], block: AstBlock) {
+        return {
+            astType: 'throw',
+            expression: this.visit(cst.expression[0], block)
+        } as AstThrow;
+    }
+
+    tryStatement(cst: CstTryStatement['children'], block: AstBlock) {
+        const tryBlock: AstTry = {
+            ...this.visit(cst.try[0], block),
+            astType: 'try',
+            catch: {
+                astType: 'block',
+                parent: block,
+                variables: {},
+                classes: {},
+                structs: {},
+                functions: {},
+                statements: []
+            },
+            finally: 'finally' in cst && this.visit(cst.finally![0], block)
+        }
+        if('catchIdentifier' in cst) {
+            tryBlock.catch.variables[cst.catchIdentifier![0].image] = {
+                astType: 'variable',
+                identifier: cst.catchIdentifier![0].image,
+            } as AstVariable;
+        }
+        for (const statement of cst.catch[0].children.block[0].children.statements ?? []) {
+            const result: AstStatement = this.visit(statement, tryBlock.catch);
+            tryBlock.catch.statements.push(result);
+        }
+        return tryBlock;
+    }
+
+    conditionalStatement(cst: CstConditionalStatement['children'], block: AstBlock) {
+        const test = this.visit(cst.test[0], block);
+        const trueBlock = this.visit(cst.true[0], block);
+        const falseBlock = 'alternate' in cst && this.visit(cst.alternate![0], block);
+        return {
+            ...trueBlock,
+            astType: 'branch',
+            test,
+            false: falseBlock
+        } as AstBranch;
     }
 
     block(cst: CstBlock['children'], block?: AstBlock) {

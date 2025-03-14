@@ -2,10 +2,10 @@ import { CstNode } from "chevrotain"
 import { CstOrExpression } from "./or.expression"
 
 export interface CstConditionExpression extends CstNode {
-    name: "conditionalExpression"
+    name: "conditional"
     children: {
         test: [CstOrExpression]
-        true?: [CstConditionExpression]
+        true: [CstConditionExpression]
         false?: [CstConditionExpression]
     }
 }

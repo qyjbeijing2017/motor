@@ -1,6 +1,6 @@
 import { AstPostFix } from "./postfix.expression";
 
-export interface AstGet extends AstPostFix {
+export interface AstMember extends AstPostFix {
     astType: 'get';
     identifier: string;
 }

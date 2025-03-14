@@ -1,5 +1,4 @@
-import { CstNode, IToken } from "chevrotain"
-import { CstRelationExpression } from "./relation.expression"
+import { CstNode } from "chevrotain"
 import { CstBlockStatement } from "./block.statement"
 import { CstAssignmentExpression } from "./assign.expression"
 

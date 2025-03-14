@@ -63,7 +63,7 @@ class MotorParser extends CstParser {
         this.CONSUME(RightParen);
     });
 
-    getExpression = this.RULE("getExpression", () => {
+    memberExpression = this.RULE("memberExpression", () => {
         this.CONSUME(Dot);
         this.CONSUME(Identifier, { LABEL: 'identifier' });
     });
@@ -72,7 +72,7 @@ class MotorParser extends CstParser {
         this.SUBRULE(this.atomicExpression, { LABEL: "left" });
         this.MANY(() => {
             this.OR([
-                { ALT: () => this.SUBRULE(this.getExpression, { LABEL: "operators" }) },
+                { ALT: () => this.SUBRULE(this.memberExpression, { LABEL: "operators" }) },
                 { ALT: () => this.SUBRULE(this.callExpression, { LABEL: "operators" }) },
                 { ALT: () => this.SUBRULE(this.indexExpression, { LABEL: "operators" }) },
                 { ALT: () => this.CONSUME(Increment, { LABEL: "operators" }) },
@@ -306,10 +306,10 @@ class MotorParser extends CstParser {
 
     forStatement = this.RULE("forStatement", () => {
         this.CONSUME(For);
-        this.CONSUME(Identifier);
+        this.CONSUME(Identifier, { LABEL: 'identifier' });
         this.CONSUME(In);
-        this.SUBRULE(this.assignExpression);
-        this.SUBRULE(this.blockStatement);
+        this.SUBRULE(this.assignExpression, { LABEL: 'iterable' });
+        this.SUBRULE(this.blockStatement, { LABEL: 'body' });
     });
 
     returnStatement = this.RULE("returnStatement", () => {
@@ -325,7 +325,7 @@ class MotorParser extends CstParser {
     conditionalStatement = this.RULE("conditionalStatement", () => {
         this.CONSUME(If);
         this.SUBRULE(this.assignExpression, { LABEL: 'test' });
-        this.SUBRULE(this.blockStatement, { LABEL: 'true'});
+        this.SUBRULE(this.blockStatement, { LABEL: 'true' });
         this.OPTION(() => {
             this.CONSUME(Else);
             this.OR([
@@ -353,13 +353,13 @@ class MotorParser extends CstParser {
 
     tryStatement = this.RULE("tryStatement", () => {
         this.CONSUME(Try);
-        this.SUBRULE(this.blockStatement);
+        this.SUBRULE(this.blockStatement, { LABEL: 'try' });
         this.CONSUME(Catch);
-        this.OPTION(() => this.CONSUME(Identifier));
-        this.SUBRULE1(this.blockStatement);
+        this.OPTION(() => this.CONSUME(Identifier, { LABEL: 'catchIdentifier' }));
+        this.SUBRULE1(this.blockStatement, { LABEL: 'catch' });
         this.OPTION1(() => {
             this.CONSUME(Finally);
-            this.SUBRULE2(this.blockStatement);
+            this.SUBRULE2(this.blockStatement, { LABEL: 'finally' });
         });
     });
 

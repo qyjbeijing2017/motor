@@ -1,5 +1,5 @@
 import {
-    motorLexer, motorTokens,
+    motorLexer,
     Integer, Float, Char, String, Bool,
     LShiftEqual, RShiftEqual,
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift,
@@ -9,11 +9,11 @@ import {
     Identifier,
     Indent,
     Dedent,
-    Newline,
     motorParser,
     motorAstVisitor,
+    AstBlock,
+    AstBranch,
 } from '../src';
-import { AstBlock } from '../src/compiler/ast/block';
 describe('Memory', () => {
     test('Lexer', () => {
         const scriptOnTest = `
@@ -355,11 +355,18 @@ class b : a
                 if (
                     statement.astType === 'block' ||
                     statement.astType === 'while' ||
-                    statement.astType === 'function'
+                    statement.astType === 'function' ||
+                    statement.astType === 'branch' || 
+                    statement.astType === 'for'
                 ) {
                     deLoop(statement as AstBlock);
                 }
             })
+            if (ast.astType === 'branch') {
+                const branch = (ast as AstBranch);
+                if (branch.false)
+                    deLoop(branch.false);
+            }
             return ast;
         }
 
@@ -808,6 +815,129 @@ fn a()
             })
         })
 
+        test('if', () => {
+            const scriptOnTest = `
+if true
+    1 + 2
+else if false
+    3 + 4
+else
+    5 + 6
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(deLoop(ast)).toEqual({
+                "astType": "block",
+                "variables": {},
+                "classes": {},
+                "structs": {},
+                "functions": {},
+                "statements": [
+                    {
+                        "astType": "branch",
+                        "variables": {},
+                        "classes": {},
+                        "structs": {},
+                        "functions": {},
+                        "statements": [
+                            {
+                                "astType": "binary",
+                                "left": {
+                                    "astType": "const",
+                                    "value": "1",
+                                    "type": {
+                                        "typeName": "TypeInt32"
+                                    }
+                                },
+                                "right": {
+                                    "astType": "const",
+                                    "value": "2",
+                                    "type": {
+                                        "typeName": "TypeInt32"
+                                    }
+                                },
+                                "operator": "+"
+                            }
+                        ],
+                        "test": {
+                            "astType": "const",
+                            "value": "true",
+                            "type": {
+                                "typeName": "TypeBool"
+                            }
+                        },
+                        "false": {
+                            "astType": "branch",
+                            "variables": {},
+                            "classes": {},
+                            "structs": {},
+                            "functions": {},
+                            "statements": [
+                                {
+                                    "astType": "binary",
+                                    "left": {
+                                        "astType": "const",
+                                        "value": "3",
+                                        "type": {
+                                            "typeName": "TypeInt32"
+                                        }
+                                    },
+                                    "right": {
+                                        "astType": "const",
+                                        "value": "4",
+                                        "type": {
+                                            "typeName": "TypeInt32"
+                                        }
+                                    },
+                                    "operator": "+"
+                                }
+                            ],
+                            "test": {
+                                "astType": "const",
+                                "value": "false",
+                                "type": {
+                                    "typeName": "TypeBool"
+                                }
+                            },
+                            "false": {
+                                "astType": "block",
+                                "variables": {},
+                                "classes": {},
+                                "structs": {},
+                                "functions": {},
+                                "statements": [
+                                    {
+                                        "astType": "binary",
+                                        "left": {
+                                            "astType": "const",
+                                            "value": "5",
+                                            "type": {
+                                                "typeName": "TypeInt32"
+                                            }
+                                        },
+                                        "right": {
+                                            "astType": "const",
+                                            "value": "6",
+                                            "type": {
+                                                "typeName": "TypeInt32"
+                                            }
+                                        },
+                                        "operator": "+"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            })
+        })
+
         test('continue&break', () => {
             const scriptOnTest = `
 a = 1
@@ -827,94 +957,185 @@ while true
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
             console.log(JSON.stringify(deLoop(ast)));
-            // expect(deLoop(ast)).toEqual({
-            //     "astType": "block",
-            //     "variables": {
-            //         "a": {
-            //             "astType": "variable",
-            //             "identifier": "a"
-            //         }
-            //     },
-            //     "classes": {},
-            //     "structs": {},
-            //     "functions": {},
-            //     "statements": [
-            //         {
-            //             "astType": "increment",
-            //             "left": {
-            //                 "astType": "variable",
-            //                 "identifier": "a"
-            //             },
-            //             "operator": "++"
-            //         },
-            //         {
-            //             "test": {
-            //                 "astType": "binary",
-            //                 "left": {
-            //                     "astType": "binary",
-            //                     "left": {
-            //                         "astType": "variable",
-            //                         "identifier": "a"
-            //                     },
-            //                     "right": {
-            //                         "astType": "const",
-            //                         "value": "2",
-            //                         "type": {
-            //                             "typeName": "TypeInt32"
-            //                         }
-            //                     },
-            //                     "operator": "%"
-            //                 },
-            //                 "right": {
-            //                     "astType": "const",
-            //                     "value": "0",
-            //                     "type": {
-            //                         "typeName": "TypeInt32"
-            //                     }
-            //                 },
-            //                 "operator": "=="
-            //             },
-            //             "astType": "if",
-            //             "variables": {},
-            //             "classes": {},
-            //             "structs": {},
-            //             "functions": {},
-            //             "statements": [
-            //                 {
-            //                     "astType": "continue"
-            //                 }
-            //             ]
-            //         },
-            //         {
-            //             "test": {
-            //                 "astType": "binary",
-            //                 "left": {
-            //                     "astType": "variable",
-            //                     "identifier": "a"
-            //                 },
-            //                 "right": {
-            //                     "astType": "const",
-            //                     "value": "10",
-            //                     "type": {
-            //                         "typeName": "TypeInt32"
-            //                     }
-            //                 },
-            //                 "operator": ">"
-            //             },
-            //             "astType": "if",
-            //             "variables": {},
-            //             "classes": {},
-            //             "structs": {},
-            //             "functions": {},
-            //             "statements": [
-            //                 {
-            //                     "astType": "break"
-            //                 }
-            //             ]
-            //         }
-            //     ]
+            expect(deLoop(ast)).toEqual({
+                "astType": "block",
+                "variables": {
+                    "a": {
+                        "astType": "variable",
+                        "identifier": "a"
+                    }
+                },
+                "classes": {},
+                "structs": {},
+                "functions": {},
+                "statements": [
+                    {
+                        "astType": "binary",
+                        "left": {
+                            "astType": "variable",
+                            "identifier": "a"
+                        },
+                        "right": {
+                            "astType": "const",
+                            "value": "1",
+                            "type": {
+                                "typeName": "TypeInt32"
+                            }
+                        },
+                        "operator": "="
+                    },
+                    {
+                        "astType": "while",
+                        "variables": {},
+                        "classes": {},
+                        "structs": {},
+                        "functions": {},
+                        "statements": [
+                            {
+                                "astType": "increment",
+                                "left": {
+                                    "astType": "variable",
+                                    "identifier": "a"
+                                },
+                                "operator": "++"
+                            },
+                            {
+                                "astType": "branch",
+                                "variables": {},
+                                "classes": {},
+                                "structs": {},
+                                "functions": {},
+                                "statements": [
+                                    {
+                                        "astType": "continue"
+                                    }
+                                ],
+                                "test": {
+                                    "astType": "binary",
+                                    "left": {
+                                        "astType": "binary",
+                                        "left": {
+                                            "astType": "variable",
+                                            "identifier": "a"
+                                        },
+                                        "right": {
+                                            "astType": "const",
+                                            "value": "2",
+                                            "type": {
+                                                "typeName": "TypeInt32"
+                                            }
+                                        },
+                                        "operator": "%"
+                                    },
+                                    "right": {
+                                        "astType": "const",
+                                        "value": "0",
+                                        "type": {
+                                            "typeName": "TypeInt32"
+                                        }
+                                    },
+                                    "operator": "=="
+                                },
+                                "false": false
+                            },
+                            {
+                                "astType": "branch",
+                                "variables": {},
+                                "classes": {},
+                                "structs": {},
+                                "functions": {},
+                                "statements": [
+                                    {
+                                        "astType": "break"
+                                    }
+                                ],
+                                "test": {
+                                    "astType": "binary",
+                                    "left": {
+                                        "astType": "variable",
+                                        "identifier": "a"
+                                    },
+                                    "right": {
+                                        "astType": "const",
+                                        "value": "10",
+                                        "type": {
+                                            "typeName": "TypeInt32"
+                                        }
+                                    },
+                                    "operator": ">"
+                                },
+                                "false": false
+                            }
+                        ],
+                        "test": {
+                            "astType": "const",
+                            "value": "true",
+                            "type": {
+                                "typeName": "TypeBool"
+                            }
+                        }
+                    }
+                ]
+            })
+        })
 
-            // })
+        test('for', () => {
+            const scriptOnTest = `
+for a in b
+    a++
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(deLoop(ast)).toEqual({
+                "astType": "block",
+                "variables": {
+                    "b": {
+                        "astType": "variable",
+                        "identifier": "b"
+                    }
+                },
+                "classes": {},
+                "structs": {},
+                "functions": {},
+                "statements": [
+                    {
+                        "astType": "for",
+                        "variables": {
+                            "a": {
+                                "astType": "variable",
+                                "identifier": "a"
+                            }
+                        },
+                        "classes": {},
+                        "structs": {},
+                        "functions": {},
+                        "statements": [
+                            {
+                                "astType": "variable",
+                                "identifier": "a"
+                            },
+                            {
+                                "astType": "increment",
+                                "left": {
+                                    "astType": "variable",
+                                    "identifier": "a"
+                                },
+                                "operator": "++"
+                            }
+                        ],
+                        "iterable": {
+                            "astType": "variable",
+                            "identifier": "b"
+                        }
+                    }
+                ]
+            })
         })
 
     })

@@ -5,7 +5,7 @@ import { AstStruct } from "./struct";
 import { AstVariable } from "./variable.expression";
 
 export interface AstBlock extends AstStatement {
-    astType: 'block' | 'while' | 'function'
+    astType: 'block' | 'while' | 'function' | 'branch' | 'for' | 'try'
     parent?: AstBlock;
     variables: {
         [name: string]: AstVariable

@@ -1,0 +1,44 @@
+{
+    "astType": "block",
+    "variables": {
+        "b": {
+            "astType": "variable",
+            "identifier": "b"
+        }
+    },
+    "classes": {},
+    "structs": {},
+    "functions": {},
+    "statements": [
+        {
+            "astType": "for",
+            "variables": {
+                "a": {
+                    "astType": "variable",
+                    "identifier": "a"
+                }
+            },
+            "classes": {},
+            "structs": {},
+            "functions": {},
+            "statements": [
+                {
+                    "astType": "variable",
+                    "identifier": "a"
+                },
+                {
+                    "astType": "increment",
+                    "left": {
+                        "astType": "variable",
+                        "identifier": "a"
+                    },
+                    "operator": "++"
+                }
+            ],
+            "iterable": {
+                "astType": "variable",
+                "identifier": "b"
+            }
+        }
+    ]
+}
