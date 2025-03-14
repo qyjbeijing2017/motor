@@ -319,7 +319,7 @@ class MotorParser extends CstParser {
 
     throwStatement = this.RULE("throwStatement", () => {
         this.CONSUME(Throw);
-        this.SUBRULE(this.assignExpression);
+        this.SUBRULE(this.assignExpression, { LABEL: 'expression' });
     });
 
     conditionalStatement = this.RULE("conditionalStatement", () => {
@@ -335,6 +335,11 @@ class MotorParser extends CstParser {
         });
     });
 
+    functionParam = this.RULE("functionParam", () => {
+        this.CONSUME1(Identifier, { LABEL: 'identifier' });
+        this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: 'type' }));
+    });
+
     functionDeclaration = this.RULE("functionDeclaration", () => {
         this.CONSUME(Function);
         this.CONSUME(Identifier, { LABEL: 'identifier' });
@@ -342,8 +347,7 @@ class MotorParser extends CstParser {
         this.MANY_SEP({
             SEP: Comma,
             DEF: () => {
-                this.CONSUME1(Identifier, { LABEL: 'paramIdentifiers' });
-                this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: 'paramTypes' }));
+                this.SUBRULE(this.functionParam, { LABEL: 'params' });
             }
         });
         this.CONSUME(RightParen);
@@ -363,58 +367,89 @@ class MotorParser extends CstParser {
         });
     });
 
+    structMemberDeclaration = this.RULE("structMemberDeclaration", () => {
+        this.OR([
+            {
+                ALT: () => {
+                    this.CONSUME1(Identifier, { LABEL: "identifier" });
+                    this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: "type" }));
+                    this.OPTION1(() => {
+                        this.CONSUME(Equal);
+                        this.SUBRULE(this.assignExpression, { LABEL: "defaultValue" });
+                    })
+                }
+            },
+            { ALT: () => this.CONSUME(Pass) },
+        ]);
+    });
+
     structDeclaration = this.RULE("structDeclaration", () => {
         this.CONSUME(Struct);
-        this.CONSUME(Identifier, { LABEL: "name" });
+        this.CONSUME(Identifier, { LABEL: "identifier" });
         this.CONSUME(Indent);
         this.MANY(() => {
-            this.OR([
-                {
-                    ALT: () => {
-                        this.CONSUME1(Identifier);
-                        this.OPTION(() => this.SUBRULE(this.typeDeclaration));
-                        this.OPTION1(() => {
-                            this.CONSUME(Equal);
-                            this.SUBRULE(this.assignExpression);
-                        })
-                    }
-                },
-                { ALT: () => this.CONSUME(Pass) },
-            ]);
+            this.SUBRULE(this.structMemberDeclaration, { LABEL: "members" });
         });
         this.CONSUME(Dedent);
+    });
+
+    enumMemberDeclaration = this.RULE("enumMemberDeclaration", () => {
+        this.OR([
+            {
+                ALT: () => {
+                    this.CONSUME1(Identifier, { LABEL: "identifier" });
+                    this.OPTION1(() => {
+                        this.CONSUME(Equal);
+                        this.SUBRULE(this.assignExpression, { LABEL: "value" });
+                    });
+                }
+            },
+            { ALT: () => this.CONSUME(Pass) },
+        ]);
     });
 
     enumDeclaration = this.RULE("enumDeclaration", () => {
         this.CONSUME(Enum);
-        this.CONSUME(Identifier, { LABEL: "name" });
-        this.OPTION(() => this.SUBRULE(this.typeDeclaration));
+        this.CONSUME(Identifier, { LABEL: "identifier" });
+        this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: "type" }));
         this.CONSUME(Indent);
         this.MANY(() => {
-            this.OR([
-                {
-                    ALT: () => {
-                        this.CONSUME1(Identifier)
-                        this.OPTION1(() => {
-                            this.CONSUME(Equal);
-                            this.SUBRULE(this.assignExpression);
-                        });
-                    }
-                },
-                { ALT: () => this.CONSUME(Pass) },
-            ]);
+            this.SUBRULE(this.enumMemberDeclaration, { LABEL: "members" });
         });
         this.CONSUME(Dedent);
     });
 
+    classVariableDeclaration = this.RULE("classVariableDeclaration", () => {
+        this.CONSUME1(Identifier, { LABEL: "identifier" });
+        this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: "type" }));
+        this.OPTION1(() => {
+            this.CONSUME(Equal);
+            this.SUBRULE(this.assignExpression, { LABEL: "defaultValue" });
+        });
+    });
+
+    classMemberDeclaration = this.RULE("classMemberDeclaration", () => {
+        this.OR([
+            { ALT: () => this.SUBRULE(this.classVariableDeclaration, { LABEL: 'variables' }) },
+            { ALT: () => this.SUBRULE(this.functionDeclaration, { LABEL: 'functions' }) },
+            { ALT: () => this.SUBRULE(this.structDeclaration, { LABEL: 'structs' }) },
+            { ALT: () => this.SUBRULE(this.enumDeclaration, { LABEL: 'enums' }) },
+            { ALT: () => this.SUBRULE(this.classDeclaration, { LABEL: 'classes' }) },
+        ]);
+    });
+
     classDeclaration = this.RULE("classDeclaration", () => {
         this.CONSUME(Class);
-        this.CONSUME(Identifier, { LABEL: "name" });
+        this.CONSUME(Identifier, { LABEL: "identifier" });
         this.OPTION(() => {
             this.CONSUME(Colon);
             this.CONSUME1(Identifier);
         });
-        this.SUBRULE(this.blockStatement);
+        this.CONSUME(Indent);
+        this.MANY(() => {
+            this.SUBRULE(this.classMemberDeclaration, { LABEL: "members" });
+        });
+        this.CONSUME(Dedent)
     });
 
     continueStatement = this.RULE("continueStatement", () => {

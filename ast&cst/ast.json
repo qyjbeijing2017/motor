@@ -1,44 +1,39 @@
 {
     "astType": "block",
-    "variables": {
-        "b": {
-            "astType": "variable",
-            "identifier": "b"
-        }
-    },
-    "classes": {},
-    "structs": {},
-    "functions": {},
-    "statements": [
-        {
-            "astType": "for",
-            "variables": {
-                "a": {
+    "members": {
+        "a": {
+            "astType": "struct",
+            "members": {
+                "b": {
                     "astType": "variable",
-                    "identifier": "a"
-                }
-            },
-            "classes": {},
-            "structs": {},
-            "functions": {},
-            "statements": [
-                {
-                    "astType": "variable",
-                    "identifier": "a"
+                    "identifier": "b",
+                    "type": {
+                        "typeName": "float64",
+                        "isList": false
+                    }
                 },
-                {
-                    "astType": "increment",
-                    "left": {
-                        "astType": "variable",
-                        "identifier": "a"
-                    },
-                    "operator": "++"
+                "c": {
+                    "astType": "variable",
+                    "identifier": "c",
+                    "type": {
+                        "typeName": "float32",
+                        "isList": false
+                    }
+                },
+                "d": {
+                    "astType": "variable",
+                    "identifier": "d",
+                    "type": {
+                        "typeName": "int",
+                        "isList": false
+                    }
+                },
+                "e": {
+                    "astType": "variable",
+                    "identifier": "e"
                 }
-            ],
-            "iterable": {
-                "astType": "variable",
-                "identifier": "b"
             }
         }
-    ]
+    },
+    "statements": []
 }

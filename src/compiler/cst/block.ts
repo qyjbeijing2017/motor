@@ -1,14 +1,8 @@
-import { CstAssignmentExpression } from "./assign.expression";
-import { CstBlockStatement } from "./block.statement";
-import { CstFunctionDeclaration } from "./function";
+import { CstNode } from "chevrotain";
 
 export interface CstBlock {
     name: "block",
     children: {
-        statements?: (
-            CstAssignmentExpression | 
-            CstBlockStatement |
-            CstFunctionDeclaration
-        )[];
+        statements?: CstNode[];
     }
 }

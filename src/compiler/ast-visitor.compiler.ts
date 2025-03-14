@@ -37,7 +37,7 @@ import { CstIndexExpression } from "./cst/index.expression";
 import { AstIndex } from "./ast/index.postfix";
 import { CstWhileStatement } from "./cst/while.statement";
 import { AstWhile } from "./ast/while.statement";
-import { CstFunctionDeclaration } from "./cst/function";
+import { CstFunctionDeclaration } from "./cst/function.declaration";
 import { AstFunction } from "./ast/function";
 import { CstTypeDeclaration } from "./cst/type.declaration";
 import { AstType } from "./ast/type";
@@ -54,6 +54,10 @@ import { CstThrowStatement } from "./cst/throw.statement";
 import { AstThrow } from "./ast/throw.statement";
 import { CstTryStatement } from "./cst/try.statement";
 import { AstTry } from "./ast/try.statement";
+import { CstStructDeclaration } from "./cst/struct.declaration";
+import { CstStructMemberDeclaration } from "./cst/struct-member.declearation";
+import { AstStruct } from "./ast/struct";
+import { CstFunctionParamDeclaration } from "./cst/function-params.declaration";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 const BaseVisitorWithDefaults = motorParser.getBaseCstVisitorConstructorWithDefaults();
@@ -64,14 +68,14 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         this.validateVisitor();
     }
 
-    findVariable(name: string, block: AstBlock): AstVariable | null {
-        if (block.variables[name]) {
-            return block.variables[name];
+    hasVariable(name: string, block: AstBlock): boolean {
+        if (block.members[name]) {
+            return true;
         }
         if (block.parent) {
-            return this.findVariable(name, block.parent);
+            return this.hasVariable(name, block.parent);
         }
-        return null;
+        return false;
     }
 
     parenExpression(cst: CstParenExpression['children'], block: AstBlock) {
@@ -124,15 +128,13 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             }
         }
         if (cst.variable) {
-            let variable = this.findVariable(cst.variable[0].image, block);
-            if (!variable) {
-                variable = {
+            if (!(cst.variable[0].image in block.members)) {
+                block.members[cst.variable[0].image] = {
                     astType: 'variable',
                     identifier: cst.variable[0].image,
-                }
-                block.variables[cst.variable[0].image] = variable;
+                };
             }
-            return variable;
+            return block.members[cst.variable[0].image];
         }
         if (cst.paren) {
             return this.visit(cst.paren[0], block);
@@ -422,23 +424,19 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         const forBlock: AstFor = {
             astType: 'for',
             parent: block,
-            variables: {},
-            classes: {},
-            structs: {},
-            functions: {},
+            members: {
+                [cst.identifier[0].image]: {
+                    astType: 'variable',
+                    identifier: cst.identifier[0].image,
+                },
+            },
             statements: [],
             iterable: this.visit(cst.iterable[0], block) as AstExpression,
         }
-        const identifier = cst.identifier[0].image;
-        const variable = {
-            astType: 'variable',
-            identifier,
-        } as AstVariable;
-        forBlock.variables[identifier] = variable;
-        forBlock.statements.push(variable);
         for (const statement of cst.body[0].children.block[0].children.statements ?? []) {
             const result: AstStatement = this.visit(statement, forBlock);
-            forBlock.statements.push(result);
+            if (result)
+                forBlock.statements.push(result);
         }
         return forBlock;
     }
@@ -458,32 +456,33 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         } as AstReturn;
     }
 
+    functionParam(cst: CstFunctionParamDeclaration['children'], block: AstBlock) {
+        const variable: AstVariable = {
+            astType: 'variable',
+            identifier: cst.identifier[0].image,
+            type: cst.type ? this.visit(cst.type[0], block) : undefined,
+        }
+        block.members[cst.identifier[0].image] = variable;
+    }
+
     functionDeclaration(cst: CstFunctionDeclaration['children'], block: AstBlock) {
         const astFunction: AstFunction = {
             astType: 'function',
             parent: block,
-            variables: {},
-            classes: {},
-            structs: {},
-            functions: {},
+            members: {},
             statements: [],
             identifier: cst.identifier[0].image,
             params: [],
+            returnType: "returnType" in cst ? this.visit(cst.returnType![0], block) : undefined,
         }
-        for (let i = 0; i < (cst.paramIdentifiers?.length ?? 0); i++) {
-            const param = {
-                astType: 'variable',
-                identifier: cst.paramIdentifiers![i].image,
-                type: cst.paramTypes?.[i] ? this.visit(cst.paramTypes[i], block) : undefined
-            } as AstVariable;
-            astFunction.params!.push(param);
-            astFunction.variables[param.identifier] = param;
+        for (const param of cst.params ?? []) {
+            this.visit(param, astFunction);
         }
         for (const statement of cst.body[0].children.block[0].children.statements ?? []) {
             const result: AstStatement = this.visit(statement, astFunction);
             astFunction.statements.push(result);
         }
-        return astFunction;
+        block.members[astFunction.identifier] = astFunction;
     }
 
     continueStatement(cst: CstNode['children'], block: AstBlock) {
@@ -512,23 +511,21 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             catch: {
                 astType: 'block',
                 parent: block,
-                variables: {},
-                classes: {},
-                structs: {},
-                functions: {},
+                members: {},
                 statements: []
-            },
+            } as AstBlock,
             finally: 'finally' in cst && this.visit(cst.finally![0], block)
         }
-        if('catchIdentifier' in cst) {
-            tryBlock.catch.variables[cst.catchIdentifier![0].image] = {
+        if ('catchIdentifier' in cst) {
+            tryBlock.catch.members[cst.catchIdentifier![0].image] = {
                 astType: 'variable',
                 identifier: cst.catchIdentifier![0].image,
             } as AstVariable;
         }
         for (const statement of cst.catch[0].children.block[0].children.statements ?? []) {
             const result: AstStatement = this.visit(statement, tryBlock.catch);
-            tryBlock.catch.statements.push(result);
+            if (result)
+                tryBlock.catch.statements.push(result);
         }
         return tryBlock;
     }
@@ -545,19 +542,37 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         } as AstBranch;
     }
 
+    structMemberDeclaration(cst: CstStructMemberDeclaration['children'], { block, struct }: { block: AstBlock; struct: AstStruct }) {
+        const member: AstVariable = {
+            astType: 'variable',
+            identifier: cst.identifier[0].image,
+            type: cst.type ? this.visit(cst.type[0], block) : undefined,
+        }
+        struct.members[cst.identifier[0].image] = member;
+    }
+
+    structDeclaration(cst: CstStructDeclaration['children'], block: AstBlock) {
+        const struct: AstStruct = {
+            astType: 'struct',
+            members: {},
+        }
+        for (const member of cst.members ?? []) {
+            this.visit(member, { block, struct });
+        }
+        block.members[cst.identifier[0].image] = struct;
+    }
+
     block(cst: CstBlock['children'], block?: AstBlock) {
         const astBlock: AstBlock = {
             astType: 'block',
             parent: block,
-            variables: {},
-            classes: {},
-            structs: {},
-            functions: {},
+            members: {},
             statements: []
         }
         for (const statement of cst.statements ?? []) {
             const result: AstStatement = this.visit(statement, astBlock);
-            astBlock.statements.push(result);
+            if (result)
+                astBlock.statements.push(result);
         }
         return astBlock;
     }

@@ -13,7 +13,10 @@ import {
     motorAstVisitor,
     AstBlock,
     AstBranch,
+    AstStatement,
+    AstClass,
 } from '../src';
+import { AstTry } from '../src/compiler/ast/try.statement';
 describe('Memory', () => {
     test('Lexer', () => {
         const scriptOnTest = `
@@ -356,16 +359,28 @@ class b : a
                     statement.astType === 'block' ||
                     statement.astType === 'while' ||
                     statement.astType === 'function' ||
-                    statement.astType === 'branch' || 
-                    statement.astType === 'for'
+                    statement.astType === 'branch' ||
+                    statement.astType === 'for' ||
+                    statement.astType === 'try'
                 ) {
                     deLoop(statement as AstBlock);
+                }
+            })
+            Object.keys(ast.members).forEach((key) => {
+                if ('parent' in ast.members[key]) {
+                    deLoop(ast.members[key] as AstBlock);
                 }
             })
             if (ast.astType === 'branch') {
                 const branch = (ast as AstBranch);
                 if (branch.false)
                     deLoop(branch.false);
+            }
+            if (ast.astType === 'try') {
+                const tryBlock = (ast as AstTry);
+                deLoop(tryBlock.catch);
+                if (tryBlock.finally)
+                    deLoop(tryBlock.finally);
             }
             return ast;
         }
@@ -384,10 +399,7 @@ class b : a
             const ast = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {},
-                "classes": {},
-                "structs": {},
-                "functions": {},
+                "members": {},
                 "statements": [
                     {
                         "astType": "binary",
@@ -419,7 +431,7 @@ class b : a
                         "operator": "-"
                     }
                 ]
-            })
+            });
         })
 
         test('Variable', () => {
@@ -436,15 +448,12 @@ a = 1
             const ast = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {
+                "members": {
                     "a": {
                         "astType": "variable",
                         "identifier": "a"
                     }
                 },
-                "classes": {},
-                "structs": {},
-                "functions": {},
                 "statements": [
                     {
                         "astType": "binary",
@@ -462,7 +471,7 @@ a = 1
                         "operator": "="
                     }
                 ]
-            })
+            });
         })
 
         test('Conditional', () => {
@@ -479,15 +488,12 @@ a = true ? 1 : 2
             const ast = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {
+                "members": {
                     "a": {
                         "astType": "variable",
                         "identifier": "a"
                     }
                 },
-                "classes": {},
-                "structs": {},
-                "functions": {},
                 "statements": [
                     {
                         "astType": "binary",
@@ -522,7 +528,7 @@ a = true ? 1 : 2
                         "operator": "="
                     }
                 ]
-            })
+            });
         })
 
         test('Paren', () => {
@@ -539,15 +545,12 @@ a = (1 + 2) * 3
             const ast = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {
+                "members": {
                     "a": {
                         "astType": "variable",
                         "identifier": "a"
                     }
                 },
-                "classes": {},
-                "structs": {},
-                "functions": {},
                 "statements": [
                     {
                         "astType": "binary",
@@ -587,7 +590,7 @@ a = (1 + 2) * 3
                         "operator": "="
                     }
                 ]
-            })
+            });
         })
 
         test('Postfix', () => {
@@ -604,15 +607,12 @@ a(1,2).b[3]++
             const ast = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {
+                "members": {
                     "a": {
                         "astType": "variable",
                         "identifier": "a"
                     }
                 },
-                "classes": {},
-                "structs": {},
-                "functions": {},
                 "statements": [
                     {
                         "astType": "increment",
@@ -656,7 +656,7 @@ a(1,2).b[3]++
                         "operator": "++"
                     }
                 ]
-            })
+            });
         })
 
         test('while', () => {
@@ -674,24 +674,11 @@ while true
             const ast: AstBlock = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {},
-                "classes": {},
-                "structs": {},
-                "functions": {},
+                "members": {},
                 "statements": [
                     {
-                        "test": {
-                            "astType": "const",
-                            "value": "true",
-                            "type": {
-                                "typeName": "TypeBool"
-                            }
-                        },
                         "astType": "while",
-                        "variables": {},
-                        "classes": {},
-                        "structs": {},
-                        "functions": {},
+                        "members": {},
                         "statements": [
                             {
                                 "astType": "binary",
@@ -711,10 +698,17 @@ while true
                                 },
                                 "operator": "+"
                             }
-                        ]
+                        ],
+                        "test": {
+                            "astType": "const",
+                            "value": "true",
+                            "type": {
+                                "typeName": "TypeBool"
+                            }
+                        }
                     }
                 ]
-            })
+            });
         })
 
         test('function', () => {
@@ -732,14 +726,10 @@ fn a(b: float64): float32
             const ast = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {},
-                "classes": {},
-                "structs": {},
-                "functions": {},
-                "statements": [
-                    {
+                "members": {
+                    "a": {
                         "astType": "function",
-                        "variables": {
+                        "members": {
                             "b": {
                                 "astType": "variable",
                                 "identifier": "b",
@@ -749,9 +739,6 @@ fn a(b: float64): float32
                                 }
                             }
                         },
-                        "classes": {},
-                        "structs": {},
-                        "functions": {},
                         "statements": [
                             {
                                 "astType": "return",
@@ -766,19 +753,15 @@ fn a(b: float64): float32
                             }
                         ],
                         "identifier": "a",
-                        "params": [
-                            {
-                                "astType": "variable",
-                                "identifier": "b",
-                                "type": {
-                                    "typeName": "float64",
-                                    "isList": false
-                                }
-                            }
-                        ]
+                        "params": [],
+                        "returnType": {
+                            "typeName": "float32",
+                            "isList": false
+                        }
                     }
-                ]
-            })
+                },
+                "statements": []
+            });
         })
 
         test('pass', () => {
@@ -796,23 +779,17 @@ fn a()
             const ast = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {},
-                "classes": {},
-                "structs": {},
-                "functions": {},
-                "statements": [
-                    {
+                "members": {
+                    "a": {
                         "astType": "function",
-                        "variables": {},
-                        "classes": {},
-                        "structs": {},
-                        "functions": {},
+                        "members": {},
                         "statements": [],
                         "identifier": "a",
                         "params": []
                     }
-                ]
-            })
+                },
+                "statements": []
+            });
         })
 
         test('if', () => {
@@ -834,17 +811,11 @@ else
             const ast = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {},
-                "classes": {},
-                "structs": {},
-                "functions": {},
+                "members": {},
                 "statements": [
                     {
                         "astType": "branch",
-                        "variables": {},
-                        "classes": {},
-                        "structs": {},
-                        "functions": {},
+                        "members": {},
                         "statements": [
                             {
                                 "astType": "binary",
@@ -874,10 +845,7 @@ else
                         },
                         "false": {
                             "astType": "branch",
-                            "variables": {},
-                            "classes": {},
-                            "structs": {},
-                            "functions": {},
+                            "members": {},
                             "statements": [
                                 {
                                     "astType": "binary",
@@ -907,10 +875,7 @@ else
                             },
                             "false": {
                                 "astType": "block",
-                                "variables": {},
-                                "classes": {},
-                                "structs": {},
-                                "functions": {},
+                                "members": {},
                                 "statements": [
                                     {
                                         "astType": "binary",
@@ -935,7 +900,7 @@ else
                         }
                     }
                 ]
-            })
+            });
         })
 
         test('continue&break', () => {
@@ -956,18 +921,14 @@ while true
             expect(motorParser.errors.length).toBe(0);
             const cst = motorParser.block();
             const ast = motorAstVisitor.visit(cst);
-            console.log(JSON.stringify(deLoop(ast)));
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {
+                "members": {
                     "a": {
                         "astType": "variable",
                         "identifier": "a"
                     }
                 },
-                "classes": {},
-                "structs": {},
-                "functions": {},
                 "statements": [
                     {
                         "astType": "binary",
@@ -986,10 +947,12 @@ while true
                     },
                     {
                         "astType": "while",
-                        "variables": {},
-                        "classes": {},
-                        "structs": {},
-                        "functions": {},
+                        "members": {
+                            "a": {
+                                "astType": "variable",
+                                "identifier": "a"
+                            }
+                        },
                         "statements": [
                             {
                                 "astType": "increment",
@@ -1001,10 +964,7 @@ while true
                             },
                             {
                                 "astType": "branch",
-                                "variables": {},
-                                "classes": {},
-                                "structs": {},
-                                "functions": {},
+                                "members": {},
                                 "statements": [
                                     {
                                         "astType": "continue"
@@ -1040,10 +1000,7 @@ while true
                             },
                             {
                                 "astType": "branch",
-                                "variables": {},
-                                "classes": {},
-                                "structs": {},
-                                "functions": {},
+                                "members": {},
                                 "statements": [
                                     {
                                         "astType": "break"
@@ -1076,7 +1033,7 @@ while true
                         }
                     }
                 ]
-            })
+            });
         })
 
         test('for', () => {
@@ -1094,32 +1051,22 @@ for a in b
             const ast = motorAstVisitor.visit(cst);
             expect(deLoop(ast)).toEqual({
                 "astType": "block",
-                "variables": {
+                "members": {
                     "b": {
                         "astType": "variable",
                         "identifier": "b"
                     }
                 },
-                "classes": {},
-                "structs": {},
-                "functions": {},
                 "statements": [
                     {
                         "astType": "for",
-                        "variables": {
+                        "members": {
                             "a": {
                                 "astType": "variable",
                                 "identifier": "a"
                             }
                         },
-                        "classes": {},
-                        "structs": {},
-                        "functions": {},
                         "statements": [
-                            {
-                                "astType": "variable",
-                                "identifier": "a"
-                            },
                             {
                                 "astType": "increment",
                                 "left": {
@@ -1135,8 +1082,120 @@ for a in b
                         }
                     }
                 ]
-            })
+            });
         })
 
+        test('try', () => {
+            const scriptOnTest = `
+try
+    throw "error"
+catch e
+    pass
+finally
+    pass
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(deLoop(ast)).toEqual({
+                "astType": "block",
+                "members": {},
+                "statements": [
+                    {
+                        "astType": "try",
+                        "members": {},
+                        "statements": [
+                            {
+                                "astType": "throw",
+                                "expression": {
+                                    "astType": "const",
+                                    "value": "\"error\"",
+                                    "type": {
+                                        "typeName": "TypeString"
+                                    }
+                                }
+                            }
+                        ],
+                        "catch": {
+                            "astType": "block",
+                            "members": {
+                                "e": {
+                                    "astType": "variable",
+                                    "identifier": "e"
+                                }
+                            },
+                            "statements": []
+                        },
+                        "finally": {
+                            "astType": "block",
+                            "members": {},
+                            "statements": []
+                        }
+                    }
+                ]
+            });
+        })
+
+        test('struct', () => {
+            const scriptOnTest = `
+struct a
+    b: float64
+    c: float32
+    d: int = 1
+    e = 1.0
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(deLoop(ast)).toEqual({
+                "astType": "block",
+                "members": {
+                    "a": {
+                        "astType": "struct",
+                        "members": {
+                            "b": {
+                                "astType": "variable",
+                                "identifier": "b",
+                                "type": {
+                                    "typeName": "float64",
+                                    "isList": false
+                                }
+                            },
+                            "c": {
+                                "astType": "variable",
+                                "identifier": "c",
+                                "type": {
+                                    "typeName": "float32",
+                                    "isList": false
+                                }
+                            },
+                            "d": {
+                                "astType": "variable",
+                                "identifier": "d",
+                                "type": {
+                                    "typeName": "int",
+                                    "isList": false
+                                }
+                            },
+                            "e": {
+                                "astType": "variable",
+                                "identifier": "e"
+                            }
+                        }
+                    }
+                },
+                "statements": []
+            });
+        })
     })
-});
+})
