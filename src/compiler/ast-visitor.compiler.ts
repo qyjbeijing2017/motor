@@ -23,7 +23,7 @@ import { CstExponentiationExpression } from "./cst/exponentiation.expression";
 import { CstPostFixExpression } from "./cst/postfix.expression";
 import { CstAtomicExpression } from "./cst/atomic.expression";
 
-import { Integer, Float, Char, String, Bool, TypeInt32, TypeFloat32, TypeBool, TypeChar, TypeString, Identifier } from "./lexer.compiler";
+import { Integer, Float, Char, String, Bool, TypeInt32, TypeFloat32, TypeBool, TypeChar, TypeString, Identifier, TypeInt8, TypeInt64 } from "./lexer.compiler";
 import { AstConst } from "./ast/const.expression";
 import { AstVariable } from "./ast/variable.expression";
 import { CstXOrExpression } from "./cst/xor.expression";
@@ -67,6 +67,7 @@ import { CstClassMemberDeclaration } from "./cst/class-member.declaration";
 import { CstClassVariableDeclaration } from "./cst/class-variable.declaration";
 import { CstListExpression } from "./cst/list.expression";
 import { AstList } from "./ast/list.expression";
+import { AstTransform } from "./ast/transform.expression";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 
@@ -76,14 +77,13 @@ class MotorAstVisitor extends BaseVisitor {
         this.validateVisitor();
     }
 
-    hasVariable(name: string, block: AstBlock | AstClass): boolean {
-        if (block.members[name]) {
-            return true;
+    findIdentifier(ast: AstClass | AstBlock, identifier: string): AstVariable | AstFunction | AstClass | AstStruct | AstEnum | undefined {
+        if (identifier in ast.members) {
+            return ast.members[identifier];
         }
-        if (block.parent) {
-            return this.hasVariable(name, block.parent);
+        if (ast.parent) {
+            return this.findIdentifier(ast.parent, identifier);
         }
-        return false;
     }
 
     listExpression(cst: CstListExpression['children'], parent: AstBlock | AstClass) {
@@ -91,7 +91,14 @@ class MotorAstVisitor extends BaseVisitor {
             astType: 'list',
             elements: cst.elements?.map(element => this.visit(element, parent)) ?? []
         };
-        return list;
+        const astConst: AstConst = {
+            astType: 'const',
+            value: list,
+            type: {
+                typeName: TypeInt32.name,
+            }
+        }
+        return astConst;
     }
 
     parenExpression(cst: CstParenExpression['children'], parent: AstBlock | AstClass) {
@@ -104,7 +111,7 @@ class MotorAstVisitor extends BaseVisitor {
                 case Integer.name:
                     return {
                         astType: 'const',
-                        value: cst.const[0].image,
+                        value: parseInt(cst.const[0].image),
                         type: {
                             typeName: TypeInt32.name,
                         }
@@ -112,7 +119,7 @@ class MotorAstVisitor extends BaseVisitor {
                 case Float.name:
                     return {
                         astType: 'const',
-                        value: cst.const[0].image,
+                        value: parseFloat(cst.const[0].image),
                         type: {
                             typeName: TypeFloat32.name,
                         }
@@ -120,7 +127,7 @@ class MotorAstVisitor extends BaseVisitor {
                 case Char.name:
                     return {
                         astType: 'const',
-                        value: cst.const[0].image,
+                        value: cst.const[0].image.replace(/'/g, ''),
                         type: {
                             typeName: TypeChar.name,
                         }
@@ -128,7 +135,7 @@ class MotorAstVisitor extends BaseVisitor {
                 case String.name:
                     return {
                         astType: 'const',
-                        value: cst.const[0].image,
+                        value: cst.const[0].image.replace(/"/g, ''),
                         type: {
                             typeName: TypeString.name,
                         }
@@ -136,7 +143,7 @@ class MotorAstVisitor extends BaseVisitor {
                 case Bool.name:
                     return {
                         astType: 'const',
-                        value: cst.const[0].image,
+                        value: cst.const[0].image === 'true',
                         type: {
                             typeName: TypeBool.name,
                         }
@@ -144,13 +151,15 @@ class MotorAstVisitor extends BaseVisitor {
             }
         }
         if (cst.variable) {
-            if (!(cst.variable[0].image in parent.members)) {
-                parent.members[cst.variable[0].image] = {
+            let variable = this.findIdentifier(parent, cst.variable[0].image);
+            if (!variable) {
+                variable = {
                     astType: 'variable',
                     identifier: cst.variable[0].image,
-                };
+                } as AstVariable;
+                parent.members[cst.variable[0].image] = variable;
             }
-            return parent.members[cst.variable[0].image];
+            return variable;
         }
         if (cst.paren) {
             return this.visit(cst.paren[0], parent);

@@ -349,7 +349,7 @@ class b : a
         })
     })
 
-    describe('AST', () => {
+    describe('AST without type', () => {
 
         function deLoop(ast: AstBlock | AstClass) {
             delete ast.parent
@@ -408,14 +408,14 @@ class b : a
                             "astType": "binary",
                             "left": {
                                 "astType": "const",
-                                "value": "1",
+                                "value": 1,
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
                             },
                             "right": {
                                 "astType": "const",
-                                "value": "2",
+                                "value": 2,
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
@@ -424,7 +424,7 @@ class b : a
                         },
                         "right": {
                             "astType": "const",
-                            "value": "3",
+                            "value": 3,
                             "type": {
                                 "typeName": "TypeInt32"
                             }
@@ -464,7 +464,7 @@ a = 1
                         },
                         "right": {
                             "astType": "const",
-                            "value": "1",
+                            "value": 1,
                             "type": {
                                 "typeName": "TypeInt32"
                             }
@@ -506,21 +506,21 @@ a = true ? 1 : 2
                             "astType": "ternary",
                             "condition": {
                                 "astType": "const",
-                                "value": "true",
+                                "value": true,
                                 "type": {
                                     "typeName": "TypeBool"
                                 }
                             },
                             "true": {
                                 "astType": "const",
-                                "value": "1",
+                                "value": 1,
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
                             },
                             "false": {
                                 "astType": "const",
-                                "value": "2",
+                                "value": 2,
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
@@ -565,14 +565,14 @@ a = (1 + 2) * 3
                                 "astType": "binary",
                                 "left": {
                                     "astType": "const",
-                                    "value": "1",
+                                    "value": 1,
                                     "type": {
                                         "typeName": "TypeInt32"
                                     }
                                 },
                                 "right": {
                                     "astType": "const",
-                                    "value": "2",
+                                    "value": 2,
                                     "type": {
                                         "typeName": "TypeInt32"
                                     }
@@ -581,7 +581,7 @@ a = (1 + 2) * 3
                             },
                             "right": {
                                 "astType": "const",
-                                "value": "3",
+                                "value": 3,
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
@@ -630,14 +630,14 @@ a(1,2).b[3]++
                                     "params": [
                                         {
                                             "astType": "const",
-                                            "value": "1",
+                                            "value": 1,
                                             "type": {
                                                 "typeName": "TypeInt32"
                                             }
                                         },
                                         {
                                             "astType": "const",
-                                            "value": "2",
+                                            "value": 2,
                                             "type": {
                                                 "typeName": "TypeInt32"
                                             }
@@ -648,7 +648,7 @@ a(1,2).b[3]++
                             },
                             "index": {
                                 "astType": "const",
-                                "value": "3",
+                                "value": 3,
                                 "type": {
                                     "typeName": "TypeInt32"
                                 }
@@ -685,14 +685,14 @@ while true
                                 "astType": "binary",
                                 "left": {
                                     "astType": "const",
-                                    "value": "1",
+                                    "value": 1,
                                     "type": {
                                         "typeName": "TypeInt32"
                                     }
                                 },
                                 "right": {
                                     "astType": "const",
-                                    "value": "2",
+                                    "value": 2,
                                     "type": {
                                         "typeName": "TypeInt32"
                                     }
@@ -702,14 +702,14 @@ while true
                         ],
                         "test": {
                             "astType": "const",
-                            "value": "true",
+                            "value": true,
                             "type": {
                                 "typeName": "TypeBool"
                             }
                         }
                     }
                 ]
-            });
+            })
         })
 
         test('function', () => {
@@ -831,14 +831,14 @@ else
                                 "astType": "binary",
                                 "left": {
                                     "astType": "const",
-                                    "value": "1",
+                                    "value": 1,
                                     "type": {
                                         "typeName": "TypeInt32"
                                     }
                                 },
                                 "right": {
                                     "astType": "const",
-                                    "value": "2",
+                                    "value": 2,
                                     "type": {
                                         "typeName": "TypeInt32"
                                     }
@@ -848,7 +848,7 @@ else
                         ],
                         "test": {
                             "astType": "const",
-                            "value": "true",
+                            "value": true,
                             "type": {
                                 "typeName": "TypeBool"
                             }
@@ -861,14 +861,14 @@ else
                                     "astType": "binary",
                                     "left": {
                                         "astType": "const",
-                                        "value": "3",
+                                        "value": 3,
                                         "type": {
                                             "typeName": "TypeInt32"
                                         }
                                     },
                                     "right": {
                                         "astType": "const",
-                                        "value": "4",
+                                        "value": 4,
                                         "type": {
                                             "typeName": "TypeInt32"
                                         }
@@ -878,7 +878,7 @@ else
                             ],
                             "test": {
                                 "astType": "const",
-                                "value": "false",
+                                "value": false,
                                 "type": {
                                     "typeName": "TypeBool"
                                 }
@@ -891,14 +891,14 @@ else
                                         "astType": "binary",
                                         "left": {
                                             "astType": "const",
-                                            "value": "5",
+                                            "value": 5,
                                             "type": {
                                                 "typeName": "TypeInt32"
                                             }
                                         },
                                         "right": {
                                             "astType": "const",
-                                            "value": "6",
+                                            "value": 6,
                                             "type": {
                                                 "typeName": "TypeInt32"
                                             }
@@ -948,7 +948,7 @@ while true
                         },
                         "right": {
                             "astType": "const",
-                            "value": "1",
+                            "value": 1,
                             "type": {
                                 "typeName": "TypeInt32"
                             }
@@ -957,12 +957,7 @@ while true
                     },
                     {
                         "astType": "while",
-                        "members": {
-                            "a": {
-                                "astType": "variable",
-                                "identifier": "a"
-                            }
-                        },
+                        "members": {},
                         "statements": [
                             {
                                 "astType": "increment",
@@ -990,7 +985,7 @@ while true
                                         },
                                         "right": {
                                             "astType": "const",
-                                            "value": "2",
+                                            "value": 2,
                                             "type": {
                                                 "typeName": "TypeInt32"
                                             }
@@ -999,7 +994,7 @@ while true
                                     },
                                     "right": {
                                         "astType": "const",
-                                        "value": "0",
+                                        "value": 0,
                                         "type": {
                                             "typeName": "TypeInt32"
                                         }
@@ -1024,7 +1019,7 @@ while true
                                     },
                                     "right": {
                                         "astType": "const",
-                                        "value": "10",
+                                        "value": 10,
                                         "type": {
                                             "typeName": "TypeInt32"
                                         }
@@ -1036,7 +1031,7 @@ while true
                         ],
                         "test": {
                             "astType": "const",
-                            "value": "true",
+                            "value": true,
                             "type": {
                                 "typeName": "TypeBool"
                             }
@@ -1124,7 +1119,7 @@ finally
                                 "astType": "throw",
                                 "expression": {
                                     "astType": "const",
-                                    "value": "\"error\"",
+                                    "value": "error",
                                     "type": {
                                         "typeName": "TypeString"
                                     }
@@ -1358,8 +1353,14 @@ c = [[1,2],[3,4]]
                             "identifier": "a"
                         },
                         "right": {
-                            "astType": "list",
-                            "elements": []
+                            "astType": "const",
+                            "value": {
+                                "astType": "list",
+                                "elements": []
+                            },
+                            "type": {
+                                "typeName": "TypeInt32"
+                            }
                         },
                         "operator": "="
                     },
@@ -1370,30 +1371,36 @@ c = [[1,2],[3,4]]
                             "identifier": "b"
                         },
                         "right": {
-                            "astType": "list",
-                            "elements": [
-                                {
-                                    "astType": "const",
-                                    "value": "1",
-                                    "type": {
-                                        "typeName": "TypeInt32"
+                            "astType": "const",
+                            "value": {
+                                "astType": "list",
+                                "elements": [
+                                    {
+                                        "astType": "const",
+                                        "value": 1,
+                                        "type": {
+                                            "typeName": "TypeInt32"
+                                        }
+                                    },
+                                    {
+                                        "astType": "const",
+                                        "value": 2,
+                                        "type": {
+                                            "typeName": "TypeInt32"
+                                        }
+                                    },
+                                    {
+                                        "astType": "const",
+                                        "value": 3,
+                                        "type": {
+                                            "typeName": "TypeInt32"
+                                        }
                                     }
-                                },
-                                {
-                                    "astType": "const",
-                                    "value": "2",
-                                    "type": {
-                                        "typeName": "TypeInt32"
-                                    }
-                                },
-                                {
-                                    "astType": "const",
-                                    "value": "3",
-                                    "type": {
-                                        "typeName": "TypeInt32"
-                                    }
-                                }
-                            ]
+                                ]
+                            },
+                            "type": {
+                                "typeName": "TypeInt32"
+                            }
                         },
                         "operator": "="
                     },
@@ -1404,47 +1411,65 @@ c = [[1,2],[3,4]]
                             "identifier": "c"
                         },
                         "right": {
-                            "astType": "list",
-                            "elements": [
-                                {
-                                    "astType": "list",
-                                    "elements": [
-                                        {
-                                            "astType": "const",
-                                            "value": "1",
-                                            "type": {
-                                                "typeName": "TypeInt32"
-                                            }
+                            "astType": "const",
+                            "value": {
+                                "astType": "list",
+                                "elements": [
+                                    {
+                                        "astType": "const",
+                                        "value": {
+                                            "astType": "list",
+                                            "elements": [
+                                                {
+                                                    "astType": "const",
+                                                    "value": 1,
+                                                    "type": {
+                                                        "typeName": "TypeInt32"
+                                                    }
+                                                },
+                                                {
+                                                    "astType": "const",
+                                                    "value": 2,
+                                                    "type": {
+                                                        "typeName": "TypeInt32"
+                                                    }
+                                                }
+                                            ]
                                         },
-                                        {
-                                            "astType": "const",
-                                            "value": "2",
-                                            "type": {
-                                                "typeName": "TypeInt32"
-                                            }
+                                        "type": {
+                                            "typeName": "TypeInt32"
                                         }
-                                    ]
-                                },
-                                {
-                                    "astType": "list",
-                                    "elements": [
-                                        {
-                                            "astType": "const",
-                                            "value": "3",
-                                            "type": {
-                                                "typeName": "TypeInt32"
-                                            }
+                                    },
+                                    {
+                                        "astType": "const",
+                                        "value": {
+                                            "astType": "list",
+                                            "elements": [
+                                                {
+                                                    "astType": "const",
+                                                    "value": 3,
+                                                    "type": {
+                                                        "typeName": "TypeInt32"
+                                                    }
+                                                },
+                                                {
+                                                    "astType": "const",
+                                                    "value": 4,
+                                                    "type": {
+                                                        "typeName": "TypeInt32"
+                                                    }
+                                                }
+                                            ]
                                         },
-                                        {
-                                            "astType": "const",
-                                            "value": "4",
-                                            "type": {
-                                                "typeName": "TypeInt32"
-                                            }
+                                        "type": {
+                                            "typeName": "TypeInt32"
                                         }
-                                    ]
-                                }
-                            ]
+                                    }
+                                ]
+                            },
+                            "type": {
+                                "typeName": "TypeInt32"
+                            }
                         },
                         "operator": "="
                     }
