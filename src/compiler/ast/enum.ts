@@ -9,4 +9,5 @@ export interface AstEnum extends AstStatement {
         [key: string]: AstVariable;
     }
     identifier: string
+    ref?: boolean
 }

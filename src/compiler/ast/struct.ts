@@ -5,4 +5,5 @@ export interface AstStruct extends AstStatement {
     astType: 'struct'
     members: { [key: string]: AstVariable }
     identifier: string
+    ref?: boolean
 }

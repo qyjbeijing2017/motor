@@ -1,5 +1,4 @@
-export interface AstType {
-    typeName: string;
-    isList?: boolean;
+export type AstType = string | {
+    type?: string | AstType;
     count?: number;
-}
+} | undefined

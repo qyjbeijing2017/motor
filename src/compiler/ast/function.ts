@@ -7,4 +7,5 @@ export interface AstFunction extends AstBlock {
     returnType?: AstType;
     params: AstVariable[];
     identifier: string;
+    ref?: boolean
 }

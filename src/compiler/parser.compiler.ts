@@ -253,31 +253,37 @@ class MotorParser extends CstParser {
         });
     });
 
+    listDeclaration = this.RULE('listDeclaration', () => {
+        this.CONSUME(LeftBracket);
+        this.OPTION1(() => this.SUBRULE(this.assignExpression, { LABEL: 'index' }));
+        this.CONSUME(RightBracket);
+    });
+
     typeDeclaration = this.RULE('typeDeclaration', () => {
         this.CONSUME(Colon);
-        this.OR([
-            { ALT: () => this.CONSUME(TypeFloat64, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeFloat32, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeFloat16, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeFloat8, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeInt64, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeInt32, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeInt16, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeInt8, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeUint64, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeUint32, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeUint16, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeUint8, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeBool, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeChar, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeString, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(TypeList, { LABEL: 'type' }) },
-            { ALT: () => this.CONSUME(Identifier, { LABEL: 'type' }) },
-        ]);
-        this.OPTION(() => {
-            this.CONSUME(LeftBracket, { LABEL: 'isList' });
-            this.OPTION1(() => this.SUBRULE(this.assignExpression, { LABEL: 'index' }));
-            this.CONSUME(RightBracket);
+        this.OPTION(() =>
+            this.OR([
+                { ALT: () => this.CONSUME(TypeFloat64, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeFloat32, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeFloat16, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeFloat8, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeInt64, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeInt32, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeInt16, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeInt8, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeUint64, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeUint32, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeUint16, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeUint8, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeBool, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeChar, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeString, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeList, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(Identifier, { LABEL: 'type' }) },
+            ])
+        );
+        this.MANY(() => {
+            this.SUBRULE1(this.listDeclaration, { LABEL: 'lists' });
         });
     });
 

@@ -1,0 +1,15 @@
+{
+    "astType": "block",
+    "members": {
+        "a": {
+            "astType": "variable",
+            "identifier": "a"
+        }
+    },
+    "statements": [
+        {
+            "astType": "variable",
+            "identifier": "a"
+        }
+    ]
+}

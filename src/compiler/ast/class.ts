@@ -12,4 +12,5 @@ export interface AstClass extends AstStatement {
     members: {
         [name: string]: AstVariable | AstFunction | AstStruct | AstClass | AstEnum
     }
+    ref?: boolean
 }

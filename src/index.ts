@@ -39,7 +39,7 @@ export {
     Identifier,
 } from './compiler/lexer.compiler';
 export { motorParser } from './compiler/parser.compiler';
-export { motorAstVisitor } from './compiler/ast-visitor.compiler';
+export { motorCstVisitor } from './compiler/cst-visitor.compiler';
 export { AstBlock } from './compiler/ast/block';
 export { AstBranch } from './compiler/ast/branch.statement';
 export { AstClass } from './compiler/ast/class';
@@ -62,4 +62,4 @@ export { AstReturn } from './compiler/ast/return.statement';
 export { AstTernary } from './compiler/ast/ternary.expression';
 export { AstConst } from './compiler/ast/const.expression';
 export { AstType } from './compiler/ast/type';
-export { AstList as AstListExpression } from './compiler/ast/list.expression';
+export { AstList } from './compiler/ast/list.expression';

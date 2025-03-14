@@ -23,7 +23,7 @@ import { CstExponentiationExpression } from "./cst/exponentiation.expression";
 import { CstPostFixExpression } from "./cst/postfix.expression";
 import { CstAtomicExpression } from "./cst/atomic.expression";
 
-import { Integer, Float, Char, String, Bool, TypeInt32, TypeFloat32, TypeBool, TypeChar, TypeString, Identifier, TypeInt8, TypeInt64 } from "./lexer.compiler";
+import { Integer, Float, Char, String, Bool, TypeInt32, TypeFloat32, TypeBool, TypeChar, TypeString } from "./lexer.compiler";
 import { AstConst } from "./ast/const.expression";
 import { AstVariable } from "./ast/variable.expression";
 import { CstXOrExpression } from "./cst/xor.expression";
@@ -67,23 +67,23 @@ import { CstClassMemberDeclaration } from "./cst/class-member.declaration";
 import { CstClassVariableDeclaration } from "./cst/class-variable.declaration";
 import { CstListExpression } from "./cst/list.expression";
 import { AstList } from "./ast/list.expression";
-import { AstTransform } from "./ast/transform.expression";
+import { CstListDeclaration } from "./cst/list.declaration";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 
-class MotorAstVisitor extends BaseVisitor {
+function findIdentifier(ast: AstClass | AstBlock, identifier: string): AstVariable | AstFunction | AstClass | AstStruct | AstEnum | undefined {
+    if (identifier in ast.members) {
+        return ast.members[identifier];
+    }
+    if (ast.parent) {
+        return findIdentifier(ast.parent, identifier);
+    }
+}
+
+class MotorCstVisitor extends BaseVisitor {
     constructor() {
         super();
         this.validateVisitor();
-    }
-
-    findIdentifier(ast: AstClass | AstBlock, identifier: string): AstVariable | AstFunction | AstClass | AstStruct | AstEnum | undefined {
-        if (identifier in ast.members) {
-            return ast.members[identifier];
-        }
-        if (ast.parent) {
-            return this.findIdentifier(ast.parent, identifier);
-        }
     }
 
     listExpression(cst: CstListExpression['children'], parent: AstBlock | AstClass) {
@@ -91,12 +91,14 @@ class MotorAstVisitor extends BaseVisitor {
             astType: 'list',
             elements: cst.elements?.map(element => this.visit(element, parent)) ?? []
         };
+
         const astConst: AstConst = {
             astType: 'const',
             value: list,
-            type: {
-                typeName: TypeInt32.name,
-            }
+            type: {}
+        }
+        if (list.elements.length > 0) {
+            list.elements.every(element => element.type === list.elements[0].type);
         }
         return astConst;
     }
@@ -112,46 +114,36 @@ class MotorAstVisitor extends BaseVisitor {
                     return {
                         astType: 'const',
                         value: parseInt(cst.const[0].image),
-                        type: {
-                            typeName: TypeInt32.name,
-                        }
+                        type: TypeInt32.name
                     } as AstConst
                 case Float.name:
                     return {
                         astType: 'const',
                         value: parseFloat(cst.const[0].image),
-                        type: {
-                            typeName: TypeFloat32.name,
-                        }
+                        type: TypeFloat32.name
                     } as AstConst
                 case Char.name:
                     return {
                         astType: 'const',
                         value: cst.const[0].image.replace(/'/g, ''),
-                        type: {
-                            typeName: TypeChar.name,
-                        }
+                        type: TypeChar.name
                     } as AstConst
                 case String.name:
                     return {
                         astType: 'const',
                         value: cst.const[0].image.replace(/"/g, ''),
-                        type: {
-                            typeName: TypeString.name,
-                        }
+                        type: TypeString.name
                     } as AstConst
                 case Bool.name:
                     return {
                         astType: 'const',
                         value: cst.const[0].image === 'true',
-                        type: {
-                            typeName: TypeBool.name,
-                        }
+                        type: TypeBool.name
                     } as AstConst
             }
         }
         if (cst.variable) {
-            let variable = this.findIdentifier(parent, cst.variable[0].image);
+            let variable = findIdentifier(parent, cst.variable[0].image);
             if (!variable) {
                 variable = {
                     astType: 'variable',
@@ -470,12 +462,30 @@ class MotorAstVisitor extends BaseVisitor {
         return forBlock;
     }
 
+    listDeclaration(cst: CstListDeclaration['children'], type: {
+        type?: string | AstType;
+        count?: number;
+    }) {
+        const index: AstStatement = cst.index ? this.visit(cst.index[0], type) : undefined;
+        if (index.astType !== 'const') {
+            throw new Error('Array count must be a constant');
+        }
+        const astConst = index as AstConst;
+        if (typeof astConst.value !== 'number') {
+            throw new Error('Array count must be a number');
+        }
+        type.count = astConst.value;
+        return type;
+    }
+
     typeDeclaration(cst: CstTypeDeclaration['children'], parent: AstBlock | AstClass) {
-        return {
-            typeName: cst.type[0].image,
-            isList: !!cst.isList,
-            index: cst.index ? this.visit(cst.index[0], parent) : undefined
-        } as AstType;
+        let type: AstType = cst.type ? cst.type[0].image : undefined
+        for (const list of cst.lists ?? []) {
+            type = this.visit(list, {
+                type
+            });
+        }
+        return type;
     }
 
     returnStatement(cst: CstReturnStatement['children'], parent: AstBlock | AstClass) {
@@ -701,4 +711,4 @@ class MotorAstVisitor extends BaseVisitor {
     }
 }
 
-export const motorAstVisitor = new MotorAstVisitor();
+export const motorCstVisitor = new MotorCstVisitor();
