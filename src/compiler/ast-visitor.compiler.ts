@@ -23,7 +23,7 @@ import { CstExponentiationExpression } from "./cst/exponentiation.expression";
 import { CstPostFixExpression } from "./cst/postfix.expression";
 import { CstAtomicExpression } from "./cst/atomic.expression";
 
-import { Integer, Float, Char, String, Bool, TypeInt32, TypeFloat32, TypeBool, TypeChar, TypeString } from "./lexer.compiler";
+import { Integer, Float, Char, String, Bool, TypeInt32, TypeFloat32, TypeBool, TypeChar, TypeString, Identifier } from "./lexer.compiler";
 import { AstConst } from "./ast/const.expression";
 import { AstVariable } from "./ast/variable.expression";
 import { CstXOrExpression } from "./cst/xor.expression";
@@ -58,6 +58,13 @@ import { CstStructDeclaration } from "./cst/struct.declaration";
 import { CstStructMemberDeclaration } from "./cst/struct-member.declearation";
 import { AstStruct } from "./ast/struct";
 import { CstFunctionParamDeclaration } from "./cst/function-params.declaration";
+import { CstEnumDeclaration } from "./cst/enum.declaration";
+import { AstEnum } from "./ast/enum";
+import { CstEnumMemberDeclaration } from "./cst/enum-member.declaration";
+import { CstClassDeclaration } from "./cst/class.declaration";
+import { AstClass } from "./ast/class";
+import { CstClassMemberDeclaration } from "./cst/class-member.declaration";
+import { CstClassVariableDeclaration } from "./cst/class-variable.declaration";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 const BaseVisitorWithDefaults = motorParser.getBaseCstVisitorConstructorWithDefaults();
@@ -68,7 +75,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         this.validateVisitor();
     }
 
-    hasVariable(name: string, block: AstBlock): boolean {
+    hasVariable(name: string, block: AstBlock | AstClass): boolean {
         if (block.members[name]) {
             return true;
         }
@@ -78,11 +85,11 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return false;
     }
 
-    parenExpression(cst: CstParenExpression['children'], block: AstBlock) {
-        return this.visit(cst.expression[0], block);
+    parenExpression(cst: CstParenExpression['children'], parent: AstBlock | AstClass) {
+        return this.visit(cst.expression[0], parent);
     }
 
-    atomicExpression(cst: CstAtomicExpression['children'], block: AstBlock) {
+    atomicExpression(cst: CstAtomicExpression['children'], parent: AstBlock | AstClass) {
         if (cst.const) {
             switch (cst.const[0].tokenType.name) {
                 case Integer.name:
@@ -128,28 +135,28 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             }
         }
         if (cst.variable) {
-            if (!(cst.variable[0].image in block.members)) {
-                block.members[cst.variable[0].image] = {
+            if (!(cst.variable[0].image in parent.members)) {
+                parent.members[cst.variable[0].image] = {
                     astType: 'variable',
                     identifier: cst.variable[0].image,
                 };
             }
-            return block.members[cst.variable[0].image];
+            return parent.members[cst.variable[0].image];
         }
         if (cst.paren) {
-            return this.visit(cst.paren[0], block);
+            return this.visit(cst.paren[0], parent);
         }
     }
 
-    indexExpression(cst: CstIndexExpression['children'], { block, base }: { block: AstBlock, base: AstExpression }) {
+    indexExpression(cst: CstIndexExpression['children'], { parent, base }: { parent: AstBlock | AstClass, base: AstExpression }) {
         return {
             astType: 'index',
             base,
-            index: this.visit(cst.index[0], block)
+            index: this.visit(cst.index[0], parent)
         } as AstIndex;
     }
 
-    memberExpression(cst: CstGetExpression['children'], { base }: { block: AstBlock, base: AstExpression }) {
+    memberExpression(cst: CstGetExpression['children'], { base }: { parent: AstBlock | AstClass, base: AstExpression }) {
         return {
             astType: 'get',
             base,
@@ -157,21 +164,21 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         } as AstMember;
     }
 
-    callExpression(cst: CstCallExpression['children'], { block, base }: { block: AstBlock, base: AstExpression }) {
+    callExpression(cst: CstCallExpression['children'], { parent, base }: { parent: AstBlock | AstClass, base: AstExpression }) {
         return {
             astType: 'call',
             base,
-            params: cst.args?.map(arg => this.visit(arg, block)) ?? []
+            params: cst.args?.map(arg => this.visit(arg, parent)) ?? []
         } as AstCall;
     }
 
-    postfixExpression(cst: CstPostFixExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    postfixExpression(cst: CstPostFixExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operators) {
             let base = left;
             for (let operator of cst.operators) {
                 if ('name' in operator) {
-                    base = this.visit(operator, { block, base });
+                    base = this.visit(operator, { parent, base });
                 } else {
                     base = {
                         astType: 'increment',
@@ -185,21 +192,21 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    exponentiationExpression(cst: CstExponentiationExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    exponentiationExpression(cst: CstExponentiationExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             return {
                 astType: 'binary',
                 left,
-                right: this.visit(cst.right[0], block),
+                right: this.visit(cst.right[0], parent),
                 operator: cst.operator[0].image
             } as AstBinary;
         }
         return left;
     }
 
-    unaryExpression(cst: CstUnaryExpression['children'], block: AstBlock) {
-        const right: AstExpression = this.visit(cst.right[0], block);
+    unaryExpression(cst: CstUnaryExpression['children'], parent: AstBlock | AstClass) {
+        const right: AstExpression = this.visit(cst.right[0], parent);
         if (cst.operator) {
             return {
                 astType: 'unary',
@@ -210,15 +217,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return right;
     }
 
-    multiplicativeExpression(cst: CstMultiplicativeExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    multiplicativeExpression(cst: CstMultiplicativeExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -227,15 +234,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    additiveExpression(cst: CstAdditiveExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    additiveExpression(cst: CstAdditiveExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -244,15 +251,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    moveExpression(cst: CstMoveExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    moveExpression(cst: CstMoveExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -261,15 +268,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    relationExpression(cst: CstRelationExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    relationExpression(cst: CstRelationExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -278,15 +285,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    equalityExpression(cst: CstEqualExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    equalityExpression(cst: CstEqualExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -295,15 +302,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    lAndExpression(cst: CstLAndExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    lAndExpression(cst: CstLAndExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -312,15 +319,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    xorExpression(cst: CstXOrExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    xorExpression(cst: CstXOrExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -329,15 +336,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    lOrExpression(cst: CstLOrExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    lOrExpression(cst: CstLOrExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -346,15 +353,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    andExpression(cst: CstAndExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    andExpression(cst: CstAndExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -363,15 +370,15 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    orExpression(cst: CstOrExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    orExpression(cst: CstOrExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
                 last = {
                     astType: 'binary',
                     left: last,
-                    right: this.visit(cst.right[i], block),
+                    right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
                 } as AstBinary;
             }
@@ -380,50 +387,50 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return left;
     }
 
-    conditionalExpression(cst: CstConditionExpression['children'], block: AstBlock) {
-        const test: AstExpression = this.visit(cst.test[0], block);
+    conditionalExpression(cst: CstConditionExpression['children'], parent: AstBlock | AstClass) {
+        const test: AstExpression = this.visit(cst.test[0], parent);
         if (cst.true && cst.false) {
             return {
                 astType: 'ternary',
                 condition: test,
-                true: this.visit(cst.true[0], block),
-                false: this.visit(cst.false[0], block)
+                true: this.visit(cst.true[0], parent),
+                false: this.visit(cst.false[0], parent)
             } as AstTernary;
         }
         return test;
     }
 
-    assignExpression(cst: CstAssignmentExpression['children'], block: AstBlock) {
-        const left: AstExpression = this.visit(cst.left[0], block);
+    assignExpression(cst: CstAssignmentExpression['children'], parent: AstBlock | AstClass) {
+        const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
             return {
                 astType: 'binary',
                 left,
-                right: this.visit(cst.right[0], block),
+                right: this.visit(cst.right[0], parent),
                 operator: cst.operator[0].image
             } as AstBinary;
         }
         return left;
     }
 
-    blockStatement(cst: CstBlockStatement['children'], block: AstBlock) {
-        const result = this.visit(cst.block, block) as AstBlock;
+    blockStatement(cst: CstBlockStatement['children'], parent: AstBlock | AstClass) {
+        const result = this.visit(cst.block, parent) as AstBlock;
         return result;
     }
 
-    whileStatement(cst: CstWhileStatement['children'], block: AstBlock) {
-        const whileBlock: AstBlock = this.visit(cst.block[0], block)
+    whileStatement(cst: CstWhileStatement['children'], parent: AstBlock | AstClass) {
+        const whileBlock: AstBlock = this.visit(cst.block[0], parent)
         return {
             ...whileBlock,
-            test: this.visit(cst.test[0], block),
+            test: this.visit(cst.test[0], parent),
             astType: 'while',
         } as AstWhile;
     }
 
-    forStatement(cst: CstForStatement['children'], block: AstBlock) {
+    forStatement(cst: CstForStatement['children'], parent: AstBlock | AstClass) {
         const forBlock: AstFor = {
             astType: 'for',
-            parent: block,
+            parent: parent,
             members: {
                 [cst.identifier[0].image]: {
                     astType: 'variable',
@@ -431,7 +438,7 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
                 },
             },
             statements: [],
-            iterable: this.visit(cst.iterable[0], block) as AstExpression,
+            iterable: this.visit(cst.iterable[0], parent) as AstExpression,
         }
         for (const statement of cst.body[0].children.block[0].children.statements ?? []) {
             const result: AstStatement = this.visit(statement, forBlock);
@@ -441,39 +448,48 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return forBlock;
     }
 
-    typeDeclaration(cst: CstTypeDeclaration['children'], block: AstBlock) {
+    typeDeclaration(cst: CstTypeDeclaration['children'], parent: AstBlock | AstClass) {
         return {
             typeName: cst.type[0].image,
             isList: !!cst.isList,
-            index: cst.index ? this.visit(cst.index[0], block) : undefined
+            index: cst.index ? this.visit(cst.index[0], parent) : undefined
         } as AstType;
     }
 
-    returnStatement(cst: CstReturnStatement['children'], block: AstBlock) {
+    returnStatement(cst: CstReturnStatement['children'], parent: AstBlock | AstClass) {
         return {
             astType: 'return',
-            expression: cst.expression ? this.visit(cst.expression[0], block) : undefined,
+            expression: cst.expression ? this.visit(cst.expression[0], parent) : undefined,
         } as AstReturn;
     }
 
-    functionParam(cst: CstFunctionParamDeclaration['children'], block: AstBlock) {
+    functionParam(cst: CstFunctionParamDeclaration['children'],  fn: AstFunction ) {
+        const identifier = cst.identifier[0].image;
+        if (identifier in fn.members) {
+            throw new Error(`Identifier ${identifier} already declared`);
+        }
         const variable: AstVariable = {
             astType: 'variable',
-            identifier: cst.identifier[0].image,
-            type: cst.type ? this.visit(cst.type[0], block) : undefined,
+            identifier,
+            type: cst.type ? this.visit(cst.type[0], fn) : undefined,
         }
-        block.members[cst.identifier[0].image] = variable;
+        fn.members[identifier] = variable;
+        fn.params.push(variable);
     }
 
-    functionDeclaration(cst: CstFunctionDeclaration['children'], block: AstBlock) {
+    functionDeclaration(cst: CstFunctionDeclaration['children'], parent: AstBlock | AstClass) {
+        const identifier = cst.identifier[0].image;
+        if (identifier in parent.members) {
+            throw new Error(`Identifier ${identifier} already declared`);
+        }
         const astFunction: AstFunction = {
             astType: 'function',
-            parent: block,
+            parent: parent,
             members: {},
             statements: [],
-            identifier: cst.identifier[0].image,
+            identifier,
             params: [],
-            returnType: "returnType" in cst ? this.visit(cst.returnType![0], block) : undefined,
+            returnType: "returnType" in cst ? this.visit(cst.returnType![0], parent) : undefined,
         }
         for (const param of cst.params ?? []) {
             this.visit(param, astFunction);
@@ -482,39 +498,39 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
             const result: AstStatement = this.visit(statement, astFunction);
             astFunction.statements.push(result);
         }
-        block.members[astFunction.identifier] = astFunction;
+        parent.members[identifier] = astFunction;
     }
 
-    continueStatement(cst: CstNode['children'], block: AstBlock) {
+    continueStatement(cst: CstNode['children'], parent: AstBlock | AstClass) {
         return {
             astType: 'continue',
         } as AstContinue;
     }
 
-    breakStatement(cst: CstNode['children'], block: AstBlock) {
+    breakStatement(cst: CstNode['children'], parent: AstBlock | AstClass) {
         return {
             astType: 'break',
         } as AstBreak;
     }
 
-    throwStatement(cst: CstThrowStatement['children'], block: AstBlock) {
+    throwStatement(cst: CstThrowStatement['children'], parent: AstBlock | AstClass) {
         return {
             astType: 'throw',
-            expression: this.visit(cst.expression[0], block)
+            expression: this.visit(cst.expression[0], parent)
         } as AstThrow;
     }
 
-    tryStatement(cst: CstTryStatement['children'], block: AstBlock) {
+    tryStatement(cst: CstTryStatement['children'], parent: AstBlock | AstClass) {
         const tryBlock: AstTry = {
-            ...this.visit(cst.try[0], block),
+            ...this.visit(cst.try[0], parent),
             astType: 'try',
             catch: {
                 astType: 'block',
-                parent: block,
+                parent: parent,
                 members: {},
                 statements: []
             } as AstBlock,
-            finally: 'finally' in cst && this.visit(cst.finally![0], block)
+            finally: 'finally' in cst && this.visit(cst.finally![0], parent)
         }
         if ('catchIdentifier' in cst) {
             tryBlock.catch.members[cst.catchIdentifier![0].image] = {
@@ -530,10 +546,10 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         return tryBlock;
     }
 
-    conditionalStatement(cst: CstConditionalStatement['children'], block: AstBlock) {
-        const test = this.visit(cst.test[0], block);
-        const trueBlock = this.visit(cst.true[0], block);
-        const falseBlock = 'alternate' in cst && this.visit(cst.alternate![0], block);
+    conditionalStatement(cst: CstConditionalStatement['children'], parent: AstBlock | AstClass) {
+        const test = this.visit(cst.test[0], parent);
+        const trueBlock = this.visit(cst.true[0], parent);
+        const falseBlock = 'alternate' in cst && this.visit(cst.alternate![0], parent);
         return {
             ...trueBlock,
             astType: 'branch',
@@ -542,19 +558,28 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         } as AstBranch;
     }
 
-    structMemberDeclaration(cst: CstStructMemberDeclaration['children'], { block, struct }: { block: AstBlock; struct: AstStruct }) {
+    structMemberDeclaration(cst: CstStructMemberDeclaration['children'], { parent, struct }: { parent: AstBlock; struct: AstStruct }) {
+        const identifier = cst.identifier[0].image;
+        if (identifier in struct.members) {
+            throw new Error(`Identifier ${identifier} already declared`);
+        }
         const member: AstVariable = {
             astType: 'variable',
-            identifier: cst.identifier[0].image,
-            type: cst.type ? this.visit(cst.type[0], block) : undefined,
+            identifier,
+            type: cst.type ? this.visit(cst.type[0], parent) : undefined,
         }
         struct.members[cst.identifier[0].image] = member;
     }
 
     structDeclaration(cst: CstStructDeclaration['children'], block: AstBlock) {
+        const identifier = cst.identifier[0].image;
+        if (identifier in block.members) {
+            throw new Error(`Identifier ${identifier} already declared`);
+        }
         const struct: AstStruct = {
             astType: 'struct',
             members: {},
+            identifier,
         }
         for (const member of cst.members ?? []) {
             this.visit(member, { block, struct });
@@ -562,10 +587,86 @@ class MotorAstVisitor extends BaseVisitorWithDefaults {
         block.members[cst.identifier[0].image] = struct;
     }
 
-    block(cst: CstBlock['children'], block?: AstBlock) {
+    enumMemberDeclaration(cst: CstEnumMemberDeclaration['children'], astEnum: AstEnum) {
+        const identifier = cst.identifier[0].image;
+        if (identifier in astEnum.members) {
+            throw new Error(`Identifier ${identifier} already declared`);
+        }
+        const member: AstVariable = {
+            astType: 'variable',
+            identifier: cst.identifier[0].image,
+        }
+        astEnum.members[cst.identifier[0].image] = member;
+    }
+
+    enumDeclaration(cst: CstEnumDeclaration['children'], parent: AstBlock | AstClass) {
+        const identifier = cst.identifier[0].image;
+        if (identifier in parent.members) {
+            throw new Error(`Identifier ${identifier} already declared`);
+        }
+        parent.members[identifier] = {
+            astType: 'enum',
+            type: cst.type ? this.visit(cst.type[0], parent) : undefined,
+            identifier,
+            members: {},
+        } as AstEnum;
+        for (const member of cst.members ?? []) {
+            this.visit(member, parent.members[identifier]);
+        }
+    }
+
+    classVariableDeclaration(cst: CstClassVariableDeclaration['children'], astClass: AstClass) {
+        const identifier = cst.identifier[0].image;
+        if (identifier in astClass.members) {
+            throw new Error(`Identifier ${identifier} already declared`);
+        }
+        const variable: AstVariable = {
+            astType: 'variable',
+            identifier,
+            type: cst.type ? this.visit(cst.type[0], astClass) : undefined,
+        }
+        astClass.members[identifier] = variable;
+    }
+
+    classMemberDeclaration(cst: CstClassMemberDeclaration['children'], astClass: AstClass) {
+        for (const variable of cst.variables ?? []) {
+            this.visit(variable, astClass);
+        }
+        for (const fn of cst.functions ?? []) {
+            this.visit(fn, astClass);
+        }
+        for (const struct of cst.structs ?? []) {
+            this.visit(struct, astClass);
+        }
+        for (const enumDecl of cst.enums ?? []) {
+            this.visit(enumDecl, astClass);
+        }
+        for (const classDecl of cst.classes ?? []) {
+            this.visit(classDecl, astClass);
+        }
+    }
+
+    classDeclaration(cst: CstClassDeclaration['children'], parent: AstBlock | AstClass) {
+        const identifier = cst.identifier[0].image;
+        if (identifier in parent.members) {
+            throw new Error(`Identifier ${identifier} already declared`);
+        }
+        const astClass: AstClass = {
+            astType: 'class',
+            parent,
+            members: {},
+            identifier,
+        }
+        parent.members[identifier] = astClass;
+        for (const member of cst.members ?? []) {
+            this.visit(member, astClass);
+        }
+    }
+
+    block(cst: CstBlock['children'], parent?: AstBlock | AstClass) {
         const astBlock: AstBlock = {
             astType: 'block',
-            parent: block,
+            parent: parent,
             members: {},
             statements: []
         }

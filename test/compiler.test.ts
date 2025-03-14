@@ -352,20 +352,22 @@ class b : a
 
     describe('AST', () => {
 
-        function deLoop(ast: AstBlock) {
+        function deLoop(ast: AstBlock | AstClass) {
             delete ast.parent
-            ast.statements.forEach((statement) => {
-                if (
-                    statement.astType === 'block' ||
-                    statement.astType === 'while' ||
-                    statement.astType === 'function' ||
-                    statement.astType === 'branch' ||
-                    statement.astType === 'for' ||
-                    statement.astType === 'try'
-                ) {
-                    deLoop(statement as AstBlock);
-                }
-            })
+            if ('statements' in ast)
+                ast.statements.forEach((statement) => {
+                    if (
+                        statement.astType === 'block' ||
+                        statement.astType === 'while' ||
+                        statement.astType === 'function' ||
+                        statement.astType === 'branch' ||
+                        statement.astType === 'for' ||
+                        statement.astType === 'try' ||
+                        statement.astType === 'class'
+                    ) {
+                        deLoop(statement as AstBlock);
+                    }
+                })
             Object.keys(ast.members).forEach((key) => {
                 if ('parent' in ast.members[key]) {
                     deLoop(ast.members[key] as AstBlock);
@@ -753,7 +755,16 @@ fn a(b: float64): float32
                             }
                         ],
                         "identifier": "a",
-                        "params": [],
+                        "params": [
+                            {
+                                "astType": "variable",
+                                "identifier": "b",
+                                "type": {
+                                    "typeName": "float64",
+                                    "isList": false
+                                }
+                            }
+                        ],
                         "returnType": {
                             "typeName": "float32",
                             "isList": false
@@ -1162,6 +1173,7 @@ struct a
                 "members": {
                     "a": {
                         "astType": "struct",
+                        "identifier": "a",
                         "members": {
                             "b": {
                                 "astType": "variable",
@@ -1192,6 +1204,117 @@ struct a
                                 "identifier": "e"
                             }
                         }
+                    }
+                },
+                "statements": []
+            });
+        })
+
+        test('enum', () => {
+            const scriptOnTest = `
+enum a
+    b
+    c = 1
+    d = 2
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(deLoop(ast)).toEqual({
+                "astType": "block",
+                "members": {
+                    "a": {
+                        "astType": "enum",
+                        "identifier": "a",
+                        "members": {
+                            "b": {
+                                "astType": "variable",
+                                "identifier": "b"
+                            },
+                            "c": {
+                                "astType": "variable",
+                                "identifier": "c"
+                            },
+                            "d": {
+                                "astType": "variable",
+                                "identifier": "d"
+                            }
+                        }
+                    }
+                },
+                "statements": []
+            });
+        })
+
+        test('class', () => {
+            const scriptOnTest = `
+class c1
+    a: float64
+    b = 1.0
+    struct s1
+        pass
+    class c2
+        pass
+    enum e1
+        pass
+    fn f1()
+        pass
+`
+            const result = motorLexer.tokenize(scriptOnTest);
+            motorParser.input = result.tokens;
+            if (motorParser.errors.length) {
+                console.log(motorParser.errors);
+            }
+            expect(motorParser.errors.length).toBe(0);
+            const cst = motorParser.block();
+            const ast = motorAstVisitor.visit(cst);
+            expect(deLoop(ast)).toEqual({
+                "astType": "block",
+                "members": {
+                    "c1": {
+                        "astType": "class",
+                        "members": {
+                            "a": {
+                                "astType": "variable",
+                                "identifier": "a",
+                                "type": {
+                                    "typeName": "float64",
+                                    "isList": false
+                                }
+                            },
+                            "b": {
+                                "astType": "variable",
+                                "identifier": "b"
+                            },
+                            "s1": {
+                                "astType": "struct",
+                                "members": {},
+                                "identifier": "s1"
+                            },
+                            "c2": {
+                                "astType": "class",
+                                "members": {},
+                                "identifier": "c2"
+                            },
+                            "e1": {
+                                "astType": "enum",
+                                "identifier": "e1",
+                                "members": {}
+                            },
+                            "f1": {
+                                "astType": "function",
+                                "members": {},
+                                "statements": [],
+                                "identifier": "f1",
+                                "params": []
+                            }
+                        },
+                        "identifier": "c1"
                     }
                 },
                 "statements": []

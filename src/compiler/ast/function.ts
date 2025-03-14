@@ -5,6 +5,6 @@ import { AstVariable } from "./variable.expression";
 export interface AstFunction extends AstBlock {
     astType: 'function';
     returnType?: AstType;
-    params?: AstVariable[];
+    params: AstVariable[];
     identifier: string;
 }

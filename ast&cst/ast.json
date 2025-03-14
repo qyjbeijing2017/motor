@@ -1,38 +1,45 @@
 {
     "astType": "block",
     "members": {
-        "a": {
-            "astType": "struct",
+        "c1": {
+            "astType": "class",
             "members": {
-                "b": {
+                "a": {
                     "astType": "variable",
-                    "identifier": "b",
+                    "identifier": "a",
                     "type": {
                         "typeName": "float64",
                         "isList": false
                     }
                 },
-                "c": {
+                "b": {
                     "astType": "variable",
-                    "identifier": "c",
-                    "type": {
-                        "typeName": "float32",
-                        "isList": false
-                    }
+                    "identifier": "b"
                 },
-                "d": {
-                    "astType": "variable",
-                    "identifier": "d",
-                    "type": {
-                        "typeName": "int",
-                        "isList": false
-                    }
+                "s1": {
+                    "astType": "struct",
+                    "members": {},
+                    "identifier": "s1"
                 },
-                "e": {
-                    "astType": "variable",
-                    "identifier": "e"
+                "c2": {
+                    "astType": "class",
+                    "members": {},
+                    "identifier": "c2"
+                },
+                "e1": {
+                    "astType": "enum",
+                    "identifier": "e1",
+                    "members": {}
+                },
+                "f1": {
+                    "astType": "function",
+                    "members": {},
+                    "statements": [],
+                    "identifier": "f1",
+                    "params": []
                 }
-            }
+            },
+            "identifier": "c1"
         }
     },
     "statements": []
