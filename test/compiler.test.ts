@@ -57,8 +57,8 @@ dedent
         test('Assign Expression', () => {
             const scriptOnTest = `
 a
-b: float64
-c: float32
+b: f64
+c: f32
 d = 1
 e = 1.0
 e += 1
@@ -83,7 +83,7 @@ e <<= 1;e >>= 1
         test('conditional expression', () => {
             const scriptOnTest = `
 b = true ? 1 : 2
-c: float64 = true ? false ? 1 : 2 : 3
+c: f64 = true ? false ? 1 : 2 : 3
 d = true ? 1 : false ? 2 : 3
 `
             const result = motorLexer.tokenize(scriptOnTest);
@@ -278,7 +278,7 @@ catch
             const scriptOnTest = `
 fn a()
     pass
-fn a(b: float64): float32
+fn a(b: f64): f32
     return b
 `
             const result = motorLexer.tokenize(scriptOnTest);
@@ -293,8 +293,8 @@ fn a(b: float64): float32
         test(`struct Statement`, () => {
             const scriptOnTest = `
 struct a
-    b: float64
-    c: float32
+    b: f64
+    c: f32
     d: int = 1
     e = 1.0
 struct a
@@ -330,9 +330,9 @@ enum b
         test(`class Statement`, () => {
             const scriptOnTest = `
 class a
-    b: float64
-    c: float32
-    d: int = 1
+    b: f64
+    c: f32
+    d: i32 = 1
     e = 1.0
     fn f()
         pass

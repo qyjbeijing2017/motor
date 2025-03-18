@@ -68,6 +68,7 @@ import { CstClassVariableDeclaration } from "./cst/class-variable.declaration";
 import { CstListExpression } from "./cst/list.expression";
 import { AstList } from "./ast/list.expression";
 import { CstListDeclaration } from "./cst/list.declaration";
+import { MotorOptimizer, motorOptimizer } from "./optimizer/optimizer.manager";
 
 const BaseVisitor = motorParser.getBaseCstVisitorConstructor();
 
@@ -100,7 +101,7 @@ class MotorCstVisitor extends BaseVisitor {
         if (list.elements.length > 0) {
             list.elements.every(element => element.type === list.elements[0].type);
         }
-        return astConst;
+        return motorOptimizer.optimize(astConst);
     }
 
     parenExpression(cst: CstParenExpression['children'], parent: AstBlock | AstClass) {
@@ -111,44 +112,44 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.const) {
             switch (cst.const[0].tokenType.name) {
                 case Integer.name:
-                    return {
+                    return motorOptimizer.optimize({
                         astType: 'const',
                         value: parseInt(cst.const[0].image),
                         type: TypeInt32.name
-                    } as AstConst
+                    } as AstConst);
                 case Float.name:
-                    return {
+                    return motorOptimizer.optimize({
                         astType: 'const',
                         value: parseFloat(cst.const[0].image),
                         type: TypeFloat32.name
-                    } as AstConst
+                    } as AstConst);
                 case Char.name:
-                    return {
+                    return motorOptimizer.optimize({
                         astType: 'const',
                         value: cst.const[0].image.replace(/'/g, ''),
                         type: TypeChar.name
-                    } as AstConst
+                    } as AstConst);
                 case String.name:
-                    return {
+                    return motorOptimizer.optimize({
                         astType: 'const',
                         value: cst.const[0].image.replace(/"/g, ''),
                         type: TypeString.name
-                    } as AstConst
+                    } as AstConst);
                 case Bool.name:
-                    return {
+                    return motorOptimizer.optimize({
                         astType: 'const',
                         value: cst.const[0].image === 'true',
                         type: TypeBool.name
-                    } as AstConst
+                    } as AstConst);
             }
         }
         if (cst.variable) {
             let variable = findIdentifier(parent, cst.variable[0].image);
             if (!variable) {
-                variable = {
+                variable = motorOptimizer.optimize({
                     astType: 'variable',
                     identifier: cst.variable[0].image,
-                } as AstVariable;
+                } as AstVariable) as AstVariable;
                 parent.members[cst.variable[0].image] = variable;
             }
             return variable;
@@ -163,27 +164,27 @@ class MotorCstVisitor extends BaseVisitor {
     }
 
     indexExpression(cst: CstIndexExpression['children'], { parent, base }: { parent: AstBlock | AstClass, base: AstExpression }) {
-        return {
+        return motorOptimizer.optimize({
             astType: 'index',
             base,
             index: this.visit(cst.index[0], parent)
-        } as AstIndex;
+        } as AstIndex);
     }
 
     memberExpression(cst: CstGetExpression['children'], { base }: { parent: AstBlock | AstClass, base: AstExpression }) {
-        return {
+        return motorOptimizer.optimize({
             astType: 'get',
             base,
             identifier: cst.identifier[0].image
-        } as AstMember;
+        } as AstMember);
     }
 
     callExpression(cst: CstCallExpression['children'], { parent, base }: { parent: AstBlock | AstClass, base: AstExpression }) {
-        return {
+        return motorOptimizer.optimize({
             astType: 'call',
             base,
             params: cst.args?.map(arg => this.visit(arg, parent)) ?? []
-        } as AstCall;
+        } as AstCall);
     }
 
     postfixExpression(cst: CstPostFixExpression['children'], parent: AstBlock | AstClass) {
@@ -194,11 +195,11 @@ class MotorCstVisitor extends BaseVisitor {
                 if ('name' in operator) {
                     base = this.visit(operator, { parent, base });
                 } else {
-                    base = {
+                    base = motorOptimizer.optimize({
                         astType: 'increment',
                         left: base,
                         operator: operator.image
-                    } as AstIncrement;
+                    } as AstIncrement) as AstIncrement;
                 }
             }
             return base;
@@ -209,12 +210,12 @@ class MotorCstVisitor extends BaseVisitor {
     exponentiationExpression(cst: CstExponentiationExpression['children'], parent: AstBlock | AstClass) {
         const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
-            return {
+            return motorOptimizer.optimize({
                 astType: 'binary',
                 left,
                 right: this.visit(cst.right[0], parent),
                 operator: cst.operator[0].image
-            } as AstBinary;
+            } as AstBinary)
         }
         return left;
     }
@@ -222,11 +223,11 @@ class MotorCstVisitor extends BaseVisitor {
     unaryExpression(cst: CstUnaryExpression['children'], parent: AstBlock | AstClass) {
         const right: AstExpression = this.visit(cst.right[0], parent);
         if (cst.operator) {
-            return {
+            return motorOptimizer.optimize({
                 astType: 'unary',
                 right,
                 operator: cst.operator[0].image
-            } as AstUnary;
+            } as AstUnary);
         }
         return right;
     }
@@ -236,12 +237,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -253,12 +254,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -270,12 +271,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -287,12 +288,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -304,12 +305,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -321,12 +322,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -338,12 +339,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -355,12 +356,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -372,12 +373,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -389,12 +390,12 @@ class MotorCstVisitor extends BaseVisitor {
         if (cst.operator && cst.right) {
             let last = left;
             for (let i = 0; i < cst.operator.length; i++) {
-                last = {
+                last = motorOptimizer.optimize({
                     astType: 'binary',
                     left: last,
                     right: this.visit(cst.right[i], parent),
                     operator: cst.operator[i].image
-                } as AstBinary;
+                } as AstBinary) as AstBinary;
             }
             return last;
         }
@@ -404,12 +405,12 @@ class MotorCstVisitor extends BaseVisitor {
     conditionalExpression(cst: CstConditionExpression['children'], parent: AstBlock | AstClass) {
         const test: AstExpression = this.visit(cst.test[0], parent);
         if (cst.true && cst.false) {
-            return {
+            return motorOptimizer.optimize({
                 astType: 'ternary',
                 condition: test,
                 true: this.visit(cst.true[0], parent),
                 false: this.visit(cst.false[0], parent)
-            } as AstTernary;
+            } as AstTernary);
         }
         return test;
     }
@@ -417,12 +418,12 @@ class MotorCstVisitor extends BaseVisitor {
     assignExpression(cst: CstAssignmentExpression['children'], parent: AstBlock | AstClass) {
         const left: AstExpression = this.visit(cst.left[0], parent);
         if (cst.operator && cst.right) {
-            return {
+            return motorOptimizer.optimize({
                 astType: 'binary',
                 left,
                 right: this.visit(cst.right[0], parent),
                 operator: cst.operator[0].image
-            } as AstBinary;
+            } as AstBinary);
         }
         return left;
     }
@@ -434,11 +435,11 @@ class MotorCstVisitor extends BaseVisitor {
 
     whileStatement(cst: CstWhileStatement['children'], parent: AstBlock | AstClass) {
         const whileBlock: AstBlock = this.visit(cst.block[0], parent)
-        return {
+        return motorOptimizer.optimize({
             ...whileBlock,
             test: this.visit(cst.test[0], parent),
             astType: 'while',
-        } as AstWhile;
+        } as AstWhile);
     }
 
     forStatement(cst: CstForStatement['children'], parent: AstBlock | AstClass) {
@@ -459,7 +460,7 @@ class MotorCstVisitor extends BaseVisitor {
             if (result)
                 forBlock.statements.push(result);
         }
-        return forBlock;
+        return motorOptimizer.optimize(forBlock);
     }
 
     listDeclaration(cst: CstListDeclaration['children'], type: {
@@ -489,10 +490,10 @@ class MotorCstVisitor extends BaseVisitor {
     }
 
     returnStatement(cst: CstReturnStatement['children'], parent: AstBlock | AstClass) {
-        return {
+        return motorOptimizer.optimize({
             astType: 'return',
             expression: cst.expression ? this.visit(cst.expression[0], parent) : undefined,
-        } as AstReturn;
+        } as AstReturn);
     }
 
     functionParam(cst: CstFunctionParamDeclaration['children'], fn: AstFunction) {
@@ -505,6 +506,7 @@ class MotorCstVisitor extends BaseVisitor {
             identifier,
             type: cst.type ? this.visit(cst.type[0], fn) : undefined,
         }
+        motorOptimizer.optimize(variable);
         fn.members[identifier] = variable;
         fn.params.push(variable);
     }
@@ -531,25 +533,26 @@ class MotorCstVisitor extends BaseVisitor {
             astFunction.statements.push(result);
         }
         parent.members[identifier] = astFunction;
+        motorOptimizer.optimize(astFunction);
     }
 
     continueStatement(cst: CstNode['children'], parent: AstBlock | AstClass) {
-        return {
+        return motorOptimizer.optimize({
             astType: 'continue',
-        } as AstContinue;
+        } as AstContinue);
     }
 
     breakStatement(cst: CstNode['children'], parent: AstBlock | AstClass) {
-        return {
+        return motorOptimizer.optimize({
             astType: 'break',
-        } as AstBreak;
+        } as AstBreak);
     }
 
     throwStatement(cst: CstThrowStatement['children'], parent: AstBlock | AstClass) {
-        return {
+        return motorOptimizer.optimize({
             astType: 'throw',
             expression: this.visit(cst.expression[0], parent)
-        } as AstThrow;
+        } as AstThrow);
     }
 
     tryStatement(cst: CstTryStatement['children'], parent: AstBlock | AstClass) {
@@ -575,19 +578,19 @@ class MotorCstVisitor extends BaseVisitor {
             if (result)
                 tryBlock.catch.statements.push(result);
         }
-        return tryBlock;
+        return motorOptimizer.optimize(tryBlock);
     }
 
     conditionalStatement(cst: CstConditionalStatement['children'], parent: AstBlock | AstClass) {
         const test = this.visit(cst.test[0], parent);
         const trueBlock = this.visit(cst.true[0], parent);
         const falseBlock = 'alternate' in cst && this.visit(cst.alternate![0], parent);
-        return {
+        return motorOptimizer.optimize({
             ...trueBlock,
             astType: 'branch',
             test,
             false: falseBlock
-        } as AstBranch;
+        } as AstBranch);
     }
 
     structMemberDeclaration(cst: CstStructMemberDeclaration['children'], { parent, struct }: { parent: AstBlock; struct: AstStruct }) {
@@ -601,6 +604,7 @@ class MotorCstVisitor extends BaseVisitor {
             type: cst.type ? this.visit(cst.type[0], parent) : undefined,
         }
         struct.members[cst.identifier[0].image] = member;
+        motorOptimizer.optimize(member);
     }
 
     structDeclaration(cst: CstStructDeclaration['children'], block: AstBlock) {
@@ -617,6 +621,7 @@ class MotorCstVisitor extends BaseVisitor {
             this.visit(member, { block, struct });
         }
         block.members[cst.identifier[0].image] = struct;
+        motorOptimizer.optimize(struct);
     }
 
     enumMemberDeclaration(cst: CstEnumMemberDeclaration['children'], astEnum: AstEnum) {
@@ -629,6 +634,7 @@ class MotorCstVisitor extends BaseVisitor {
             identifier: cst.identifier[0].image,
         }
         astEnum.members[cst.identifier[0].image] = member;
+        motorOptimizer.optimize(member);
     }
 
     enumDeclaration(cst: CstEnumDeclaration['children'], parent: AstBlock | AstClass) {
@@ -645,6 +651,7 @@ class MotorCstVisitor extends BaseVisitor {
         for (const member of cst.members ?? []) {
             this.visit(member, parent.members[identifier]);
         }
+        motorOptimizer.optimize(parent.members[identifier]);
     }
 
     classVariableDeclaration(cst: CstClassVariableDeclaration['children'], astClass: AstClass) {
@@ -658,6 +665,7 @@ class MotorCstVisitor extends BaseVisitor {
             type: cst.type ? this.visit(cst.type[0], astClass) : undefined,
         }
         astClass.members[identifier] = variable;
+        motorOptimizer.optimize(variable);
     }
 
     classMemberDeclaration(cst: CstClassMemberDeclaration['children'], astClass: AstClass) {
@@ -693,6 +701,7 @@ class MotorCstVisitor extends BaseVisitor {
         for (const member of cst.members ?? []) {
             this.visit(member, astClass);
         }
+        motorOptimizer.optimize(astClass);
     }
 
     block(cst: CstBlock['children'], parent?: AstBlock | AstClass) {
@@ -707,7 +716,7 @@ class MotorCstVisitor extends BaseVisitor {
             if (result)
                 astBlock.statements.push(result);
         }
-        return astBlock;
+        return motorOptimizer.optimize(astBlock);
     }
 }
 
