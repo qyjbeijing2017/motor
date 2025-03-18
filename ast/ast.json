@@ -1,15 +1,35 @@
 {
     "astType": "block",
-    "members": {
-        "a": {
-            "astType": "variable",
-            "identifier": "a"
-        }
-    },
+    "members": {},
     "statements": [
         {
-            "astType": "variable",
-            "identifier": "a"
+            "astType": "block",
+            "members": {},
+            "statements": [
+                {
+                    "astType": "binary",
+                    "left": {
+                        "astType": "binary",
+                        "left": {
+                            "astType": "const",
+                            "value": 1,
+                            "type": "TypeInt32"
+                        },
+                        "right": {
+                            "astType": "const",
+                            "value": 2,
+                            "type": "TypeInt32"
+                        },
+                        "operator": "+"
+                    },
+                    "right": {
+                        "astType": "const",
+                        "value": 3,
+                        "type": "TypeInt32"
+                    },
+                    "operator": "-"
+                }
+            ]
         }
     ]
 }

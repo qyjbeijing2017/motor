@@ -8,10 +8,12 @@ export const Indent = createToken({ name: "Indent", pattern: () => null, line_br
 export const Dedent = createToken({ name: "Dedent", pattern: () => null, line_breaks: false, });
 
 export const Float = createToken({ name: 'Float', pattern: /(\d+\.\d+f?|\.\d+f?|\d+f|\d+\.f?)/ });
-export const Integer = createToken({ name: 'Integer', pattern: /\d+/, longer_alt: Float });
+export const Uint = createToken({ name: 'Float', pattern: /\d+u/ });
+export const Integer = createToken({ name: 'Integer', pattern: /\d+/, longer_alt: [Float, Uint] });
 export const Char = createToken({ name: 'Char', pattern: /'.'/ });
 export const String = createToken({ name: 'String', pattern: /".*?"/ });
 export const Bool = createToken({ name: 'Bool', pattern: /true|false/, longer_alt: Identifier });
+export const Null = createToken({ name: 'Null', pattern: /null/, longer_alt: Identifier });
 
 export const LShiftEqual = createToken({ name: 'LShiftEqual', pattern: /<<=/ });
 export const RShiftEqual = createToken({ name: 'RShiftEqual', pattern: />>=/ });
@@ -79,6 +81,7 @@ export const TypeBool = createToken({ name: 'TypeBool', pattern: /bool/, longer_
 export const TypeChar = createToken({ name: 'TypeChar', pattern: /char/, longer_alt: Identifier });
 export const TypeString = createToken({ name: 'TypeString', pattern: /string/, longer_alt: Identifier });
 export const TypeList = createToken({ name: 'TypeList', pattern: /list/, longer_alt: Identifier });
+export const TypeVoid = createToken({ name: 'TypeVoid', pattern: /void/, longer_alt: Identifier });
 
 export const If = createToken({ name: 'If', pattern: /if/, longer_alt: Identifier });
 export const Else = createToken({ name: 'Else', pattern: /else/, longer_alt: Identifier });
@@ -104,7 +107,7 @@ export const motorTokens = [
     Newline,
     Indent, Dedent,
     WhiteSpace,
-    Integer, Float, Char, String, Bool,
+    Integer, Float, Uint, Char, String, Bool,
     LShiftEqual, RShiftEqual, ExponentEqual,
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift, Increment, Decrement, Exponent,
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Tilde, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
@@ -114,7 +117,10 @@ export const motorTokens = [
     Identifier,
 ];
 
-class MotorLexer extends Lexer {
+export class MotorLexer extends Lexer {
+    constructor() {
+        super(motorTokens);
+    }
     tokenize(text: string, initialMode?: string): ILexingResult {
         const indentStack = [0];
         const lexResult = super.tokenize(text, initialMode);
@@ -135,7 +141,7 @@ class MotorLexer extends Lexer {
                 tokens.push(token);
             }
         })
-        while(indentStack.length > 1){
+        while (indentStack.length > 1) {
             indentStack.pop();
             tokens.push(createTokenInstance(Dedent, '', NaN, NaN, NaN, NaN, NaN, NaN));
         }
@@ -145,5 +151,3 @@ class MotorLexer extends Lexer {
         };
     }
 }
-
-export const motorLexer = new MotorLexer(motorTokens);

@@ -21,45 +21,19 @@ export { MotorPointer, defineMotorPointer } from './types/pointer.type';
 export { MotorNull } from './types/null.type';
 export { MotorString } from './types/string.type';
 export { MotorList, defineMotorList } from './types/list.type';
+export { MotorLexer } from './compiler/lexer.compiler';
+
 export {
-    motorLexer, motorTokens,
-    Newline, Indent, Dedent,
-    WhiteSpace,
     Comment,
-    Integer, Float, Char, String, Bool,
-    LShiftEqual, RShiftEqual,
-    LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift, Increment, Decrement,
-    Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
+    Newline,
+    Indent, Dedent,
+    WhiteSpace,
+    Integer, Float, Uint, Char, String, Bool,
+    LShiftEqual, RShiftEqual, ExponentEqual,
+    LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift, Increment, Decrement, Exponent,
+    Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Tilde, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,
-    If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally, Throw, Struct, Enum, Import,
-    TypeFloat64, TypeFloat16, TypeFloat8, TypeFloat32,
-    TypeInt64, TypeInt16, TypeInt8, TypeInt32,
-    TypeUint64, TypeUint16, TypeUint8, TypeUint32,
-    TypeBool, TypeChar, TypeString, TypeList,
+    TypeFloat64, TypeFloat16, TypeFloat8, TypeFloat32, TypeInt64, TypeInt16, TypeInt8, TypeInt32, TypeUint64, TypeUint16, TypeUint8, TypeUint32, TypeBool, TypeChar, TypeString, TypeList,
+    If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally, Throw, Struct, Enum, Import, Pass,
     Identifier,
 } from './compiler/lexer.compiler';
-export { motorParser } from './compiler/parser.compiler';
-export { motorCstVisitor } from './compiler/cst-visitor.compiler';
-export { AstBlock } from './compiler/ast/block';
-export { AstBranch } from './compiler/ast/branch.statement';
-export { AstClass } from './compiler/ast/class';
-export { AstExpression } from './compiler/ast/expression.statement';
-export { AstFunction } from './compiler/ast/function';
-export { AstStatement } from './compiler/ast/statement';
-export { AstStruct } from './compiler/ast/struct';
-export { AstVariable } from './compiler/ast/variable.expression';
-export { AstWhile } from './compiler/ast/while.statement';
-export { AstBinary } from './compiler/ast/binary.expression';
-export { AstUnary } from './compiler/ast/unary.expression';
-export { AstPostFix } from './compiler/ast/postfix.expression';
-export { AstCall } from './compiler/ast/call.postfix';
-export { AstIndex } from './compiler/ast/index.postfix';
-export { AstMember } from './compiler/ast/member.postfix';
-export { AstIncrement } from './compiler/ast/increment.expression';
-export { AstContinue } from './compiler/ast/continue.expression';
-export { AstBreak } from './compiler/ast/break.expression';
-export { AstReturn } from './compiler/ast/return.statement';
-export { AstTernary } from './compiler/ast/ternary.expression';
-export { AstConst } from './compiler/ast/const.expression';
-export { AstType } from './compiler/ast/type';
-export { AstList } from './compiler/ast/list.expression';

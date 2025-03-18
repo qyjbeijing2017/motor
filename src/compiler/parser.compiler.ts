@@ -1,7 +1,7 @@
-import { CstParser, EmbeddedActionsParser } from "chevrotain";
+import { CstParser } from "chevrotain";
 import {
     Indent, Dedent,
-    Integer, Float, Char, String, Bool,
+    Integer, Float, Uint, Char, String, Bool,
     LShiftEqual, RShiftEqual,
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift, Increment, Decrement,
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
@@ -25,6 +25,30 @@ class MotorParser extends CstParser {
         this.performSelfAnalysis();
     }
 
+    typeDeclaration = this.RULE('typeDeclaration', () => {
+        this.OPTION(() =>
+            this.OR([
+                { ALT: () => this.CONSUME(TypeFloat64, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeFloat32, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeFloat16, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeFloat8, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeInt64, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeInt32, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeInt16, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeInt8, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeUint64, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeUint32, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeUint16, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeUint8, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeBool, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeChar, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeString, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(TypeList, { LABEL: 'type' }) },
+                { ALT: () => this.CONSUME(Identifier, { LABEL: 'type' }) },
+            ])
+        );
+    });
+
     parenExpression = this.RULE("parenExpression", () => {
         this.CONSUME(LeftParen);
         this.SUBRULE(this.assignExpression, { LABEL: 'expression' });
@@ -44,15 +68,11 @@ class MotorParser extends CstParser {
         this.OR([
             { ALT: () => this.CONSUME(Float, { LABEL: 'const' }) },
             { ALT: () => this.CONSUME(Integer, { LABEL: 'const' }) },
+            { ALT: () => this.CONSUME(Uint, { LABEL: 'const' }) },
             { ALT: () => this.CONSUME(Char, { LABEL: 'const' }) },
             { ALT: () => this.CONSUME(String, { LABEL: 'const' }) },
             { ALT: () => this.CONSUME(Bool, { LABEL: 'const' }) },
-            {
-                ALT: () => {
-                    this.CONSUME(Identifier, { LABEL: 'variable' })
-                    this.OPTION(() => this.SUBRULE(this.typeDeclaration));
-                }
-            },
+            { ALT: () => this.CONSUME(Identifier, { LABEL: 'variable' }) },
             { ALT: () => this.SUBRULE(this.parenExpression, { LABEL: 'paren' }) },
             { ALT: () => this.SUBRULE(this.listExpression, { LABEL: 'list' }) },
         ]);
@@ -253,40 +273,6 @@ class MotorParser extends CstParser {
         });
     });
 
-    listDeclaration = this.RULE('listDeclaration', () => {
-        this.CONSUME(LeftBracket);
-        this.OPTION1(() => this.SUBRULE(this.assignExpression, { LABEL: 'index' }));
-        this.CONSUME(RightBracket);
-    });
-
-    typeDeclaration = this.RULE('typeDeclaration', () => {
-        this.CONSUME(Colon);
-        this.OPTION(() =>
-            this.OR([
-                { ALT: () => this.CONSUME(TypeFloat64, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeFloat32, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeFloat16, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeFloat8, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeInt64, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeInt32, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeInt16, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeInt8, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeUint64, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeUint32, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeUint16, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeUint8, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeBool, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeChar, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeString, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeList, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(Identifier, { LABEL: 'type' }) },
-            ])
-        );
-        this.MANY(() => {
-            this.SUBRULE1(this.listDeclaration, { LABEL: 'lists' });
-        });
-    });
-
     assignExpression = this.RULE('assignExpression', () => {
         this.SUBRULE(this.conditionalExpression, { LABEL: 'left' });
         this.OPTION(() => {
@@ -308,24 +294,12 @@ class MotorParser extends CstParser {
         });
     });
 
-    blockStatement = this.RULE('blockStatement', () => {
-        this.CONSUME(Indent);
-        this.SUBRULE(this.block);
-        this.CONSUME(Dedent);
+    continueStatement = this.RULE("continueStatement", () => {
+        this.CONSUME(Continue);
     });
 
-    whileStatement = this.RULE("whileStatement", () => {
-        this.CONSUME(While);
-        this.SUBRULE(this.assignExpression, { LABEL: 'test' });
-        this.SUBRULE(this.blockStatement, { LABEL: 'block' });
-    });
-
-    forStatement = this.RULE("forStatement", () => {
-        this.CONSUME(For);
-        this.CONSUME(Identifier, { LABEL: 'identifier' });
-        this.CONSUME(In);
-        this.SUBRULE(this.assignExpression, { LABEL: 'iterable' });
-        this.SUBRULE(this.blockStatement, { LABEL: 'body' });
+    breakStatement = this.RULE("breakStatement", () => {
+        this.CONSUME(Break);
     });
 
     returnStatement = this.RULE("returnStatement", () => {
@@ -338,142 +312,10 @@ class MotorParser extends CstParser {
         this.SUBRULE(this.assignExpression, { LABEL: 'expression' });
     });
 
-    conditionalStatement = this.RULE("conditionalStatement", () => {
-        this.CONSUME(If);
-        this.SUBRULE(this.assignExpression, { LABEL: 'test' });
-        this.SUBRULE(this.blockStatement, { LABEL: 'true' });
-        this.OPTION(() => {
-            this.CONSUME(Else);
-            this.OR([
-                { ALT: () => this.SUBRULE1(this.blockStatement, { LABEL: "alternate" }) },
-                { ALT: () => this.SUBRULE(this.conditionalStatement, { LABEL: "alternate" }) },
-            ]);
-        });
-    });
-
-    functionParam = this.RULE("functionParam", () => {
-        this.CONSUME1(Identifier, { LABEL: 'identifier' });
-        this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: 'type' }));
-    });
-
-    functionDeclaration = this.RULE("functionDeclaration", () => {
-        this.CONSUME(Function);
-        this.CONSUME(Identifier, { LABEL: 'identifier' });
-        this.CONSUME(LeftParen);
-        this.MANY_SEP({
-            SEP: Comma,
-            DEF: () => {
-                this.SUBRULE(this.functionParam, { LABEL: 'params' });
-            }
-        });
-        this.CONSUME(RightParen);
-        this.OPTION1(() => this.SUBRULE1(this.typeDeclaration, { LABEL: 'returnType' }));
-        this.SUBRULE(this.blockStatement, { LABEL: 'body' });
-    });
-
-    tryStatement = this.RULE("tryStatement", () => {
-        this.CONSUME(Try);
-        this.SUBRULE(this.blockStatement, { LABEL: 'try' });
-        this.CONSUME(Catch);
-        this.OPTION(() => this.CONSUME(Identifier, { LABEL: 'catchIdentifier' }));
-        this.SUBRULE1(this.blockStatement, { LABEL: 'catch' });
-        this.OPTION1(() => {
-            this.CONSUME(Finally);
-            this.SUBRULE2(this.blockStatement, { LABEL: 'finally' });
-        });
-    });
-
-    structMemberDeclaration = this.RULE("structMemberDeclaration", () => {
-        this.OR([
-            {
-                ALT: () => {
-                    this.CONSUME1(Identifier, { LABEL: "identifier" });
-                    this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: "type" }));
-                    this.OPTION1(() => {
-                        this.CONSUME(Equal);
-                        this.SUBRULE(this.assignExpression, { LABEL: "defaultValue" });
-                    })
-                }
-            },
-            { ALT: () => this.CONSUME(Pass) },
-        ]);
-    });
-
-    structDeclaration = this.RULE("structDeclaration", () => {
-        this.CONSUME(Struct);
-        this.CONSUME(Identifier, { LABEL: "identifier" });
+    blockStatement = this.RULE('blockStatement', () => {
         this.CONSUME(Indent);
-        this.MANY(() => {
-            this.SUBRULE(this.structMemberDeclaration, { LABEL: "members" });
-        });
+        this.SUBRULE(this.block);
         this.CONSUME(Dedent);
-    });
-
-    enumMemberDeclaration = this.RULE("enumMemberDeclaration", () => {
-        this.OR([
-            {
-                ALT: () => {
-                    this.CONSUME1(Identifier, { LABEL: "identifier" });
-                    this.OPTION1(() => {
-                        this.CONSUME(Equal);
-                        this.SUBRULE(this.assignExpression, { LABEL: "value" });
-                    });
-                }
-            },
-            { ALT: () => this.CONSUME(Pass) },
-        ]);
-    });
-
-    enumDeclaration = this.RULE("enumDeclaration", () => {
-        this.CONSUME(Enum);
-        this.CONSUME(Identifier, { LABEL: "identifier" });
-        this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: "type" }));
-        this.CONSUME(Indent);
-        this.MANY(() => {
-            this.SUBRULE(this.enumMemberDeclaration, { LABEL: "members" });
-        });
-        this.CONSUME(Dedent);
-    });
-
-    classVariableDeclaration = this.RULE("classVariableDeclaration", () => {
-        this.CONSUME1(Identifier, { LABEL: "identifier" });
-        this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: "type" }));
-        this.OPTION1(() => {
-            this.CONSUME(Equal);
-            this.SUBRULE(this.assignExpression, { LABEL: "defaultValue" });
-        });
-    });
-
-    classMemberDeclaration = this.RULE("classMemberDeclaration", () => {
-        this.OR([
-            { ALT: () => this.SUBRULE(this.classVariableDeclaration, { LABEL: 'variables' }) },
-            { ALT: () => this.SUBRULE(this.functionDeclaration, { LABEL: 'functions' }) },
-            { ALT: () => this.SUBRULE(this.structDeclaration, { LABEL: 'structs' }) },
-            { ALT: () => this.SUBRULE(this.enumDeclaration, { LABEL: 'enums' }) },
-            { ALT: () => this.SUBRULE(this.classDeclaration, { LABEL: 'classes' }) },
-        ]);
-    });
-
-    classDeclaration = this.RULE("classDeclaration", () => {
-        this.CONSUME(Class);
-        this.CONSUME(Identifier, { LABEL: "identifier" });
-        this.OPTION(() => {
-            this.CONSUME(Colon);
-            this.CONSUME1(Identifier);
-        });
-        this.CONSUME(Indent);
-        this.MANY(() => {
-            this.SUBRULE(this.classMemberDeclaration, { LABEL: "members" });
-        });
-        this.CONSUME(Dedent)
-    });
-
-    continueStatement = this.RULE("continueStatement", () => {
-        this.CONSUME(Continue);
-    });
-
-    breakStatement = this.RULE("breakStatement", () => {
-        this.CONSUME(Break);
     });
 
     block = this.RULE('block', () => {
@@ -481,18 +323,10 @@ class MotorParser extends CstParser {
             this.OR([
                 { ALT: () => this.SUBRULE(this.assignExpression, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.blockStatement, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.whileStatement, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.forStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.returnStatement, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.conditionalStatement, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.tryStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.throwStatement, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.functionDeclaration, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.structDeclaration, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.enumDeclaration, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.classDeclaration, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.continueStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.breakStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.continueStatement, { LABEL: 'statements' }) },
             ]);
             this.OPTION(() => this.CONSUME(Semicolon));
         });
