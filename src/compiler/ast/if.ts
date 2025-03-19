@@ -13,4 +13,18 @@ export class AstIf extends AstStatement implements IAstBlock {
     ){
         super();
     }
+
+    toJson(space?: string | number): string {
+        return JSON.stringify({
+            test: this.test.toJson(),
+            true: {
+                member: Object.keys(this.member).reduce((acc, key) => {
+                    acc[key] = this.member[key].toJson(space);
+                    return acc;
+                }, {} as { [key: string]: any; }),
+                statements: this.statements.map(s => s.toJson(space)),
+            },
+            false: this.falseBlock ? this.falseBlock.toJson() : null,
+        }, null, space);
+    }
 }

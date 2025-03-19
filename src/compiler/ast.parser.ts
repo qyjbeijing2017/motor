@@ -52,6 +52,7 @@ import { CstContinueStatement } from "./cst/continue-statement";
 import { AstContinue } from "./ast/continue";
 import { CstReturnStatement } from "./cst/return-statement";
 import { AstReturn } from "./ast/return";
+import { AstBreak } from "./ast/break";
 
 export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisitorConstructorWithDefaults() {
     constructor() {
@@ -145,7 +146,18 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         if (!(identifier instanceof AstFunction) || !(identifier instanceof AstType)) {
             throw new Error('Invalid call expression');
         }
-        return new AstCall(identifier, (cst.args ?? []).map(arg => this.visit(arg, block)));
+        const args: AstExpression[] = (cst.args ?? []).map(arg => this.visit(arg, block));
+        if(identifier instanceof AstFunction) {
+            identifier.params.forEach((param, i) => {
+                if(!args[i]) {
+                    throw new Error(`Argument ${i} is missing`);
+                }
+                if (param.type !== args[i].type) {
+                    throw new Error(`Argument ${i} must be of type ${param.type}`);
+                }
+            });
+        }
+        return new AstCall(identifier, args);
     }
 
     memberExpression(cst: CstMemberExpression['children'], { block, identifier }: { block: IAstBlock, identifier: AstType }): AstMember {
@@ -235,8 +247,8 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         return new AstContinue(this.findLoopBlock(block));
     }
 
-    breakStatement(cst: CstBlockStatement['children'], block: IAstBlock): AstBlock {
-        return new AstBlock(this.findLoopBlock(block));
+    breakStatement(cst: CstBlockStatement['children'], block: IAstBlock): AstBreak {
+        return new AstBreak(this.findLoopBlock(block));
     }
 
     returnStatement(cst: CstReturnStatement['children'], block: IAstBlock): AstReturn {
@@ -300,8 +312,9 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         }
     }
 
-    functionParamDeclaration(cst: CstVariableDeclaration['children'], block: IAstBlock): AstBinary | void {
+    functionParamDeclaration(cst: CstVariableDeclaration['children'], block: AstFunction): AstBinary | void {
         this.variableDeclaration(cst, block);
+        block.params.push(block.member[cst.identifier[0].image] as AstVariable);
     }
 
     functionDeclaration(cst: CstFunctionDeclaration['children'], block: IAstBlock): void {
@@ -313,7 +326,7 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         for (const param of cst.params ?? []) {
             const result = this.visit(param, fn);
             if (result) {
-                block.statements.push(result);
+                fn.statements.push(result);
             }
         }
         for (const statement of cst.block[0].children.block[0].children.statements ?? []) {

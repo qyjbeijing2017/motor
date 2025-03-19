@@ -8,6 +8,7 @@ export class AstConstF8 extends AstConst {
 
 export class AstConstF16 extends AstConst {
     readonly type = motorSingleton(AstF16);
+    
 }
 
 export class AstConstF32 extends AstConst {

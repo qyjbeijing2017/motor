@@ -7,7 +7,17 @@ export class AstBlock extends AstStatement implements IAstBlock {
         [key: string]: AstDeclaration;
     } = {};
     readonly statements: AstStatement[] = [];
-    constructor(readonly parent: AstBlock | null = null) {
+    constructor(readonly parent: IAstBlock | null = null) {
         super();
+    }
+
+    toJson(space?: string | number): string {
+        return JSON.stringify({
+            member: Object.keys(this.member).reduce((acc, key) => {
+                acc[key] = this.member[key].toJson(space);
+                return acc;
+            }, {} as { [key: string]: any; }),
+            statements: this.statements.map((statement) => statement.toJson(space)),
+        }, null, space);
     }
 }

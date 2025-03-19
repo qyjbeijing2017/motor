@@ -5,7 +5,12 @@ export abstract class AstType extends AstDeclaration {
     readonly member: {
         [key: string]: AstType;
     } = {};
+    abstract readonly identifier: string;
     pointer(): number {
         return 0;
+    }
+
+    toJson(space?: string | number): string {
+        return this.identifier;
     }
 }

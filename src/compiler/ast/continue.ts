@@ -7,4 +7,8 @@ export class AstContinue extends AstStatement {
     ) {
         super();
     }
+
+    toJson(space?: string | number): string {
+        return "continue";
+    }
 }

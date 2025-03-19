@@ -15,4 +15,11 @@ export class AstCall extends AstExpression {
             this.type = fn;
         }
     }
+
+    toJson(space?: string | number): string {
+        return JSON.stringify({
+            fn: this.fn.toJson(),
+            args: this.args.map(arg => arg.toJson()),
+        }, null, space);
+    }
 }

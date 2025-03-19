@@ -10,4 +10,10 @@ export class AstStruct extends AstType {
         }
         return size;
     }
+
+    constructor(
+        readonly identifier: string,
+    ) {
+        super();
+    }
 }
