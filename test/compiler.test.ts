@@ -196,9 +196,144 @@ add(1u, 2u)
                 throw `Parser error found ${parser.errors.length} errors`;
             }
             const ast = astParser.visit(cst);
-            console.log(JSON.stringify(ast.toObject(), null, 4));
+            expect(ast.toObject()).toEqual({
+                "astType": "block",
+                "member": {
+                    "add": {
+                        "astType": "function",
+                        "type": "u32",
+                        "identifier": "add",
+                        "params": [
+                            {
+                                "astType": "variable",
+                                "identifier": "a",
+                                "type": "u32"
+                            },
+                            {
+                                "astType": "variable",
+                                "identifier": "b",
+                                "type": "u32"
+                            }
+                        ],
+                        "member": {
+                            "a": {
+                                "astType": "variable",
+                                "identifier": "a",
+                                "type": "u32"
+                            },
+                            "b": {
+                                "astType": "variable",
+                                "identifier": "b",
+                                "type": "u32"
+                            }
+                        },
+                        "statements": []
+                    }
+                },
+                "statements": [
+                    {
+                        "astType": "call",
+                        "fn": {
+                            "astType": "function",
+                            "type": "u32",
+                            "identifier": "add",
+                            "params": [
+                                {
+                                    "astType": "variable",
+                                    "identifier": "a",
+                                    "type": "u32"
+                                },
+                                {
+                                    "astType": "variable",
+                                    "identifier": "b",
+                                    "type": "u32"
+                                }
+                            ],
+                            "member": {
+                                "a": {
+                                    "astType": "variable",
+                                    "identifier": "a",
+                                    "type": "u32"
+                                },
+                                "b": {
+                                    "astType": "variable",
+                                    "identifier": "b",
+                                    "type": "u32"
+                                }
+                            },
+                            "statements": []
+                        },
+                        "args": [
+                            "1u",
+                            "2u"
+                        ]
+                    }
+                ]
+            })
         })
 
-        
+        test('If', () => {
+            const scriptOnTest = `
+if true
+    pass
+else
+    pass
+`
+            const lexingResult = lexer.tokenize(scriptOnTest);
+            parser.input = lexingResult.tokens;
+            const cst = parser.block();
+            if (parser.errors.length > 0) {
+                console.error(parser.errors);
+                throw `Parser error found ${parser.errors.length} errors`;
+            }
+            const ast = astParser.visit(cst);
+            expect(ast.toObject()).toEqual({
+                "astType": "block",
+                "member": {},
+                "statements": [
+                    {
+                        "astType": "if",
+                        "test": "true",
+                        "true": {
+                            "member": {},
+                            "statements": []
+                        },
+                        "false": {
+                            "astType": "block",
+                            "member": {},
+                            "statements": []
+                        }
+                    }
+                ]
+            })
+        })
+
+        test('While', () => {
+            const scriptOnTest = `
+while true
+    pass
+`
+            const lexingResult = lexer.tokenize(scriptOnTest);
+            parser.input = lexingResult.tokens;
+            const cst = parser.block();
+            if (parser.errors.length > 0) {
+                console.error(parser.errors);
+                throw `Parser error found ${parser.errors.length} errors`;
+            }
+            const ast = astParser.visit(cst);
+            expect(ast.toObject()).toEqual({
+                "astType": "block",
+                "member": {},
+                "statements": [
+                    {
+                        "astType": "while",
+                        "test": "true",
+                        "member": {},
+                        "statements": []
+                    }
+                ]
+            })
+        })
+
     })
 })
