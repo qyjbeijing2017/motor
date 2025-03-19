@@ -338,7 +338,10 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
             }
         }
         for (const statement of cst.block[0].children.block[0].children.statements ?? []) {
-            this.visit(statement, fn);
+            const result = this.visit(statement, fn);
+            if (result) {
+                fn.statements.push(result);
+            }
         }
         block.member[identifier] = fn;
     }

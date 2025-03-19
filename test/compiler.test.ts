@@ -227,42 +227,32 @@ add(1u, 2u)
                                 "type": "u32"
                             }
                         },
-                        "statements": []
+                        "statements": [
+                            {
+                                "astType": "return",
+                                "expression": {
+                                    "astType": "binary",
+                                    "operator": "+",
+                                    "left": {
+                                        "astType": "variable",
+                                        "identifier": "a",
+                                        "type": "u32"
+                                    },
+                                    "right": {
+                                        "astType": "variable",
+                                        "identifier": "b",
+                                        "type": "u32"
+                                    },
+                                    "type": "u32"
+                                }
+                            }
+                        ]
                     }
                 },
                 "statements": [
                     {
                         "astType": "call",
-                        "fn": {
-                            "astType": "function",
-                            "type": "u32",
-                            "identifier": "add",
-                            "params": [
-                                {
-                                    "astType": "variable",
-                                    "identifier": "a",
-                                    "type": "u32"
-                                },
-                                {
-                                    "astType": "variable",
-                                    "identifier": "b",
-                                    "type": "u32"
-                                }
-                            ],
-                            "member": {
-                                "a": {
-                                    "astType": "variable",
-                                    "identifier": "a",
-                                    "type": "u32"
-                                },
-                                "b": {
-                                    "astType": "variable",
-                                    "identifier": "b",
-                                    "type": "u32"
-                                }
-                            },
-                            "statements": []
-                        },
+                        "fn": "add",
                         "args": [
                             "1u",
                             "2u"
@@ -311,7 +301,9 @@ else
         test('While', () => {
             const scriptOnTest = `
 while true
-    pass
+    continue
+    if true
+        break
 `
             const lexingResult = lexer.tokenize(scriptOnTest);
             parser.input = lexingResult.tokens;
@@ -325,15 +317,26 @@ while true
                 "astType": "block",
                 "member": {},
                 "statements": [
+                    "continue",
+                    {
+                        "astType": "if",
+                        "test": "true",
+                        "true": {
+                            "member": {},
+                            "statements": []
+                        },
+                        "false": null
+                    },
                     {
                         "astType": "while",
                         "test": "true",
                         "member": {},
-                        "statements": []
+                        "statements": [
+                            "break"
+                        ]
                     }
                 ]
             })
         })
-
     })
 })

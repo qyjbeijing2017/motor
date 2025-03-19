@@ -19,7 +19,7 @@ export class AstCall extends AstExpression {
     toObject() {
         return {
             astType: 'call',
-            fn: this.fn.toObject(),
+            fn: this.fn.identifier,
             args: this.args.map(arg => arg.toObject()),
         };
     }
