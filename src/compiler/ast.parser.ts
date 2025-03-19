@@ -62,7 +62,11 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
     rightToLeftExpression(cst: CstRightToLeftExpression['children'], block: IAstBlock): AstStatement | AstBinary {
         const left = this.visit(cst.left[0], block);
         if (cst.right && cst.operator) {
-            return new AstBinary(cst.operator[0].image as AstBinaryOperator, left, this.visit(cst.right[0], parent));
+            const right = this.visit(cst.right[0], parent)
+            if(right.type !== left.type) {
+                throw new Error('Left and right must be of the same type');
+            }
+            return new AstBinary(cst.operator[0].image as AstBinaryOperator, left, right);
         }
         return left;
     }
@@ -71,7 +75,11 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         let left = this.visit(cst.left[0], block);
         if (cst.right && cst.operator) {
             for (let i = 0; i < cst.right.length; i++) {
-                left = new AstBinary(cst.operator[i].image as AstBinaryOperator, left, this.visit(cst.right[i], block));
+                const right = this.visit(cst.right[i], block);
+                if(right.type !== left.type) {
+                    throw new Error('Left and right must be of the same type');
+                }
+                left = new AstBinary(cst.operator[i].image as AstBinaryOperator, left, right);
             }
         }
         return left;
@@ -143,7 +151,7 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
     // }
 
     callExpression(cst: CstCallExpression['children'], { block, identifier }: { block: IAstBlock, identifier: AstFunction | AstType }): AstCall {
-        if (!(identifier instanceof AstFunction) || !(identifier instanceof AstType)) {
+        if (!(identifier instanceof AstFunction) && !(identifier instanceof AstType)) {
             throw new Error('Invalid call expression');
         }
         const args: AstExpression[] = (cst.args ?? []).map(arg => this.visit(arg, block));

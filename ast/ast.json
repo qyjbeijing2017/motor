@@ -1,23 +1,36 @@
 {
     "astType": "block",
     "member": {
-        "a": {
-            "astType": "variable",
-            "identifier": "a",
-            "type": "u32"
+        "add": {
+            "astType": "function",
+            "type": "u32",
+            "identifier": "add",
+            "params": [
+                {
+                    "astType": "variable",
+                    "identifier": "a",
+                    "type": "u32"
+                },
+                {
+                    "astType": "variable",
+                    "identifier": "b",
+                    "type": "u32"
+                }
+            ],
+            "member": {
+                "a": {
+                    "astType": "variable",
+                    "identifier": "a",
+                    "type": "u32"
+                },
+                "b": {
+                    "astType": "variable",
+                    "identifier": "b",
+                    "type": "u32"
+                }
+            },
+            "statements": []
         }
     },
-    "statements": [
-        {
-            "astType": "binary",
-            "operator": "=",
-            "left": {
-                "astType": "variable",
-                "identifier": "a",
-                "type": "u32"
-            },
-            "right": "1",
-            "type": "u32"
-        }
-    ]
+    "statements": []
 }

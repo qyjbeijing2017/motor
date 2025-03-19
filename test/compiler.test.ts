@@ -13,7 +13,6 @@ import {
     MotorAstParser,
 } from '../src';
 import { MotorAst } from '../src/compiler/ast/ast';
-import { AstStatement } from '../src/compiler/ast/statement';
 import { motorSingleton } from '../src/utils/singleton';
 
 describe('Compiler', () => {
@@ -70,7 +69,26 @@ dedent
                 throw `Parser error found ${parser.errors.length} errors`;
             }
             const ast: MotorAst = astParser.visit(cst);
-            console.log(JSON.stringify(ast.toObject()));
+
+            expect(ast.toObject()).toEqual({
+                "astType": "block",
+                "member": {},
+                "statements": [
+                    {
+                        "astType": "binary",
+                        "operator": "+",
+                        "left": "1",
+                        "right": {
+                            "astType": "binary",
+                            "operator": "*",
+                            "left": "2",
+                            "right": "3",
+                            "type": "i32"
+                        },
+                        "type": "i32"
+                    }
+                ]
+            })
 
         })
 
@@ -86,7 +104,29 @@ var a u32 = 1
                 throw `Parser error found ${parser.errors.length} errors`;
             }
             const ast: MotorAst = astParser.visit(cst);
-            console.log(JSON.stringify(ast.toObject()));
+            expect(ast.toObject()).toEqual({
+                "astType": "block",
+                "member": {
+                    "a": {
+                        "astType": "variable",
+                        "identifier": "a",
+                        "type": "u32"
+                    }
+                },
+                "statements": [
+                    {
+                        "astType": "binary",
+                        "operator": "=",
+                        "left": {
+                            "astType": "variable",
+                            "identifier": "a",
+                            "type": "u32"
+                        },
+                        "right": "1",
+                        "type": "u32"
+                    }
+                ]
+            })
 
         })
 
@@ -103,7 +143,62 @@ fn add(a u32, b u32) u32
                 throw `Parser error found ${parser.errors.length} errors`;
             }
             const ast = astParser.visit(cst);
+            expect(ast.toObject()).toEqual({
+                "astType": "block",
+                "member": {
+                    "add": {
+                        "astType": "function",
+                        "type": "u32",
+                        "identifier": "add",
+                        "params": [
+                            {
+                                "astType": "variable",
+                                "identifier": "a",
+                                "type": "u32"
+                            },
+                            {
+                                "astType": "variable",
+                                "identifier": "b",
+                                "type": "u32"
+                            }
+                        ],
+                        "member": {
+                            "a": {
+                                "astType": "variable",
+                                "identifier": "a",
+                                "type": "u32"
+                            },
+                            "b": {
+                                "astType": "variable",
+                                "identifier": "b",
+                                "type": "u32"
+                            }
+                        },
+                        "statements": []
+                    }
+                },
+                "statements": []
+            })
 
         })
+
+        test('Function Call', () => {
+            const scriptOnTest = `
+fn add(a u32, b u32) u32
+    return a + b
+add(1u, 2u)
+`
+            const lexingResult = lexer.tokenize(scriptOnTest);
+            parser.input = lexingResult.tokens;
+            const cst = parser.block();
+            if (parser.errors.length > 0) {
+                console.error(parser.errors);
+                throw `Parser error found ${parser.errors.length} errors`;
+            }
+            const ast = astParser.visit(cst);
+            console.log(JSON.stringify(ast.toObject(), null, 4));
+        })
+
+        
     })
 })
