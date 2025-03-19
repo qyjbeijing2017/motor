@@ -19,7 +19,7 @@ import {
     ExponentEqual,
 } from "./lexer.compiler";
 
-class MotorParser extends CstParser {
+export class MotorParser extends CstParser {
     constructor() {
         super(motorTokens);
         this.performSelfAnalysis();
@@ -296,11 +296,11 @@ class MotorParser extends CstParser {
 
     listTypeDeclaration = this.RULE('listTypeDeclaration', () => {
         this.CONSUME(LeftBracket);
-        this.OPTION(() => {
-            this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
-            this.CONSUME(Comma);
-            this.SUBRULE1(this.assignExpression, { LABEL: 'size' });
-        });
+        // this.OPTION(() => {
+        //     this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
+        //     this.CONSUME(Comma);
+        //     this.SUBRULE1(this.assignExpression, { LABEL: 'size' });
+        // });
         this.CONSUME(RightBracket);
     });
 
@@ -331,8 +331,52 @@ class MotorParser extends CstParser {
 
     variableDeclaration = this.RULE('variableDeclaration', () => {
         this.CONSUME(Var);
-        this.CONSUME(Identifier, { LABEL: 'name' });
+        this.CONSUME(Identifier, { LABEL: 'identity' });
         this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
+        this.CONSUME(Equal);
+        this.SUBRULE(this.assignExpression, { LABEL: 'value' });
+    });
+
+    functionDeclaration = this.RULE('functionDeclaration', () => {
+        this.CONSUME(Function);
+        this.CONSUME(Identifier, { LABEL: 'identity' });
+        this.CONSUME(LeftParen);
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => {
+                this.SUBRULE(this.variableDeclaration, { LABEL: 'args' });
+            },
+        });
+        this.CONSUME(RightParen);
+        this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
+        this.SUBRULE1(this.blockStatement, { LABEL: 'block' });
+    });
+
+    ifStatement = this.RULE('ifStatement', () => {
+        this.CONSUME(If);
+        this.SUBRULE(this.assignExpression, { LABEL: 'test' });
+        this.SUBRULE(this.blockStatement, { LABEL: 'true' });
+        this.OPTION(() => {
+            this.CONSUME(Else);
+            this.OR([
+                { ALT: () => this.SUBRULE1(this.blockStatement, { LABEL: 'false' }) },
+                { ALT: () => this.SUBRULE(this.ifStatement, { LABEL: 'false' }) },
+            ]);
+        });
+    });
+
+    whileStatement = this.RULE('whileStatement', () => {
+        this.CONSUME(While);
+        this.SUBRULE(this.assignExpression, { LABEL: 'test' });
+        this.SUBRULE(this.blockStatement, { LABEL: 'block' });
+    });
+
+    forStatement = this.RULE('forStatement', () => {
+        this.CONSUME(For);
+        this.CONSUME(Identifier, { LABEL: 'identity' });
+        this.CONSUME(In);
+        this.SUBRULE(this.assignExpression, { LABEL: 'iterable' });
+        this.SUBRULE(this.blockStatement, { LABEL: 'block' });
     });
 
     block = this.RULE('block', () => {
@@ -341,18 +385,18 @@ class MotorParser extends CstParser {
                 { ALT: () => this.SUBRULE(this.assignExpression, { LABEL: 'statements' }) },
 
                 { ALT: () => this.SUBRULE(this.variableDeclaration, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.functionDeclaration, { LABEL: 'statements' }) },
 
+                { ALT: () => this.SUBRULE(this.ifStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.whileStatement, { LABEL: 'statements' }) },
+                { ALT: () => this.SUBRULE(this.forStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.blockStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.returnStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.throwStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.breakStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.continueStatement, { LABEL: 'statements' }) },
-
-                
             ]);
             this.OPTION(() => this.CONSUME(Semicolon));
         });
     });
 }
-
-export const motorParser = new MotorParser();
