@@ -12,4 +12,13 @@ export class AstPostFix extends AstExpression {
         super();
         this.type = expression.type;
     }
+
+    toObject() {
+        return {
+            astType: 'postfix',
+            operator: this.operator,
+            expression: this.expression.toObject(),
+            type: this.type.toObject(),
+        };
+    }
 }

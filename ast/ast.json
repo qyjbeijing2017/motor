@@ -1,35 +1,23 @@
 {
-    "parent": null,
+    "astType": "block",
     "member": {
         "a": {
+            "astType": "variable",
             "identifier": "a",
-            "type": {
-                "member": {},
-                "size": 4
-            }
+            "type": "u32"
         }
     },
     "statements": [
         {
+            "astType": "binary",
             "operator": "=",
             "left": {
+                "astType": "variable",
                 "identifier": "a",
-                "type": {
-                    "member": {},
-                    "size": 4
-                }
+                "type": "u32"
             },
-            "right": {
-                "raw": "1",
-                "type": {
-                    "member": {},
-                    "size": 4
-                }
-            },
-            "type": {
-                "member": {},
-                "size": 4
-            }
+            "right": "1",
+            "type": "u32"
         }
     ]
 }

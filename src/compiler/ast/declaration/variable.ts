@@ -8,4 +8,12 @@ export class AstVariable extends AstDeclaration {
     ) {
         super();
     }
+
+    toObject() {
+        return {
+            astType: 'variable',
+            identifier: this.identifier,
+            type: this.type.toObject()
+        };
+    }
 }

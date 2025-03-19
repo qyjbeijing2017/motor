@@ -10,7 +10,7 @@ export abstract class AstType extends AstDeclaration {
         return 0;
     }
 
-    toJson(space?: string | number): string {
+    toObject() {
         return this.identifier;
     }
 }

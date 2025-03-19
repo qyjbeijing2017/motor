@@ -1,5 +1,5 @@
 export abstract class MotorAst {
-    toJson(space?: string | number): string {
-        return JSON.stringify(this, null, space);
+    toObject(): any {
+        return JSON.parse(JSON.stringify(this));
     }
 }

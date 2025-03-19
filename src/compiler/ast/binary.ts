@@ -14,11 +14,13 @@ export class AstBinary extends AstExpression {
         this.type = left.type;
     }
 
-    toJson(space?: string | number): string {
-        return JSON.stringify({
+    toObject() {
+        return {
+            astType: 'binary',
             operator: this.operator,
-            left: this.left.toJson(space),
-            right: this.right.toJson(space),
-        }, null, space);
+            left: this.left.toObject(),
+            right: this.right.toObject(),
+            type: this.type.toObject()
+        };
     }
 }

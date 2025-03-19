@@ -16,4 +16,15 @@ export class AstStruct extends AstType {
     ) {
         super();
     }
+
+    toObject(): any {
+        return {
+            astType: 'struct',
+            identifier: this.identifier,
+            member: Object.keys(this.member).reduce((acc, key) => {
+                acc[key] = this.member[key].toObject();
+                return acc;
+            }, {} as { [key: string]: any; }),
+        }
+    }
 }

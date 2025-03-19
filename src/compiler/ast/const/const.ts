@@ -5,7 +5,7 @@ export abstract class AstConst extends AstExpression {
         super();
     }
 
-    toJson(space?: string | number): string {
+    toObject(): any {
         return this.raw;
     }
 }

@@ -16,10 +16,11 @@ export class AstCall extends AstExpression {
         }
     }
 
-    toJson(space?: string | number): string {
-        return JSON.stringify({
-            fn: this.fn.toJson(),
-            args: this.args.map(arg => arg.toJson()),
-        }, null, space);
+    toObject() {
+        return {
+            astType: 'call',
+            fn: this.fn.toObject(),
+            args: this.args.map(arg => arg.toObject()),
+        };
     }
 }

@@ -14,4 +14,13 @@ export class AstMember extends AstExpression {
             throw new Error(`Member ${key} not found in ${base}`);
         }
     }
+
+    toObject() {
+        return {
+            astType: 'member',
+            base: this.base.toObject(),
+            key: this.key,
+            type: this.type.toObject(),
+        };
+    }
 }

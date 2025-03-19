@@ -20,13 +20,17 @@ export class AstFunction extends AstDeclaration implements IAstBlock {
         super();
     }
 
-    toJson(space?: string | number): string {
-        return JSON.stringify({
+    toObject() {
+        return {
+            astType: 'function',
+            type: this.type.toObject(),
+            identifier: this.identifier,
+            params: this.params.map(p => p.toObject()),
             member: Object.keys(this.member).reduce((acc, key) => {
-                acc[key] = this.member[key].toJson(space);
+                acc[key] = this.member[key].toObject();
                 return acc;
             }, {} as { [key: string]: any; }),
-            statements: this.statements.map(s => s.toJson(space)),
-        }, null, space);
+            statements: this.statements.map(s => s.toObject()),
+        };
     }
 }

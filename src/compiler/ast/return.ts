@@ -10,4 +10,11 @@ export class AstReturn extends AstStatement {
     ) {
         super();
     }
+
+    toObject() {
+        return {
+            astType: 'return',
+            expression: this.expression.toObject(),
+        }
+    }
 }

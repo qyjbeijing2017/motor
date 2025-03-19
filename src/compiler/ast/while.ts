@@ -11,4 +11,16 @@ export class AstWhile extends AstStatement implements IAstBlock {
     ){
         super();
     }
+
+    toObject() {
+        return {
+            astType: 'while',
+            test: this.test.toObject(),
+            member: Object.keys(this.member).reduce((acc, key) => {
+                acc[key] = this.member[key];
+                return acc;
+            }, {} as { [key: string]: any; }),
+            statements: this.statements.map(s => s.toObject()),
+        }
+    }
 }

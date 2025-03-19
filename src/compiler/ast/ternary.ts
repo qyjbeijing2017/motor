@@ -11,4 +11,14 @@ export class AstTernary extends AstExpression {
         super();
         this.type = trueExpression.type;
     }
+
+    toObject() {
+        return {
+            astType: 'ternary',
+            test: this.test.toObject(),
+            trueExpression: this.trueExpression.toObject(),
+            falseExpression: this.falseExpression.toObject(),
+            type: this.type.toObject(),
+        };
+    }
 }

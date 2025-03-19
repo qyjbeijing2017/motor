@@ -8,7 +8,7 @@ export class AstBreak extends AstStatement {
         super();
     }
 
-    toJson(space?: string | number): string {
+    toObject(): string {
         return "break";
     }
 }

@@ -12,4 +12,13 @@ export class AstUnary extends AstExpression {
         super();
         this.type = expression.type;
     }
+
+    toObject() {
+        return {
+            astType: 'unary',
+            operator: this.operator,
+            expression: this.expression.toObject(),
+            type: this.type.toObject(),
+        };
+    }
 }

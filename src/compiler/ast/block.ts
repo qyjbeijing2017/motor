@@ -11,13 +11,14 @@ export class AstBlock extends AstStatement implements IAstBlock {
         super();
     }
 
-    toJson(space?: string | number): string {
-        return JSON.stringify({
+    toObject(): any {
+        return {
+            astType: 'block',
             member: Object.keys(this.member).reduce((acc, key) => {
-                acc[key] = this.member[key].toJson(space);
+                acc[key] = this.member[key].toObject();
                 return acc;
             }, {} as { [key: string]: any; }),
-            statements: this.statements.map((statement) => statement.toJson(space)),
-        }, null, space);
+            statements: this.statements.map((statement) => statement.toObject()),
+        };
     }
 }

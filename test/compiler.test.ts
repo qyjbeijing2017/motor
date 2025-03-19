@@ -12,6 +12,8 @@ import {
     MotorParser,
     MotorAstParser,
 } from '../src';
+import { MotorAst } from '../src/compiler/ast/ast';
+import { AstStatement } from '../src/compiler/ast/statement';
 import { motorSingleton } from '../src/utils/singleton';
 
 describe('Compiler', () => {
@@ -67,8 +69,8 @@ dedent
                 console.error(parser.errors);
                 throw `Parser error found ${parser.errors.length} errors`;
             }
-            const ast = astParser.visit(cst);
-            console.log(JSON.stringify(ast));
+            const ast: MotorAst = astParser.visit(cst);
+            console.log(JSON.stringify(ast.toObject()));
 
         })
 
@@ -83,8 +85,8 @@ var a u32 = 1
                 console.error(parser.errors);
                 throw `Parser error found ${parser.errors.length} errors`;
             }
-            const ast = astParser.visit(cst);
-            console.log(JSON.stringify(ast));
+            const ast: MotorAst = astParser.visit(cst);
+            console.log(JSON.stringify(ast.toObject()));
 
         })
 
