@@ -1,4 +1,4 @@
-import { MotorAst } from "./ast";
+import { MotorAst } from "../ast";
 
 export abstract class AstDeclaration extends MotorAst {
 }

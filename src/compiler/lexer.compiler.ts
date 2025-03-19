@@ -11,7 +11,7 @@ export const Float = createToken({ name: 'Float', pattern: /(\d+\.\d+f?|\.\d+f?|
 export const Uint = createToken({ name: 'Uint', pattern: /\d+u/ });
 export const Integer = createToken({ name: 'Integer', pattern: /\d+/, longer_alt: [Float, Uint] });
 export const Char = createToken({ name: 'Char', pattern: /'.'/ });
-export const String = createToken({ name: 'String', pattern: /".*?"|'.*?'/ });
+export const String = createToken({ name: 'String', pattern: /".*?"/ });
 export const Bool = createToken({ name: 'Bool', pattern: /true|false/, longer_alt: Identifier });
 export const Null = createToken({ name: 'Null', pattern: /null/, longer_alt: Identifier });
 
@@ -102,6 +102,7 @@ export const Enum = createToken({ name: 'Enum', pattern: /enum/, longer_alt: Ide
 export const Import = createToken({ name: 'Import', pattern: /import/, longer_alt: Identifier });
 export const Pass = createToken({ name: 'Pass', pattern: /pass/, longer_alt: Identifier, group: Lexer.SKIPPED });
 export const Var = createToken({ name: 'Var', pattern: /var/, longer_alt: Identifier });
+export const Delete = createToken({ name: 'Delete', pattern: /delete/, longer_alt: Identifier });
 
 export const motorTokens = [
     Comment,
@@ -114,7 +115,7 @@ export const motorTokens = [
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Tilde, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
     Comma, Semicolon, Colon, Dot,
     TypeFloat64, TypeFloat16, TypeFloat8, TypeFloat32, TypeInt64, TypeInt16, TypeInt8, TypeInt32, TypeUint64, TypeUint16, TypeUint8, TypeUint32, TypeBool, TypeChar, TypeString, TypeList,
-    If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally, Throw, Struct, Enum, Import, Pass, Var,
+    If, Else, While, For, In, Break, Continue, Return, Function, Class, Try, Catch, Finally, Throw, Struct, Enum, Import, Pass, Var, Delete,
     Identifier,
 ];
 

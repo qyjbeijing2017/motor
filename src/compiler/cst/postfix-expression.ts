@@ -1,10 +1,10 @@
 import { CstNode, IToken } from "chevrotain";
-import { CstExponentiationExpression } from "./exponentiation.expression";
+import { CstMemberExpression } from "./member-expression";
 
 export interface CstPostfixExpression extends CstNode {
     name: 'postfixExpression'
     children: {
         left: [CstNode]
-        operators?: (IToken | CstNode)[]
+        operators?: (IToken | CstMemberExpression)[]
     }
 }

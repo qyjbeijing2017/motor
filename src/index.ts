@@ -23,6 +23,7 @@ export { MotorString } from './types/string.type';
 export { MotorList, defineMotorList } from './types/list.type';
 export { MotorLexer } from './compiler/lexer.compiler';
 export { MotorParser } from './compiler/parser.compiler';
+export { MotorAstParser } from './compiler/ast.parser';
 
 export {
     Comment,

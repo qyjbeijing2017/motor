@@ -1,8 +1,9 @@
-import { AstDeclaration } from "./declaration";
+import { IAstBlock } from "./block.interface";
+import { AstDeclaration } from "./declaration/declaration";
 import { AstStatement } from "./statement";
 
-export class AstBlock extends AstStatement {
-    readonly declarations: {
+export class AstBlock extends AstStatement implements IAstBlock {
+    readonly member: {
         [key: string]: AstDeclaration;
     } = {};
     readonly statements: AstStatement[] = [];

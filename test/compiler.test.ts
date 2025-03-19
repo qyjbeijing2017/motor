@@ -10,13 +10,14 @@ import {
     Dedent,
     MotorLexer,
     MotorParser,
+    MotorAstParser,
 } from '../src';
 import { motorSingleton } from '../src/utils/singleton';
 
 describe('Compiler', () => {
     test('Lexer', () => {
         const scriptOnTest = `
-1 2. 3.4 5f .6 2u '7' "8" '789' true false
+1 2. 3.4 5f .6 2u '7' "8" '7' true false
 <<= >>=
 <= >= == != += -= *= /= %= &= |= ^= && || << >>
 = + - * / % ! ^ & | ? < > ( ) [ ] { } 
@@ -32,7 +33,7 @@ dedent
 
 `;
         const tokenExpected = [
-            Integer, Float, Float, Float, Float, Uint, Char, String, String, Bool, Bool,
+            Integer, Float, Float, Float, Float, Uint, Char, String, Char, Bool, Bool,
             LShiftEqual, RShiftEqual,
             LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift,
             Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
@@ -53,8 +54,9 @@ dedent
     describe('Parser', () => {
         const lexer = motorSingleton(MotorLexer);
         const parser = motorSingleton(MotorParser);
+        const astParser = motorSingleton(MotorAstParser);
 
-        test('Parser', () => {
+        test('Const', () => {
             const scriptOnTest = `
 1 + 2 * 3
 `;
@@ -65,8 +67,40 @@ dedent
                 console.error(parser.errors);
                 throw `Parser error found ${parser.errors.length} errors`;
             }
+            const ast = astParser.visit(cst);
+            console.log(JSON.stringify(ast));
 
-            console.log(JSON.stringify(cst));
+        })
+
+        test('Variable', () => {
+            const scriptOnTest = `
+var a u32 = 1
+`;
+            const lexingResult = lexer.tokenize(scriptOnTest);
+            parser.input = lexingResult.tokens;
+            const cst = parser.block();
+            if (parser.errors.length > 0) {
+                console.error(parser.errors);
+                throw `Parser error found ${parser.errors.length} errors`;
+            }
+            const ast = astParser.visit(cst);
+            console.log(JSON.stringify(ast));
+
+        })
+
+        test('Function', () => {
+            const scriptOnTest = `
+fn add(a u32, b u32) u32
+    pass
+`;
+            const lexingResult = lexer.tokenize(scriptOnTest);
+            parser.input = lexingResult.tokens;
+            const cst = parser.block();
+            if (parser.errors.length > 0) {
+                console.error(parser.errors);
+                throw `Parser error found ${parser.errors.length} errors`;
+            }
+            const ast = astParser.visit(cst);
 
         })
     })

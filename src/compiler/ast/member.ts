@@ -1,7 +1,17 @@
 import { AstExpression } from "./expression";
+import { AstType } from "./declaration/type";
 
 export class AstMember extends AstExpression {
-    constructor() {
+    readonly type: AstType;
+    constructor(
+        readonly base: AstType,
+        readonly key: string,
+    ) {
         super();
+        if(key in base.member) {
+            this.type = base.member[key];
+        } else {
+            throw new Error(`Member ${key} not found in ${base}`);
+        }
     }
 }

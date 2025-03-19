@@ -1,35 +1,35 @@
 {
-    "astType": "block",
-    "members": {},
+    "parent": null,
+    "member": {
+        "a": {
+            "identifier": "a",
+            "type": {
+                "member": {},
+                "size": 4
+            }
+        }
+    },
     "statements": [
         {
-            "astType": "block",
-            "members": {},
-            "statements": [
-                {
-                    "astType": "binary",
-                    "left": {
-                        "astType": "binary",
-                        "left": {
-                            "astType": "const",
-                            "value": 1,
-                            "type": "TypeInt32"
-                        },
-                        "right": {
-                            "astType": "const",
-                            "value": 2,
-                            "type": "TypeInt32"
-                        },
-                        "operator": "+"
-                    },
-                    "right": {
-                        "astType": "const",
-                        "value": 3,
-                        "type": "TypeInt32"
-                    },
-                    "operator": "-"
+            "operator": "=",
+            "left": {
+                "identifier": "a",
+                "type": {
+                    "member": {},
+                    "size": 4
                 }
-            ]
+            },
+            "right": {
+                "raw": "1",
+                "type": {
+                    "member": {},
+                    "size": 4
+                }
+            },
+            "type": {
+                "member": {},
+                "size": 4
+            }
         }
     ]
 }

@@ -1,7 +1,7 @@
 import { CstParser } from "chevrotain";
 import {
     Indent, Dedent,
-    Integer, Float, Uint, Char, String, Bool,
+    Integer, Float, Uint, String, Bool,
     LShiftEqual, RShiftEqual,
     LessThanEqual, GreaterThanEqual, EqualEqual, NotEqual, AddEqual, SubEqual, MulEqual, DivEqual, ModEqual, AndEqual, OrEqual, XorEqual, And, Or, LShift, RShift, Increment, Decrement,
     Equal, Plus, Minus, Multiply, Divide, Modulo, Not, Xor, LAnd, LOr, Ternary, LessThan, GreaterThan, LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace,
@@ -10,13 +10,16 @@ import {
     TypeFloat64, TypeFloat16, TypeFloat8, TypeFloat32,
     TypeInt64, TypeInt16, TypeInt8, TypeInt32,
     TypeUint64, TypeUint16, TypeUint8, TypeUint32,
-    TypeBool, TypeChar, TypeString, TypeList,
+    TypeBool, TypeString, TypeList,
     Identifier,
     motorTokens,
     Tilde,
     Exponent,
     Pass,
     ExponentEqual,
+    Null,
+    Char,
+    TypeChar,
 } from "./lexer.compiler";
 
 export class MotorParser extends CstParser {
@@ -31,34 +34,35 @@ export class MotorParser extends CstParser {
         this.CONSUME(RightParen);
     });
 
-    listExpression = this.RULE("listExpression", () => {
-        this.CONSUME(LeftBracket);
-        this.MANY_SEP({
-            SEP: Comma,
-            DEF: () => this.SUBRULE(this.assignExpression, { LABEL: 'elements' }),
-        });
-        this.CONSUME(RightBracket);
-    });
+    // listExpression = this.RULE("listExpression", () => {
+    //     this.CONSUME(LeftBracket);
+    //     this.MANY_SEP({
+    //         SEP: Comma,
+    //         DEF: () => this.SUBRULE(this.assignExpression, { LABEL: 'elements' }),
+    //     });
+    //     this.CONSUME(RightBracket);
+    // });
 
     atomicExpression = this.RULE("atomicExpression", () => {
         this.OR([
             { ALT: () => this.CONSUME(Float, { LABEL: 'const' }) },
             { ALT: () => this.CONSUME(Integer, { LABEL: 'const' }) },
             { ALT: () => this.CONSUME(Uint, { LABEL: 'const' }) },
+            // { ALT: () => this.CONSUME(String, { LABEL: 'const' }) },
             { ALT: () => this.CONSUME(Char, { LABEL: 'const' }) },
-            { ALT: () => this.CONSUME(String, { LABEL: 'const' }) },
             { ALT: () => this.CONSUME(Bool, { LABEL: 'const' }) },
+            { ALT: () => this.CONSUME(Null, { LABEL: 'const' }) },
             { ALT: () => this.CONSUME(Identifier, { LABEL: 'variable' }) },
             { ALT: () => this.SUBRULE(this.parenExpression, { LABEL: 'paren' }) },
-            { ALT: () => this.SUBRULE(this.listExpression, { LABEL: 'list' }) },
+            // { ALT: () => this.SUBRULE(this.listExpression, { LABEL: 'list' }) },
         ]);
     });
 
-    indexExpression = this.RULE("indexExpression", () => {
-        this.CONSUME(LeftBracket);
-        this.SUBRULE(this.assignExpression, { LABEL: 'index' })
-        this.CONSUME(RightBracket);
-    });
+    // indexExpression = this.RULE("indexExpression", () => {
+    //     this.CONSUME(LeftBracket);
+    //     this.SUBRULE(this.assignExpression, { LABEL: 'index' })
+    //     this.CONSUME(RightBracket);
+    // });
 
     callExpression = this.RULE("callExpression", () => {
         this.CONSUME(LeftParen);
@@ -80,7 +84,7 @@ export class MotorParser extends CstParser {
             this.OR([
                 { ALT: () => this.SUBRULE(this.memberExpression, { LABEL: "operators" }) },
                 { ALT: () => this.SUBRULE(this.callExpression, { LABEL: "operators" }) },
-                { ALT: () => this.SUBRULE(this.indexExpression, { LABEL: "operators" }) },
+                // { ALT: () => this.SUBRULE(this.indexExpression, { LABEL: "operators" }) },
                 { ALT: () => this.CONSUME(Increment, { LABEL: "operators" }) },
                 { ALT: () => this.CONSUME(Decrement, { LABEL: "operators" }) },
             ]);
@@ -283,26 +287,26 @@ export class MotorParser extends CstParser {
         this.OPTION(() => this.SUBRULE(this.assignExpression, { LABEL: 'expression' }));
     });
 
-    throwStatement = this.RULE("throwStatement", () => {
-        this.CONSUME(Throw);
-        this.SUBRULE(this.assignExpression, { LABEL: 'expression' });
-    });
+    // throwStatement = this.RULE("throwStatement", () => {
+    //     this.CONSUME(Throw);
+    //     this.SUBRULE(this.assignExpression, { LABEL: 'expression' });
+    // });
 
     blockStatement = this.RULE('blockStatement', () => {
         this.CONSUME(Indent);
-        this.SUBRULE(this.block);
+        this.SUBRULE(this.block, { LABEL: 'block' });
         this.CONSUME(Dedent);
     });
 
-    listTypeDeclaration = this.RULE('listTypeDeclaration', () => {
-        this.CONSUME(LeftBracket);
-        // this.OPTION(() => {
-        //     this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
-        //     this.CONSUME(Comma);
-        //     this.SUBRULE1(this.assignExpression, { LABEL: 'size' });
-        // });
-        this.CONSUME(RightBracket);
-    });
+    // listTypeDeclaration = this.RULE('listTypeDeclaration', () => {
+    //     this.CONSUME(LeftBracket);
+    //     // this.OPTION(() => {
+    //     //     this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
+    //     //     this.CONSUME(Comma);
+    //     //     this.SUBRULE1(this.assignExpression, { LABEL: 'size' });
+    //     // });
+    //     this.CONSUME(RightBracket);
+    // });
 
     typeDeclaration = this.RULE('typeDeclaration', () => {
         this.OPTION(() =>
@@ -320,35 +324,46 @@ export class MotorParser extends CstParser {
                 { ALT: () => this.CONSUME(TypeUint16, { LABEL: 'type' }) },
                 { ALT: () => this.CONSUME(TypeUint8, { LABEL: 'type' }) },
                 { ALT: () => this.CONSUME(TypeBool, { LABEL: 'type' }) },
+                // { ALT: () => this.CONSUME(TypeString, { LABEL: 'type' }) },
                 { ALT: () => this.CONSUME(TypeChar, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeString, { LABEL: 'type' }) },
                 { ALT: () => this.CONSUME(TypeList, { LABEL: 'type' }) },
                 { ALT: () => this.CONSUME(Identifier, { LABEL: 'type' }) },
-                { ALT: () => this.SUBRULE(this.listTypeDeclaration, { LABEL: 'list' }) },
+                // { ALT: () => this.SUBRULE(this.listTypeDeclaration, { LABEL: 'list' }) },
             ])
         );
     });
 
     variableDeclaration = this.RULE('variableDeclaration', () => {
         this.CONSUME(Var);
-        this.CONSUME(Identifier, { LABEL: 'identity' });
+        this.CONSUME(Identifier, { LABEL: 'identifier' });
         this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
-        this.CONSUME(Equal);
-        this.SUBRULE(this.assignExpression, { LABEL: 'value' });
+        this.OPTION(() => {
+            this.CONSUME(Equal);
+            this.SUBRULE(this.assignExpression, { LABEL: 'value' });
+        });
+    });
+
+    functionParamDeclaration = this.RULE('functionParamDeclaration', () => {
+        this.CONSUME(Identifier, { LABEL: 'identifier' });
+        this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
+        this.OPTION(() => {
+            this.CONSUME(Equal);
+            this.SUBRULE(this.assignExpression, { LABEL: 'value' });
+        });
     });
 
     functionDeclaration = this.RULE('functionDeclaration', () => {
         this.CONSUME(Function);
-        this.CONSUME(Identifier, { LABEL: 'identity' });
+        this.CONSUME(Identifier, { LABEL: 'identifier' });
         this.CONSUME(LeftParen);
         this.MANY_SEP({
             SEP: Comma,
             DEF: () => {
-                this.SUBRULE(this.variableDeclaration, { LABEL: 'args' });
+                this.SUBRULE(this.functionParamDeclaration, { LABEL: 'params' });
             },
         });
         this.CONSUME(RightParen);
-        this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
+        this.OPTION(() => this.SUBRULE(this.typeDeclaration, { LABEL: 'type' }));
         this.SUBRULE1(this.blockStatement, { LABEL: 'block' });
     });
 
@@ -371,13 +386,13 @@ export class MotorParser extends CstParser {
         this.SUBRULE(this.blockStatement, { LABEL: 'block' });
     });
 
-    forStatement = this.RULE('forStatement', () => {
-        this.CONSUME(For);
-        this.CONSUME(Identifier, { LABEL: 'identity' });
-        this.CONSUME(In);
-        this.SUBRULE(this.assignExpression, { LABEL: 'iterable' });
-        this.SUBRULE(this.blockStatement, { LABEL: 'block' });
-    });
+    // forStatement = this.RULE('forStatement', () => {
+    //     this.CONSUME(For);
+    //     this.CONSUME(Identifier, { LABEL: 'identity' });
+    //     this.CONSUME(In);
+    //     this.SUBRULE(this.assignExpression, { LABEL: 'iterable' });
+    //     this.SUBRULE(this.blockStatement, { LABEL: 'block' });
+    // });
 
     block = this.RULE('block', () => {
         this.MANY(() => {
@@ -389,10 +404,10 @@ export class MotorParser extends CstParser {
 
                 { ALT: () => this.SUBRULE(this.ifStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.whileStatement, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.forStatement, { LABEL: 'statements' }) },
+                // { ALT: () => this.SUBRULE(this.forStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.blockStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.returnStatement, { LABEL: 'statements' }) },
-                { ALT: () => this.SUBRULE(this.throwStatement, { LABEL: 'statements' }) },
+                // { ALT: () => this.SUBRULE(this.throwStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.breakStatement, { LABEL: 'statements' }) },
                 { ALT: () => this.SUBRULE(this.continueStatement, { LABEL: 'statements' }) },
             ]);
