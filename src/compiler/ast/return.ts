@@ -1,20 +1,13 @@
-import { AstWhile } from "./while";
+
+import { IAstBlock } from "./block.interface";
+import { AstExpression } from "./expression/expression";
 import { AstStatement } from "./statement";
-import { AstFunction } from "./declaration/function";
-import { AstExpression } from "./expression";
 
 export class AstReturn extends AstStatement {
     constructor(
-        readonly fn: AstFunction,
-        readonly expression: AstExpression,
+        readonly expression: AstExpression | null = null,
+        parent: IAstBlock | null = null,
     ) {
-        super();
-    }
-
-    toObject() {
-        return {
-            astType: 'return',
-            expression: this.expression.toObject(),
-        }
+        super(parent);
     }
 }

@@ -5,123 +5,90 @@ import {
 import { MotorParser } from "./parser.compiler";
 import { motorSingleton } from "../utils/singleton";
 import { CstBlock } from "./cst/block";
-import { AstBlock } from "./ast/block";
-import { AstStatement } from "./ast/statement";
-import { AstBinary, AstBinaryOperator } from "./ast/binary";
 import { CstConditionalExpression } from "./cst/conditional-expression";
-import { AstTernary } from "./ast/ternary";
 import { CstLeftToRightExpression } from "./cst/left-to-right-expression";
 import { CstUnaryExpression } from "./cst/unary-expression";
-import { AstUnary, AstUnaryOperator } from "./ast/unary";
 import { CstRightToLeftExpression } from "./cst/right-to-left-expression";
 import { CstPostfixExpression } from "./cst/postfix-expression";
-import { AstPostFix, AstPostfixOperator } from "./ast/postfix";
-import { AstMember } from "./ast/member";
 import { CstMemberExpression } from "./cst/member-expression";
-import { AstCall } from "./ast/call";
 import { CstCallExpression } from "./cst/call-expression";
 import { CstAtomicExpression } from "./cst/atomic-expression";
 import { CstParenExpression } from "./cst/paren-expression";
-import { AstFunction } from "./ast/declaration/function";
-import { AstDeclaration } from "./ast/declaration/declaration";
-import { AstConstF32 } from "./ast/const/float";
-import { AstConstU32 } from "./ast/const/uint";
-import { AstConstI32 } from "./ast/const/int";
-import { AstConstChar } from "./ast/const/char";
-import { AstConstBool } from "./ast/const/bool";
-import { AstConstNull } from "./ast/const/null";
-import { AstType } from "./ast/declaration/type";
 import { CstFunctionDeclaration } from "./cst/function-declaration";
-import { IAstBlock } from "./ast/block.interface";
 import { CstTypeDeclaration } from "./cst/type-declaration";
-import { AstChar } from "./ast/declaration/type/char";
-import { AstBool } from "./ast/declaration/type/bool";
-import { AstF16, AstF32, AstF64, AstF8 } from "./ast/declaration/type/float";
-import { AstI16, AstI32, AstI64, AstI8 } from "./ast/declaration/type/int";
-import { AstU16, AstU32, AstU64, AstU8 } from "./ast/declaration/type/uint";
-import { AstNull } from "./ast/declaration/type/null";
 import { CstVariableDeclaration } from "./cst/variable-declaration";
-import { AstVariable } from "./ast/declaration/variable";
 import { CstBlockStatement } from "./cst/block-statement";
 import { CstIfStatement } from "./cst/if-statement";
-import { AstIf } from "./ast/if";
-import { AstExpression } from "./ast/expression";
 import { CstWhileStatement } from "./cst/while-statement";
-import { AstWhile } from "./ast/while";
 import { CstContinueStatement } from "./cst/continue-statement";
-import { AstContinue } from "./ast/continue";
 import { CstReturnStatement } from "./cst/return-statement";
+import { IAstBlock } from "./ast/block.interface";
+import { AstExpression } from "./ast/expression/expression";
+import { AstBinary } from "./ast/expression/binary";
+import { AstVariable } from "./ast/expression/variable";
+import { AstConstF32 } from "./ast/expression/const/float";
+import { AstConstU32 } from "./ast/expression/const/uint";
+import { AstConstI32 } from "./ast/expression/const/int";
+import { AstConstChar } from "./ast/expression/const/char";
+import { AstConstBool } from "./ast/expression/const/bool";
+import { AstConstNull } from "./ast/expression/const/null";
+import { AstF16, AstF32, AstF64, AstF8 } from "./ast/type/float";
+import { AstType } from "./ast/type/type";
+import { AstI16, AstI32, AstI64, AstI8 } from "./ast/type/int";
+import { AstU16, AstU32, AstU64, AstU8 } from "./ast/type/uint";
+import { AstBool } from "./ast/type/bool";
+import { AstChar } from "./ast/type/char";
+import { AstCall } from "./ast/expression/call";
+import { AstMember } from "./ast/expression/member";
+import { AstPostFix } from "./ast/expression/postfix";
+import { AstUnary } from "./ast/expression/unary";
+import { AstTernary } from "./ast/expression/ternary";
+import { AstWhile } from "./ast/loop/while";
+import { AstIf } from "./ast/if";
+import { AstContinue } from "./ast/loop/continue";
+import { AstBreak } from "./ast/loop/break";
 import { AstReturn } from "./ast/return";
-import { AstBreak } from "./ast/break";
+import { AstBlock } from "./ast/block";
+import { AstFunction } from "./ast/type/function";
 
 export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisitorConstructorWithDefaults() {
     constructor() {
         super(motorTokens);
     }
 
-    rightToLeftExpression(cst: CstRightToLeftExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    rightToLeftExpression(cst: CstRightToLeftExpression['children'], block: IAstBlock): AstExpression {
         const left = this.visit(cst.left[0], block);
         if (cst.right && cst.operator) {
             const right = this.visit(cst.right[0], parent)
-            if(right.type !== left.type) {
+            if (right.type !== left.type) {
                 throw new Error('Left and right must be of the same type');
             }
-            return new AstBinary(cst.operator[0].image as AstBinaryOperator, left, right);
+            return new AstBinary(left, right, cst.operator[0].image, block);
         }
         return left;
     }
 
-    leftToRightExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    leftToRightExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         let left = this.visit(cst.left[0], block);
         if (cst.right && cst.operator) {
             for (let i = 0; i < cst.right.length; i++) {
                 const right = this.visit(cst.right[i], block);
-                if(right.type !== left.type) {
+                if (right.type !== left.type) {
                     throw new Error('Left and right must be of the same type');
                 }
-                left = new AstBinary(cst.operator[i].image as AstBinaryOperator, left, right);
+                left = new AstBinary(left, right, cst.operator[i].image, block);
             }
         }
         return left;
     }
 
-    findVariable(block: IAstBlock, identifier: string): AstDeclaration {
-        if (block.member[identifier]) {
-            return block.member[identifier];
-        }
-        if (block.parent) {
-            return this.findVariable(block.parent, identifier);
-        }
-        throw new Error(`Variable ${identifier} not found`);
-    }
-
-    findLoopBlock(block: IAstBlock): AstWhile {
-        if (block instanceof AstWhile) {
-            return block;
-        }
-        if (block.parent) {
-            return this.findLoopBlock(block.parent);
-        }
-        throw new Error('Loop not found');
-    }
-
-    findFunctionBlock(block: IAstBlock): AstFunction {
-        if (block instanceof AstFunction) {
-            return block;
-        }
-        if (block.parent) {
-            return this.findFunctionBlock(block.parent);
-        }
-        throw new Error('Function not found');
-    }
-
-    parenExpression(cst: CstParenExpression['children'], block: IAstBlock): AstStatement {
+    parenExpression(cst: CstParenExpression['children'], block: IAstBlock): AstExpression {
         return this.visit(cst.expression[0], block);
     }
 
-    atomicExpression(cst: CstAtomicExpression['children'], block: IAstBlock): AstStatement {
+    atomicExpression(cst: CstAtomicExpression['children'], block: IAstBlock): AstExpression {
         if (cst.variable) {
-            return this.findVariable(block, cst.variable[0].image);
+            return new AstVariable(cst.variable[0].image, block);
         }
         if (cst.const) {
             switch (cst.const[0].tokenType.name) {
@@ -147,39 +114,21 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         throw new Error('Invalid atomic expression');
     }
 
-    // indexExpression(cst: CstPostfixExpression['children'], block: AstBlock): AstStatement | AstBinary {
-    // }
 
-    callExpression(cst: CstCallExpression['children'], { block, identifier }: { block: IAstBlock, identifier: AstFunction | AstType }): AstCall {
-        if (!(identifier instanceof AstFunction) && !(identifier instanceof AstType)) {
-            throw new Error('Invalid call expression');
-        }
+    callExpression(cst: CstCallExpression['children'], { block, identifier }: { block: IAstBlock, identifier: AstExpression }): AstCall {
         const args: AstExpression[] = (cst.args ?? []).map(arg => this.visit(arg, block));
-        if(identifier instanceof AstFunction) {
-            identifier.params.forEach((param, i) => {
-                if(!args[i]) {
-                    throw new Error(`Argument ${i} is missing`);
-                }
-                if (param.type !== args[i].type) {
-                    throw new Error(`Argument ${i} must be of type ${param.type}`);
-                }
-            });
-        }
-        return new AstCall(identifier, args);
+        return new AstCall(identifier, args, block);
     }
 
-    memberExpression(cst: CstMemberExpression['children'], { block, identifier }: { block: IAstBlock, identifier: AstType }): AstMember {
-        if (!(identifier instanceof AstType)) {
-            throw new Error('Invalid member expression');
-        }
-        return new AstMember(identifier, cst.identifier[0].image);
+    memberExpression(cst: CstMemberExpression['children'], { block, identifier }: { block: IAstBlock, identifier: AstExpression }): AstMember {
+        return new AstMember(identifier, cst.identifier[0].image, block);
     }
 
-    postfixExpression(cst: CstPostfixExpression['children'], block: IAstBlock): AstStatement | AstPostFix {
+    postfixExpression(cst: CstPostfixExpression['children'], block: IAstBlock): AstExpression {
         let left = this.visit(cst.left[0], block);
         for (let operator of cst.operators ?? []) {
             if ('image' in operator) {
-                left = new AstPostFix(operator.image as AstPostfixOperator, left);
+                left = new AstPostFix(left, operator.image);
             } else {
                 left = this.visit(operator, { block, identifier: left });
             }
@@ -187,59 +136,59 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         return left;
     }
 
-    exponentiationExpression(cst: CstRightToLeftExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    exponentiationExpression(cst: CstRightToLeftExpression['children'], block: IAstBlock): AstExpression {
         return this.rightToLeftExpression(cst, block);
     }
 
-    unaryExpression(cst: CstUnaryExpression['children'], block: IAstBlock): AstStatement | AstUnary {
+    unaryExpression(cst: CstUnaryExpression['children'], block: IAstBlock): AstExpression {
         const right = this.visit(cst.right[0], block);
         if (cst.operator) {
-            return new AstUnary(cst.operator[0].image as AstUnaryOperator, right);
+            return new AstUnary(cst.operator[0].image, right);
         }
         return right;
     }
 
-    multiplicativeExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    multiplicativeExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    additiveExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    additiveExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    moveExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    moveExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    relationExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    relationExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    equalityExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    equalityExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    lAndExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    lAndExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    xorExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    xorExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    lOrExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    lOrExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    andExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    andExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    orExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    orExpression(cst: CstLeftToRightExpression['children'], block: IAstBlock): AstExpression {
         return this.leftToRightExpression(cst, block);
     }
 
-    conditionalExpression(cst: CstConditionalExpression['children'], block: IAstBlock): AstStatement | AstTernary {
+    conditionalExpression(cst: CstConditionalExpression['children'], block: IAstBlock): AstExpression {
         const test = this.visit(cst.test[0], block);
         if (cst.true && cst.false) {
             return new AstTernary(test, this.visit(cst.true[0], block), this.visit(cst.false[0], block));
@@ -247,25 +196,20 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         return test;
     }
 
-    assignExpression(cst: CstRightToLeftExpression['children'], block: IAstBlock): AstStatement | AstBinary {
+    assignExpression(cst: CstRightToLeftExpression['children'], block: IAstBlock): AstExpression {
         return this.rightToLeftExpression(cst, block);
     }
 
     continueStatement(cst: CstContinueStatement['children'], block: IAstBlock): AstContinue {
-        return new AstContinue(this.findLoopBlock(block));
+        return new AstContinue(block);
     }
 
     breakStatement(cst: CstBlockStatement['children'], block: IAstBlock): AstBreak {
-        return new AstBreak(this.findLoopBlock(block));
+        return new AstBreak(block);
     }
 
     returnStatement(cst: CstReturnStatement['children'], block: IAstBlock): AstReturn {
-        const fn = this.findFunctionBlock(block);
-        const expression: AstExpression = this.visit(cst.expression[0], block);
-        if (expression.type !== fn.type) {
-            throw new Error('Return type must match function type');
-        }
-        return new AstReturn(fn, expression);
+        return new AstReturn(cst.expression ? this.visit(cst.expression[0], block) : null, block);
     }
 
     blockStatement(cst: CstBlockStatement['children'], parent: IAstBlock): AstBlock {
@@ -303,26 +247,35 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
             case TypeChar.name:
                 return motorSingleton(AstChar)
             default:
-                return this.findVariable(block, cst.type[0].image) as AstType;
+                const type = AstType.findTypeByName(cst.type[0].image, block);
+                if (type) {
+                    return type;
+                }
+                throw new Error(`Type ${cst.type[0].image} not found`);
         }
     }
 
     variableDeclaration(cst: CstVariableDeclaration['children'], block: IAstBlock): AstBinary | void {
         const identifier = cst.identifier[0].image;
-        if (block.member[identifier]) {
+        if (block.members && identifier in block.members) {
             throw new Error(`Variable ${identifier} already declared`);
         }
-        const type = this.visit(cst.type[0], block);
-        const variable = new AstVariable(identifier, type);
-        block.member[identifier] = variable;
+        const type = this.visit(cst.type[0], block) as AstType;
+        if (!block.members) {
+            block.members = {};
+        }
+        block.members[identifier] = type;
         if (cst.value) {
-            return new AstBinary('=', variable, this.visit(cst.value[0], block));
+            return new AstBinary(new AstVariable(identifier, block), this.visit(cst.value[0], block), '=', block);
         }
     }
 
-    functionParamDeclaration(cst: CstVariableDeclaration['children'], block: AstFunction): AstBinary | void {
-        this.variableDeclaration(cst, block);
-        block.params.push(block.member[cst.identifier[0].image] as AstVariable);
+    functionParamDeclaration(cst: CstVariableDeclaration['children'], fn: AstFunction): AstBinary | void {
+        this.variableDeclaration(cst, fn);
+        if(!fn.params) {
+            fn.params = [];
+        }
+        fn.params.push(fn.members[cst.identifier[0].image]);
     }
 
     functionDeclaration(cst: CstFunctionDeclaration['children'], block: IAstBlock): void {

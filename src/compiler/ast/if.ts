@@ -1,32 +1,15 @@
-import { AstStatement } from "./statement";
-import { IAstBlock } from "./block.interface";
-import { AstExpression } from "./expression";
 import { AstBlock } from "./block";
-import { AstDeclaration } from "./declaration/declaration";
+import { IAstBlock } from "./block.interface";
+import { AstExpression } from "./expression/expression";
+import { AstStatement } from "./statement";
 
-export class AstIf extends AstStatement implements IAstBlock {
-    readonly member: { [key: string]: AstDeclaration; } = {};
-    readonly statements: AstStatement[] = [];
+export class AstIf extends AstStatement {
     constructor(
-        readonly parent: IAstBlock,
         readonly test: AstExpression,
-        readonly falseBlock?: AstIf | AstBlock,
+        readonly trueBlock: AstBlock,
+        readonly falseBlock?: AstBlock | AstIf,
+        parent: IAstBlock | null = null,
     ) {
-        super();
-    }
-
-    toObject(): any {
-        return {
-            astType: 'if',
-            test: this.test.toObject(),
-            true: {
-                member: Object.keys(this.member).reduce((acc, key) => {
-                    acc[key] = this.member[key].toObject();
-                    return acc;
-                }, {} as { [key: string]: any; }),
-                statements: this.statements.map(s => s.toObject()),
-            },
-            false: this.falseBlock ? this.falseBlock.toObject() : null,
-        };
+        super(parent);
     }
 }
