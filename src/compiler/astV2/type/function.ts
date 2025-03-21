@@ -5,9 +5,9 @@ import { AstReference } from "./reference";
 import { AstType } from "./type";
 
 export class AstFunction extends AstReference implements IAstBlock, AstCallable {
-    readonly types: { [name: string]: AstType } = {};
+    readonly types?: { [name: string]: AstType } = {};
     readonly statements: AstStatement[] = [];
-    readonly params: { name: string, type: AstType }[] = [];
+    readonly params?: { name: string, type: AstType }[] = [];
     constructor(
         readonly name: string,
         readonly returnType: AstType,
