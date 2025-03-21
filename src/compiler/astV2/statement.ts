@@ -1,7 +1,8 @@
 import { MotorAst } from "./ast";
+import { IAstBlock } from "./block.interface";
 
 export abstract class AstStatement extends MotorAst {
-    constructor() {
+    constructor(readonly parent: IAstBlock | null = null) {
         super();
     }
 }

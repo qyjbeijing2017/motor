@@ -1,5 +1,5 @@
 import { AstType } from "./type";
 
 export abstract class AstReference extends AstType {
-    size: number = 4;
+    readonly size: number = 4;
 }
