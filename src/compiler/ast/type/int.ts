@@ -1,4 +1,4 @@
-import { AstCallable } from "./callAble";
+import { AstCallable } from "./callable";
 import { AstType } from "./type";
 
 export class AstI8 extends AstType implements AstCallable {

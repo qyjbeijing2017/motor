@@ -1,7 +1,7 @@
 import { AstType } from "./type";
 
 export interface AstCallable extends AstType {
-    readonly params?: { name: string, type: AstType }[];
+    readonly params?: AstType[];
     readonly returnType: AstType;
 }
 

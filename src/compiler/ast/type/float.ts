@@ -1,5 +1,5 @@
-import { AstCallable } from "./callAble";
 import { AstType } from "./type";
+import { AstCallable } from "./callable";
 
 export class AstF8 extends AstType implements AstCallable {
     readonly size = 1;

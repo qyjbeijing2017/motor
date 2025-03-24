@@ -25,7 +25,7 @@ import { CstReturnStatement } from "./cst/return-statement";
 import { IAstBlock } from "./ast/block.interface";
 import { AstExpression } from "./ast/expression/expression";
 import { AstBinary } from "./ast/expression/binary";
-import { AstVariable } from "./ast/expression/variable";
+import { AstDeclaration } from "./ast/expression/declaration";
 import { AstConstF32 } from "./ast/expression/const/float";
 import { AstConstU32 } from "./ast/expression/const/uint";
 import { AstConstI32 } from "./ast/expression/const/int";
@@ -50,6 +50,7 @@ import { AstBreak } from "./ast/loop/break";
 import { AstReturn } from "./ast/return";
 import { AstBlock } from "./ast/block";
 import { AstFunction } from "./ast/type/function";
+import { AstNull } from "./ast/type/null";
 
 export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisitorConstructorWithDefaults() {
     constructor() {
@@ -88,7 +89,7 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
 
     atomicExpression(cst: CstAtomicExpression['children'], block: IAstBlock): AstExpression {
         if (cst.variable) {
-            return new AstVariable(cst.variable[0].image, block);
+            return AstDeclaration.get(cst.variable[0].image, block);
         }
         if (cst.const) {
             switch (cst.const[0].tokenType.name) {
@@ -255,40 +256,29 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         }
     }
 
-    variableDeclaration(cst: CstVariableDeclaration['children'], block: IAstBlock): AstBinary | void {
-        const identifier = cst.identifier[0].image;
-        if (block.members && identifier in block.members) {
-            throw new Error(`Variable ${identifier} already declared`);
-        }
-        const type = this.visit(cst.type[0], block) as AstType;
-        if (!block.members) {
-            block.members = {};
-        }
-        block.members[identifier] = type;
-        if (cst.value) {
-            return new AstBinary(new AstVariable(identifier, block), this.visit(cst.value[0], block), '=', block);
-        }
+    variableDeclaration(cst: CstVariableDeclaration['children'], block: IAstBlock): AstDeclaration {
+        return new AstDeclaration(cst.identifier[0].image, this.visit(cst.type[0]), cst.value ? this.visit(cst.value[0]) : null, block)
     }
 
-    functionParamDeclaration(cst: CstVariableDeclaration['children'], fn: AstFunction): AstBinary | void {
-        this.variableDeclaration(cst, fn);
-        if(!fn.params) {
+    functionParamDeclaration(cst: CstVariableDeclaration['children'], fn: AstFunction): AstDeclaration {
+        const identifier = cst.identifier[0].image;
+        const variable = new AstDeclaration(identifier, this.visit(cst.type[0]), null, fn);
+        if (!fn.params) {
             fn.params = [];
         }
-        fn.params.push(fn.members[cst.identifier[0].image]);
+        fn.params.push(variable.type);
+        return variable;
     }
 
-    functionDeclaration(cst: CstFunctionDeclaration['children'], block: IAstBlock): void {
+    functionDeclaration(cst: CstFunctionDeclaration['children'], block: IAstBlock): AstDeclaration {
         const identifier = cst.identifier[0].image;
-        if (identifier in block.member) {
+        const fn = new AstFunction(identifier, cst.type ? this.visit(cst.type[0], block) : motorSingleton(AstNull), block);
+        if (block.members && identifier in block.members) {
             throw new Error(`member ${identifier} already declared`);
         }
-        const fn = new AstFunction(block, identifier, cst.type ? this.visit(cst.type[0], block) : motorSingleton(AstNull));
+
         for (const param of cst.params ?? []) {
-            const result = this.visit(param, fn);
-            if (result) {
-                fn.statements.push(result);
-            }
+            this.visit(param, fn);
         }
         for (const statement of cst.block[0].children.block[0].children.statements ?? []) {
             const result = this.visit(statement, fn);
@@ -296,36 +286,19 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
                 fn.statements.push(result);
             }
         }
-        block.member[identifier] = fn;
+        if (!block.members) {
+            block.members = {};
+        }
+        return new AstDeclaration(identifier, fn, null, block);
     }
 
     ifStatement(cst: CstIfStatement['children'], block: IAstBlock): AstIf {
-        const test: AstExpression = this.visit(cst.test[0], block);
-        if (test.type !== motorSingleton(AstBool)) {
-            throw new Error('If statement test must be a boolean expression');
-        }
-        const astIf = new AstIf(block, test, cst.false ? this.visit(cst.false[0], block) : undefined);
-        for (const statement of cst.true[0].children.block[0].children.statements ?? []) {
-            const result = this.visit(statement, astIf);
-            if (result) {
-                block.statements.push(result);
-            }
-        }
+        const astIf = new AstIf(this.visit(cst.test[0], block), this.visit(cst.true[0]), cst.false ? this.visit(cst.false[0]) : undefined, block);
         return astIf;
     }
 
     whileStatement(cst: CstWhileStatement['children'], block: IAstBlock) {
-        const test: AstExpression = this.visit(cst.test[0], block);
-        if (test.type !== motorSingleton(AstBool)) {
-            throw new Error('While statement test must be a boolean expression');
-        }
-        const astWhile = new AstWhile(block, test);
-        for (const statement of cst.block[0].children.block[0].children.statements ?? []) {
-            const result = this.visit(statement, astWhile);
-            if (result) {
-                block.statements.push(result);
-            }
-        }
+        const astWhile = new AstWhile(this.visit(cst.test[0]), this.visit(cst.block[0]), block);
         return astWhile;
     }
 

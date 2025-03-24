@@ -1,3 +1,4 @@
+import { AstDeclaration } from "./expression/declaration";
 import { AstStatement } from "./statement";
 import { AstType } from "./type/type";
 
@@ -7,7 +8,7 @@ export interface IAstBlock {
         [name: string]: AstType;
     }
     members?: {
-        [name: string]: AstType;
+        [name: string]: AstDeclaration;
     }
     statements: AstStatement[];
 }

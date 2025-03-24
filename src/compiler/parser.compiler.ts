@@ -346,10 +346,6 @@ export class MotorParser extends CstParser {
     functionParamDeclaration = this.RULE('functionParamDeclaration', () => {
         this.CONSUME(Identifier, { LABEL: 'identifier' });
         this.SUBRULE(this.typeDeclaration, { LABEL: 'type' });
-        this.OPTION(() => {
-            this.CONSUME(Equal);
-            this.SUBRULE(this.assignExpression, { LABEL: 'value' });
-        });
     });
 
     functionDeclaration = this.RULE('functionDeclaration', () => {

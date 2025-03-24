@@ -1,10 +1,11 @@
 import { MotorAst } from "../ast";
 import { IAstBlock } from "../block.interface";
+import { AstDeclaration } from "../expression/declaration";
 
 export abstract class AstType extends MotorAst {
     abstract readonly size: number;
     abstract readonly name: string;
-    members?: { [name: string]: AstType };
+    members?: { [name: string]: AstDeclaration };
 
     static findTypeByName(name: string, parent?: IAstBlock | null): AstType | null {
         if(!parent) {

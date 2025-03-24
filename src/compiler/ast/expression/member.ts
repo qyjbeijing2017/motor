@@ -3,7 +3,7 @@ import { AstExpression } from "./expression";
 
 export class AstMember extends AstExpression {
     get type() {
-        return this.identifier.type.members![this.key];
+        return this.identifier.type.members![this.key].type;
     }
 
     constructor(

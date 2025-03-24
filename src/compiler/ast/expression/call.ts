@@ -1,5 +1,5 @@
 import { IAstBlock } from "../block.interface";
-import { AstCallable, isAstCallable } from "../type/callAble";
+import { AstCallable, isAstCallable } from "../type/callable";
 import { AstExpression } from "./expression";
 
 export class AstCall extends AstExpression {
@@ -19,7 +19,7 @@ export class AstCall extends AstExpression {
 
         if (callType.params) {
             for (let i = 0; i < callType.params.length; i++) {
-                const paramType = callType.params[i].type;
+                const paramType = callType.params[i];
                 const argType = args[i].type;
                 if (paramType !== argType) {
                     throw new Error(`Argument ${i} of type ${argType} does not match expected type ${paramType}`);
