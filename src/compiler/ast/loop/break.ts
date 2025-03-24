@@ -3,7 +3,7 @@ import { AstStatement } from "../statement";
 
 export class AstBreak extends AstStatement {
     constructor(
-        readonly parent: IAstBlock | null = null,
+        readonly parent?: IAstBlock,
     ) {
         super(parent);
     }

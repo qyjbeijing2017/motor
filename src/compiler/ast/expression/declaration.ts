@@ -3,7 +3,7 @@ import { AstType } from "../type/type";
 import { AstExpression } from "./expression";
  
 export class AstDeclaration extends AstExpression {
-    static findType(name: string, block: IAstBlock | null | undefined): AstType | null {
+    static findType(name: string, block: IAstBlock | undefined): AstType | null {
         if (!block) {
             return null;
         }
@@ -16,8 +16,8 @@ export class AstDeclaration extends AstExpression {
     constructor(
         readonly name: string,
         readonly type: AstType,
-        readonly defaultValue: AstExpression | null = null,
-        readonly parent: IAstBlock | null = null,
+        readonly defaultValue?: AstExpression,
+        readonly parent?: IAstBlock,
     ) {
         super(parent);
         if (parent) {

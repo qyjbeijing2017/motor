@@ -115,7 +115,6 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         throw new Error('Invalid atomic expression');
     }
 
-
     callExpression(cst: CstCallExpression['children'], { block, identifier }: { block: IAstBlock, identifier: AstExpression }): AstCall {
         const args: AstExpression[] = (cst.args ?? []).map(arg => this.visit(arg, block));
         return new AstCall(identifier, args, block);
@@ -262,7 +261,7 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
 
     functionParamDeclaration(cst: CstVariableDeclaration['children'], fn: AstFunction): AstDeclaration {
         const identifier = cst.identifier[0].image;
-        const variable = new AstDeclaration(identifier, this.visit(cst.type[0]), null, fn);
+        const variable = new AstDeclaration(identifier, this.visit(cst.type[0]), undefined, fn);
         if (!fn.params) {
             fn.params = [];
         }
@@ -289,16 +288,16 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         if (!block.members) {
             block.members = {};
         }
-        return new AstDeclaration(identifier, fn, null, block);
+        return new AstDeclaration(identifier, fn, undefined, block);
     }
 
     ifStatement(cst: CstIfStatement['children'], block: IAstBlock): AstIf {
-        const astIf = new AstIf(this.visit(cst.test[0], block), this.visit(cst.true[0]), cst.false ? this.visit(cst.false[0]) : undefined, block);
+        const astIf = new AstIf(this.visit(cst.test[0], block), this.visit(cst.true[0], block), cst.false ? this.visit(cst.false[0], block) : undefined, block);
         return astIf;
     }
 
     whileStatement(cst: CstWhileStatement['children'], block: IAstBlock) {
-        const astWhile = new AstWhile(this.visit(cst.test[0]), this.visit(cst.block[0]), block);
+        const astWhile = new AstWhile(this.visit(cst.test[0], block), this.visit(cst.block[0], block), block);
         return astWhile;
     }
 

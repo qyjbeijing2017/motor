@@ -11,7 +11,7 @@ export class AstFunction extends AstReference implements IAstBlock, AstCallable 
     constructor(
         readonly name: string,
         readonly returnType: AstType,
-        readonly parent: IAstBlock | null = null,
+        readonly parent?: IAstBlock,
     ) {
         super();
     }

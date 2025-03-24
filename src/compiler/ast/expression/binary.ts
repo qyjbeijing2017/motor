@@ -8,7 +8,7 @@ export class AstBinary extends AstExpression {
         readonly left: AstExpression,
         readonly right: AstExpression,
         readonly operator: string,
-        parent: IAstBlock | null = null,
+        parent?: IAstBlock,
     ) {
         super(parent);
         if (left.type !== right.type) {

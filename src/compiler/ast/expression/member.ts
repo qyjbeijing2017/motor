@@ -9,7 +9,7 @@ export class AstMember extends AstExpression {
     constructor(
         readonly identifier: AstExpression,
         readonly key: string,
-        parent: IAstBlock | null = null,
+        parent?: IAstBlock,
     ) {
         super(parent);
         if (identifier.type.members === undefined) {

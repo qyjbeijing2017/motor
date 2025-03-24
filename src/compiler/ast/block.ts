@@ -8,7 +8,7 @@ export class AstBlock extends AstStatement implements IAstBlock {
     members?: { [name: string]: AstDeclaration };
     readonly statements: AstStatement[] = [];
     constructor(
-        readonly parent: IAstBlock | null = null,
+        readonly parent?: IAstBlock,
     ) {
         super(parent);
     }

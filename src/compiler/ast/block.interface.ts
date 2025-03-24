@@ -3,7 +3,7 @@ import { AstStatement } from "./statement";
 import { AstType } from "./type/type";
 
 export interface IAstBlock {
-    readonly parent?: IAstBlock | null;
+    readonly parent?: IAstBlock;
     types?: {
         [name: string]: AstType;
     }

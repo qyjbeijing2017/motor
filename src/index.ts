@@ -24,6 +24,41 @@ export { MotorList, defineMotorList } from './types/list.type';
 export { MotorLexer } from './compiler/lexer.compiler';
 export { MotorParser } from './compiler/parser.compiler';
 export { MotorAstParser } from './compiler/ast.parser';
+export { motorSingleton } from './utils/singleton';
+export { MotorAst } from './compiler/ast/ast';
+export { AstReturn } from './compiler/ast/return';
+export { AstStatement } from './compiler/ast/statement';
+export { AstIf } from './compiler/ast/if';
+export { AstBlock } from './compiler/ast/block';
+export { IAstBlock } from './compiler/ast/block.interface';
+export { IAstMember } from './compiler/ast/member.interface';
+export { AstType } from './compiler/ast/type/type';
+export { AstReference } from './compiler/ast/type/reference';
+export { AstNull } from './compiler/ast/type/null';
+export { AstF64, AstF32, AstF16, AstF8 } from './compiler/ast/type/float';
+export { AstI64, AstI32, AstI16, AstI8 } from './compiler/ast/type/int';
+export { AstU64, AstU32, AstU16, AstU8 } from './compiler/ast/type/uint';
+export { AstBool } from './compiler/ast/type/bool';
+export { AstChar } from './compiler/ast/type/char';
+export { AstFunction } from './compiler/ast/type/function';
+export { AstBreak } from './compiler/ast/loop/break';
+export { AstContinue } from './compiler/ast/loop/continue';
+export { AstWhile } from './compiler/ast/loop/while';
+export { AstBinary } from './compiler/ast/expression/binary';
+export { AstUnary } from './compiler/ast/expression/unary';
+export { AstTernary } from './compiler/ast/expression/ternary';
+export { AstCall } from './compiler/ast/expression/call';
+export { AstMember } from './compiler/ast/expression/member';
+export { AstPostFix } from './compiler/ast/expression/postfix';
+export { AstConst } from './compiler/ast/expression/const/const';
+export { AstConstF64, AstConstF32, AstConstF16, AstConstF8 } from './compiler/ast/expression/const/float';
+export { AstConstI64, AstConstI32, AstConstI16, AstConstI8 } from './compiler/ast/expression/const/int';
+export { AstConstU64, AstConstU32, AstConstU16, AstConstU8 } from './compiler/ast/expression/const/uint';
+export { AstConstBool } from './compiler/ast/expression/const/bool';
+export { AstConstChar } from './compiler/ast/expression/const/char';
+export { AstConstNull } from './compiler/ast/expression/const/null';
+export { AstDeclaration } from './compiler/ast/expression/declaration';
+
 
 export {
     Comment,

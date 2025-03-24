@@ -7,9 +7,9 @@ export abstract class AstType extends MotorAst {
     abstract readonly name: string;
     members?: { [name: string]: AstDeclaration };
 
-    static findTypeByName(name: string, parent?: IAstBlock | null): AstType | null {
+    static findTypeByName(name: string, parent?: IAstBlock): AstType | undefined {
         if(!parent) {
-            return null;
+            return;
         }
         if(parent.types && parent.types[name]) {
             return parent.types[name];

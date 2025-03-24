@@ -10,7 +10,7 @@ export class AstIf extends AstStatement {
         readonly test: AstExpression,
         readonly trueBlock: AstBlock,
         readonly falseBlock?: AstBlock | AstIf,
-        parent: IAstBlock | null = null,
+        parent?: IAstBlock,
     ) {
         super(parent);
         if (test.type !== motorSingleton(AstBool)) {

@@ -9,7 +9,7 @@ export class AstWhile extends AstLoop {
     constructor(
         readonly test: AstExpression,
         readonly block: AstBlock,
-        parent: IAstBlock | null = null,
+        parent?: IAstBlock,
     ) {
         super(parent);
         if (test.type !== motorSingleton(AstBool)) {

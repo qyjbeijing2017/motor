@@ -309,28 +309,26 @@ export class MotorParser extends CstParser {
     // });
 
     typeDeclaration = this.RULE('typeDeclaration', () => {
-        this.OPTION(() =>
-            this.OR([
-                { ALT: () => this.CONSUME(TypeFloat64, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeFloat32, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeFloat16, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeFloat8, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeInt64, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeInt32, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeInt16, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeInt8, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeUint64, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeUint32, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeUint16, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeUint8, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeBool, { LABEL: 'type' }) },
-                // { ALT: () => this.CONSUME(TypeString, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeChar, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(TypeList, { LABEL: 'type' }) },
-                { ALT: () => this.CONSUME(Identifier, { LABEL: 'type' }) },
-                // { ALT: () => this.SUBRULE(this.listTypeDeclaration, { LABEL: 'list' }) },
-            ])
-        );
+        this.OR([
+            { ALT: () => this.CONSUME(TypeFloat64, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeFloat32, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeFloat16, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeFloat8, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeInt64, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeInt32, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeInt16, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeInt8, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeUint64, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeUint32, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeUint16, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeUint8, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeBool, { LABEL: 'type' }) },
+            // { ALT: () => this.CONSUME(TypeString, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeChar, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(TypeList, { LABEL: 'type' }) },
+            { ALT: () => this.CONSUME(Identifier, { LABEL: 'type' }) },
+            // { ALT: () => this.SUBRULE(this.listTypeDeclaration, { LABEL: 'list' }) },
+        ]);
     });
 
     variableDeclaration = this.RULE('variableDeclaration', () => {

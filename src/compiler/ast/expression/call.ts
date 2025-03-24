@@ -9,7 +9,7 @@ export class AstCall extends AstExpression {
     constructor(
         readonly identifier: AstExpression,
         readonly args: AstExpression[] = [],
-        parent: IAstBlock | null = null,
+        parent?: IAstBlock,
     ) {
         super(parent);
         if (!isAstCallable(identifier.type)) {

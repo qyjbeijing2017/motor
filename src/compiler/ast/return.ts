@@ -5,8 +5,8 @@ import { AstStatement } from "./statement";
 
 export class AstReturn extends AstStatement {
     constructor(
-        readonly expression: AstExpression | null = null,
-        parent: IAstBlock | null = null,
+        readonly expression?: AstExpression,
+        parent?: IAstBlock,
     ) {
         super(parent);
     }
