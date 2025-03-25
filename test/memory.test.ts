@@ -1,4 +1,5 @@
 import { MotorMemory, MotorVersion } from '../src';
+
 describe('Memory', () => {
     let memoryOnTest = new MotorMemory({ size: 1024 });
     test('Create Memory', () => {

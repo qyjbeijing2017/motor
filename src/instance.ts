@@ -6,12 +6,6 @@ export abstract class MotorInstance<T> {
     protected abstract onSetJsVal(value?: T): void;
     protected abstract onGetSize(): number;
 
-    protected _address: number;
-
-    get address(): number {
-        return this._address;
-    }
-
     get jsVal(): T {
         return this.onGetJsVal();
     }
@@ -26,10 +20,14 @@ export abstract class MotorInstance<T> {
 
     constructor(
         defaultValue?: T,
-        memory: MotorMemory = motorSingleton(MotorMemory),
-        address: number = memory.allocate(this.size),
+        readonly memory: MotorMemory = motorSingleton(MotorMemory),
+        readonly address: number = memory.allocate(this.size),
     ) {
-        this._address = address;
-        this.onSetJsVal(defaultValue);
+        if (defaultValue !== undefined)
+            this.onSetJsVal(defaultValue);
+    }
+
+    free() {
+        this.memory.free(this.address, this.size);
     }
 }
