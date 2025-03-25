@@ -4,6 +4,9 @@ export enum MotorOperator {
 
     LOAD,
     STORE,
+    
+    ALLOC,
+    FREE,
 
     ADD,
     SUB,
@@ -17,6 +20,21 @@ export enum MotorOperator {
     NOT,
     SHL,
     SHR,
+
+    EQ,
+    NE,
+    LT,
+    LE,
+    GT,
+    GE,
+
+    CONVERT,
+
+    CALL,
+    RET,
+
+    JUM,
+    JUM_IF,
 }
 
 export enum Type {
@@ -40,5 +58,3 @@ export interface MotorILInstruction {
     type?: Type;
     value?: number;
 }
-
-export type MotorCalculator = () => number;
