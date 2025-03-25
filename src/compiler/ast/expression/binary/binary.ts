@@ -1,6 +1,6 @@
-import { IAstBlock } from "../block.interface";
-import { AstType } from "../type/type";
-import { AstExpression } from "./expression";
+import { IAstBlock } from "../../block.interface";
+import { AstType } from "../../type/type";
+import { AstExpression } from "../expression";
 
 export class AstBinary extends AstExpression {
     readonly type: AstType;

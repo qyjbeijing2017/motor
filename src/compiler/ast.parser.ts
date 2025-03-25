@@ -24,7 +24,6 @@ import { CstContinueStatement } from "./cst/continue-statement";
 import { CstReturnStatement } from "./cst/return-statement";
 import { IAstBlock } from "./ast/block.interface";
 import { AstExpression } from "./ast/expression/expression";
-import { AstBinary } from "./ast/expression/binary";
 import { AstDeclaration } from "./ast/expression/declaration";
 import { AstConstF32 } from "./ast/expression/const/float";
 import { AstConstU32 } from "./ast/expression/const/uint";
@@ -51,6 +50,7 @@ import { AstReturn } from "./ast/return";
 import { AstBlock } from "./ast/block";
 import { AstFunction } from "./ast/type/function";
 import { AstNull } from "./ast/type/null";
+import { binaryCreator } from "./ast/expression/binary/binary-creator";
 
 export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisitorConstructorWithDefaults() {
     constructor() {
@@ -61,10 +61,8 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         const left = this.visit(cst.left[0], block);
         if (cst.right && cst.operator) {
             const right = this.visit(cst.right[0], parent)
-            if (right.type !== left.type) {
-                throw new Error('Left and right must be of the same type');
-            }
-            return new AstBinary(left, right, cst.operator[0].image, block);
+            const operator = cst.operator[0].image;
+            return binaryCreator(left, right, operator, block);
         }
         return left;
     }
@@ -74,10 +72,8 @@ export class MotorAstParser extends motorSingleton(MotorParser).getBaseCstVisito
         if (cst.right && cst.operator) {
             for (let i = 0; i < cst.right.length; i++) {
                 const right = this.visit(cst.right[i], block);
-                if (right.type !== left.type) {
-                    throw new Error('Left and right must be of the same type');
-                }
-                left = new AstBinary(left, right, cst.operator[i].image, block);
+                const operator = cst.operator[i].image;
+                left = binaryCreator(left, right, operator, block);
             }
         }
         return left;
