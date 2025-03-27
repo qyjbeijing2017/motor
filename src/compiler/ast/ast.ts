@@ -1,3 +1,5 @@
+import { MotorILInstruction } from "../il/instruction";
+
 export class MotorAst {
     static toJs(obj: any, loop: object[] = []): any {
         if (obj instanceof Array) {
@@ -27,5 +29,9 @@ export class MotorAst {
             newObj[key] = MotorAst.toJs(this[key], loop.concat());
         }
         return newObj;
+    }
+
+    toIL(): MotorILInstruction[] {
+        return [];
     }
 }

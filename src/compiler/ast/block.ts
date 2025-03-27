@@ -1,3 +1,4 @@
+import { MotorILInstruction } from "../il/instruction";
 import { IAstBlock } from "./block.interface";
 import { AstDeclaration } from "./expression/declaration";
 import { AstStatement } from "./statement";
@@ -11,5 +12,18 @@ export class AstBlock extends AstStatement implements IAstBlock {
         readonly parent?: IAstBlock,
     ) {
         super(parent);
+    }
+
+    toIL(): MotorILInstruction[] {
+        const result: MotorILInstruction[] = [];
+
+        Object.keys(this.members || {}).forEach((key, index) => {
+            
+        });
+
+        for (const statement of this.statements) {
+            result.push(...statement.toIL());
+        }
+        return result;
     }
 }

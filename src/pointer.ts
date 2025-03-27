@@ -12,4 +12,6 @@ export class MotorPointer extends MotorInstance<number> {
     protected onGetSize(): number {
         return 4;
     }
+
+    
 }
