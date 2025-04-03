@@ -122,7 +122,7 @@ export class Memory {
         let size = 0;
         for (const block of dataBlocks) {
             size += 8; // 4 bytes for address + 4 bytes for size
-            size += 8 + block.size;
+            size += block.size;
         }
         const buffer = this._createBuffer(size);
         offset = 0;
@@ -154,8 +154,8 @@ export class Memory {
                 address: empty.address,
                 size: block.address - empty.address,
             });
-            empty.address = block.address;
             empty.size -= block.address - empty.address;
+            empty.address = block.address;
         }
         if (empty.size === block.size) {
             this._emptyBlocks.splice(this._emptyBlocks.indexOf(empty), 1);
@@ -168,7 +168,7 @@ export class Memory {
     public deserialize(buffer: Uint8Array) {
         const viewer = new DataView(buffer.buffer);
         let offset = 0;
-        for (let i = 0; i < buffer.length; i += 8) {
+        while (offset < buffer.length) {
             const address = viewer.getUint32(offset, true);
             const size = viewer.getUint32(offset + 4, true);
             offset += 8;

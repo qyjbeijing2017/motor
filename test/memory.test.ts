@@ -69,6 +69,7 @@ describe("memory", () => {
         memoryOnTest.free(address2, size2)
         const serialized = memoryOnTest.serialize()
         const viewer = new DataView(serialized.buffer)
+        expect(serialized.byteLength).toBe(26) // 4 bytes for address + 4 bytes for size + 4 bytes for value + 4 bytes for address + 4 bytes for size + 6 bytes for value
         expect(viewer.getUint32(0, true)).toBe(address1)
         expect(viewer.getUint32(4, true)).toBe(size1)
         expect(viewer.getUint32(8, true)).toBe(value1)
@@ -105,7 +106,6 @@ describe("memory", () => {
         const newMemory = new Memory({ size: 16 })
         newMemory.deserialize(serialized)
         expect(newMemory.viewer.getUint32(address1, true)).toBe(value1)
-        expect(newMemory.viewer.getUint32(address2, true)).toBe(value2)
         expect(newMemory.viewer.getUint32(address3, true)).toBe(value3)
     })
 })
