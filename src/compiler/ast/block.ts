@@ -17,10 +17,6 @@ export class AstBlock extends AstStatement implements IAstBlock {
     toIL(): MotorILInstruction[] {
         const result: MotorILInstruction[] = [];
 
-        Object.keys(this.members || {}).forEach((key, index) => {
-            
-        });
-
         for (const statement of this.statements) {
             result.push(...statement.toIL());
         }

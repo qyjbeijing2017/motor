@@ -1,3 +1,4 @@
+import { MotorILInstruction } from "../../il/instruction";
 import { IAstBlock } from "../block.interface";
 import { AstType } from "../type/type";
 import { AstExpression } from "./expression";
@@ -37,5 +38,9 @@ export class AstDeclaration extends AstExpression {
             return block.members[name];
         }
         return AstDeclaration.get(name, block.parent);
+    }
+
+    toDeclarationIL(): MotorILInstruction[] {
+        return [];
     }
 }
