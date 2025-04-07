@@ -1,7 +1,7 @@
 import { Memory } from "../memory";
 
-export abstract class Type {
+export abstract class Type<T> {
     abstract get size(): number;
-    abstract read(memory: Memory, address: number): any;
-    abstract write(memory: Memory, address: number, value: any): void;
+    abstract read(memory: Memory, address: number): T;
+    abstract write(memory: Memory, address: number, value: T): void;
 }

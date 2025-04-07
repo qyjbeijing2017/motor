@@ -55,4 +55,3 @@ export function setFloat8(dataView: DataView, byteOffset: number, value: number)
     const byte = sign | (exponent << 3) | mantissa;
     dataView.setUint8(byteOffset, byte);
 }
-
