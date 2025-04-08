@@ -28,4 +28,20 @@ export class Struct<T extends { [key: string]: Type<any> }> extends Type<{[key i
             offset += field.size;
         }
     }
+
+    getType<Key extends keyof T>(key: Key): T[Key] {
+        return this.fields[key];
+    }
+
+    getOffset<Key extends keyof T>(key: Key): number {
+        let offset = 0;
+        for (const k in this.fields) {
+            if (k === key as string) {
+                return offset;
+            }
+            offset += this.fields[k].size;
+        }
+        throw new Error(`Key ${key as string} not found`);
+    }
+
 }

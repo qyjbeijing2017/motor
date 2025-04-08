@@ -2,7 +2,7 @@ import { Memory } from "../memory";
 import { Type } from "./type";
 
 export class Array<T extends Type<any>> extends Type<T extends Type<infer U> ? U[] : never> {
-    constructor(public type: T, public length: number) {
+    constructor(readonly type: T, readonly length: number) {
         super();
     }
 
@@ -19,8 +19,18 @@ export class Array<T extends Type<any>> extends Type<T extends Type<infer U> ? U
     }
     
     write(memory: Memory, address: number, value: T extends Type<infer U> ? U[] : never): void {
-        for (let i = 0; i < this.length; i++) {
+        for (let i = 0; i < value.length; i++) {
+            if(value.length > this.length) {
+                throw new Error('Out of bounds: ' + value.length + ' > ' + this.length);
+            }
             this.type.write(memory, address + i * this.type.size, value[i]);
         }
+    }
+
+    getIndexType(index: number): T {
+        if (index < 0 || index >= this.length) {
+            throw new Error(`Index out of bounds: ${index}`);
+        }
+        return this.type;
     }
 }
