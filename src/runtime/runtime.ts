@@ -2,7 +2,6 @@ import { Instance } from "../instance";
 import { F32 } from "../types/float";
 import { Struct } from "../types/struct";
 import { singleton } from "../utils/singleton";
-
 export const runtimeFields = {
     pc: singleton(F32),
     sp: singleton(F32),

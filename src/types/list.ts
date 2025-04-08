@@ -1,16 +1,18 @@
 import { Memory } from "../memory";
+import { singleton } from "../utils/singleton";
 import { Type } from "./type";
+import { U32 } from "./uint";
 
 export class List<T extends Type<any>> extends Type<(T extends Type<infer U> ? U : never)[]> {
     constructor(readonly type: T) {
         super();
     }
     get size(): number {
-        return 8;
+        return 12;
     }
     read(memory: Memory, address: number): (T extends Type<infer U> ? U : never)[] {
-        const length = memory.viewer.getUint32(address);
-        const pointer = memory.viewer.getUint32(address + 4);
+        const length = memory.viewer.getUint32(address, true);
+        const pointer = memory.viewer.getUint32(address + 4, true);
         const result: (T extends Type<infer U> ? U : never)[] = [];
         for (let i = 0; i < length; i++) {
             result.push(this.type.read(memory, pointer + i * this.type.size));
@@ -18,25 +20,50 @@ export class List<T extends Type<any>> extends Type<(T extends Type<infer U> ? U
         return result;
     }
     write(memory: Memory, address: number, value: (T extends Type<infer U> ? U : never)[]): void {
-        const lengthBefore = memory.viewer.getUint32(address, true);
-        if (lengthBefore > 0) {
-            const pointerBefore = memory.viewer.getUint32(address + 4, true);
-            memory.free(pointerBefore, lengthBefore * this.type.size);
+        const listSize = memory.viewer.getUint32(address + 8, true);
+        let pointer = memory.viewer.getUint32(address + 4, true);
+        if (listSize < value.length) {
+            if (listSize > 0) {
+                memory.free(pointer, listSize * this.type.size);
+            }
+            let size = listSize * 2 || 4;
+            while (size < value.length) {
+                size *= 2;
+            }
+            pointer = memory.allocate(size * this.type.size);
+            memory.viewer.setUint32(address + 4, pointer, true);
+            memory.viewer.setUint32(address + 8, size, true);
         }
-        const length = value.length;
-        const pointer = memory.allocate(length * this.type.size);
-        for (let i = 0; i < length; i++) {
+        for (let i = 0; i < value.length; i++) {
             this.type.write(memory, pointer + i * this.type.size, value[i]);
         }
-        memory.viewer.setUint32(address, length, true);
-        memory.viewer.setUint32(address + 4, pointer, true);
+        memory.viewer.setUint32(address, value.length, true);
     }
     free(memory: Memory, address: number): void {
-        const length = memory.viewer.getUint32(address, true);
-        if (length > 0) {
+        const listSize = memory.viewer.getUint32(address + 8, true);
+        if (listSize > 0) {
             const pointer = memory.viewer.getUint32(address + 4, true);
-            memory.free(pointer, length * this.type.size);
+            memory.free(pointer, listSize * this.type.size);
         }
         super.free(memory, address);
+    }
+    getIndexType(memory: Memory, address: number, index: number): Type<any> {
+        return this.type;
+    }
+    getIndexAddress(memory: Memory, address: number, index: number): number {
+        const pointer = memory.viewer.getUint32(address + 4, true);
+        return pointer + index * this.type.size;
+    }
+    getMemberAddress(memory: Memory, address: number, key: 'length'): number {
+        if (key === 'length') {
+            return address;
+        }
+        throw new Error(`Invalid key: ${key}`);
+    }
+    getMemberType(memory: Memory, address: number, key: 'length'): U32 {
+        if (key === 'length') {
+            return singleton(U32);
+        }
+        throw new Error(`Invalid key: ${key}`);
     }
 }

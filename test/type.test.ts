@@ -1,8 +1,8 @@
-import { Bool, Char, F32, I8, Instance, Struct, MotorArray, Memory, I16, I32, I64, Pointer, MotorString, U32 } from "../src";
+import { Bool, Char, F32, I8, Instance, Struct, MotorArray, Memory, I16, I32, I64, Pointer, MotorString, U32, List } from "../src";
 import { singleton } from "../src/utils/singleton";
 
 describe("type", () => {
-    describe('float',()=> {
+    describe('float', () => {
         test('f8', () => {
             const floatOnTest = new Instance(singleton(F32), Math.PI)
             expect(floatOnTest.value).toBeCloseTo(Math.PI)
@@ -28,7 +28,7 @@ describe("type", () => {
             expect(floatOnTest.value).toBeCloseTo(Math.PI * 2)
         })
     })
-    describe('int',()=> {
+    describe('int', () => {
         test('i8', () => {
             const intOnTest = new Instance(singleton(I8), Math.PI)
             expect(intOnTest.value).toBe(Math.floor(Math.PI))
@@ -54,7 +54,7 @@ describe("type", () => {
             expect(intOnTest.value).toBe(Math.floor(Math.PI * 2))
         })
     })
-    describe('uint',()=> {
+    describe('uint', () => {
         test('u8', () => {
             const uintOnTest = new Instance(singleton(I8), Math.PI)
             expect(uintOnTest.value).toBe(Math.floor(Math.PI))
@@ -80,7 +80,7 @@ describe("type", () => {
             expect(uintOnTest.value).toBe(Math.floor(Math.PI * 2))
         })
     })
-    describe('bool',()=> {
+    describe('bool', () => {
         test('bool', () => {
             const boolOnTest = new Instance(singleton(Bool))
             expect(boolOnTest.value).toBe(false)
@@ -88,7 +88,7 @@ describe("type", () => {
             expect(boolOnTest.value).toBe(true)
         })
     })
-    describe('char',()=> {
+    describe('char', () => {
         test('char', () => {
             const charOnTest = new Instance(singleton(Char), 'a')
             expect(charOnTest.value).toBe('a')
@@ -96,7 +96,7 @@ describe("type", () => {
             expect(charOnTest.value).toBe('b')
         })
     })
-    describe('array',()=> {
+    describe('array', () => {
         test('array', () => {
             const arrayOnTest = new Instance(new MotorArray(singleton(I8), 3), [1, 2, 3])
             expect(arrayOnTest.value).toEqual([1, 2, 3])
@@ -156,19 +156,43 @@ describe("type", () => {
                 arrayOnTest.value = [4, 5, 6, 7]
             }).toThrow('Out of bounds: 4 > 3')
         })
-        test('at', ()=>{
+        test('at', () => {
             const arrayOnTest = new Instance(new MotorArray(singleton(I8), 3), [1, 2, 3])
+            const atOnTest = arrayOnTest.at(1)
+            expect(atOnTest.value).toBe(2)
+            atOnTest.value = 4
+            expect(arrayOnTest.value).toEqual([1, 4, 3])
         })
     })
-    describe('string',()=> {
+    describe('string', () => {
         test('string', () => {
             const stringOnTest = new Instance(singleton(MotorString), 'abc')
             expect(stringOnTest.value).toBe('abc')
             stringOnTest.value = 'def'
             expect(stringOnTest.value).toBe('def')
         })
+        test('length', () => {
+            const stringOnTest = new Instance(singleton(MotorString), 'abc')
+            expect(stringOnTest.get('length').value).toBe(3)
+            stringOnTest.value = 'defgh'
+            expect(stringOnTest.get('length').value).toBe(5)
+        })
+        test('charArray', () => {
+            const stringOnTest = new Instance(singleton(MotorString), 'abc')
+            expect(stringOnTest.get('charArray').value).toEqual(['a', 'b', 'c'])
+            stringOnTest.value = 'defgh'
+            expect(stringOnTest.get('charArray').value).toEqual(['d', 'e', 'f', 'g', 'h'])
+        })
+        test('index', () => {
+            const stringOnTest = new Instance(singleton(MotorString), 'abc')
+            const charOnTest = stringOnTest.at(1)
+            expect(charOnTest.value).toBe('b')
+            charOnTest.value = 'd'
+            expect(stringOnTest.value).toBe('adc')
+            expect(stringOnTest.at(1).value).toBe('d')
+        })
     })
-    describe('struct',()=> {
+    describe('struct', () => {
         test('struct', () => {
             const structOnTest = new Instance(new Struct({
                 f: singleton(F32),
@@ -225,6 +249,15 @@ describe("type", () => {
                 i: 1,
                 b: true,
             })
+            const f = structOnTest.get('f')
+            const i = structOnTest.get('i')
+            const b = structOnTest.get('b')
+            expect(f.type).toBe(singleton(F32))
+            expect(i.type).toBe(singleton(I8))
+            expect(b.type).toBe(singleton(Bool))
+            expect(f.value).toBeCloseTo(Math.PI)
+            expect(i.value).toBe(1)
+            expect(b.value).toBe(true)
         })
     })
     describe('serialization', () => {
@@ -376,6 +409,36 @@ describe("type", () => {
             const floatOnTest = new Instance(singleton(F32), Math.PI, memoryOnTest)
             const pointerOnTest = new Instance(new Pointer(singleton(F32)), floatOnTest.address, memoryOnTest)
             expect(pointerOnTest.value).toBe(floatOnTest.address)
+            const readOnTest = pointerOnTest.get('value')
+            expect(readOnTest.address).toBe(floatOnTest.address)
+        })
+    })
+    describe('list', () => {
+        test('list', () => {
+            const memoryOnTest = new Memory()
+            const listOnTest = new Instance(new List(singleton(I8)), [1, 2, 3], memoryOnTest)
+            expect(listOnTest.value).toEqual([1, 2, 3])
+        })
+        test('list index', () => {
+            const memoryOnTest = new Memory()
+            const listOnTest = new Instance(new List(singleton(I8)), [1, 2, 3], memoryOnTest)
+            const indexOnTest = listOnTest.at(1)
+            expect(indexOnTest.value).toBe(2)
+            indexOnTest.value = 4
+            expect(listOnTest.value).toEqual([1, 4, 3])
+        })
+        test('list expand', () => {
+            const memoryOnTest = new Memory()
+            const listOnTest = new Instance(new List(singleton(I8)), [1, 2, 3], memoryOnTest)
+            listOnTest.value = [4, 5, 6, 7, 8, 9, 10]
+            expect(listOnTest.value).toEqual([4, 5, 6, 7, 8, 9, 10])
+        })
+        test('list length', () => {
+            const memoryOnTest = new Memory()
+            const listOnTest = new Instance(new List(singleton(I8)), [1, 2, 3], memoryOnTest)
+            expect(listOnTest.get('length').value).toBe(3)
+            listOnTest.value = [4, 5, 6, 7, 8, 9, 10]
+            expect(listOnTest.get('length').value).toBe(7)
         })
     })
 });

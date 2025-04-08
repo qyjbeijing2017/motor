@@ -8,6 +8,7 @@ export { Struct } from './types/struct';
 export { MotorArray } from './types/array';
 export { Pointer } from './types/pointer';
 export { MotorString } from './types/string';
+export { List } from './types/list';
 export { Type } from './types/type';
 export { Instance } from './instance';
 export { Runtime } from './runtime/runtime';

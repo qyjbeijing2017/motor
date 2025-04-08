@@ -15,7 +15,6 @@ export class MotorArray<T extends Type<any>> extends Type<T extends Type<infer U
         }
         return result as T extends Type<infer U> ? U[] : never;
     }
-    
     write(memory: Memory, address: number, value: T extends Type<infer U> ? U[] : never): void {
         for (let i = 0; i < value.length; i++) {
             if(value.length > this.length) {
@@ -25,10 +24,16 @@ export class MotorArray<T extends Type<any>> extends Type<T extends Type<infer U
         }
     }
 
-    getIndexType(index: number): T {
-        if (index < 0 || index >= this.length) {
-            throw new Error(`Index out of bounds: ${index}`);
+    getIndexType(memory: Memory, address: number, index: number): Type<any> {
+        if (index >= this.length) {
+            throw new Error(`Index ${index} out of bounds`);
         }
         return this.type;
+    }
+    getIndexAddress(memory: Memory, address: number, index: number): number {
+        if (index >= this.length) {
+            throw new Error(`Index ${index} out of bounds`);
+        }
+        return address + index * this.type.size;
     }
 }
