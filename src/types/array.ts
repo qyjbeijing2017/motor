@@ -2,14 +2,12 @@ import { Memory } from "../memory";
 import { Type } from "./type";
 
 export class MotorArray<T extends Type<any>> extends Type<T extends Type<infer U> ? U[] : never> {
+    get size(): number {
+        return this.length * this.type.size;
+    }
     constructor(readonly type: T, readonly length: number) {
         super();
     }
-
-    get size(): number {
-        return this.type.size * this.length;
-    }
-
     read(memory: Memory, address: number): T extends Type<infer U> ? U[] : never {
         const result: any[] = [];
         for (let i = 0; i < this.length; i++) {

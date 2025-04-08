@@ -168,7 +168,6 @@ describe("type", () => {
             expect(stringOnTest.value).toBe('def')
         })
     })
-    
     describe('struct',()=> {
         test('struct', () => {
             const structOnTest = new Instance(new Struct({
@@ -217,6 +216,15 @@ describe("type", () => {
             expect(structOnTest.value.b).toBe(true)
         })
         test('get', () => {
+            const structOnTest = new Instance(new Struct({
+                f: singleton(F32),
+                i: singleton(I8),
+                b: singleton(Bool),
+            }), {
+                f: Math.PI,
+                i: 1,
+                b: true,
+            })
         })
     })
     describe('serialization', () => {
