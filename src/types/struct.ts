@@ -45,4 +45,7 @@ export class Struct<T extends { [key: string]: Type<any> }> extends Type<{ [key 
         }
         throw new Error(`Member ${key} not found`);
     }
+    hasMember(memory: Memory, address: number, key: string): boolean {
+        return key in this.fields;
+    }
 }

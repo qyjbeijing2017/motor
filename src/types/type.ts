@@ -12,6 +12,10 @@ export abstract class Type<T> {
     free(memory: Memory, address: number): void {
         memory.free(address, this.size);
     }
+    
+    hasMember(memory: Memory, address: number, key: string): boolean {
+        return false;
+    }
 
     getMemberType(memory: Memory, address: number, key: string): Type<any> {
         throw new Error(`Member ${key} not found`);

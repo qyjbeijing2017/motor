@@ -1,17 +1,15 @@
-import { MotorArray } from "../types/array"
-import { Struct } from "../types/struct"
-import { U32, U8 } from "../types/uint"
-import { singleton } from "../utils/singleton";
+import { Instruction } from "../il/instruction"
+import { Memory } from "../memory"
+import { Type } from "../types/type"
 
-export const programFields = {
-    length: singleton(U32),
-}
-
-export const programStruct = new Struct(programFields);
-
-export class Program extends Struct<{
-    length: U32
-    buffer: MotorArray<U8>
-}> {
-    
+export class Program extends Type<Instruction[]> {
+    get size(): number {
+        return 12
+    }
+    read(memory: Memory, address: number): Instruction[] {
+        throw new Error("Method not implemented.")
+    }
+    write(memory: Memory, address: number, value: Instruction[]): void {
+        throw new Error("Method not implemented.")
+    }
 }

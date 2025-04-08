@@ -66,4 +66,10 @@ export class List<T extends Type<any>> extends Type<(T extends Type<infer U> ? U
         }
         throw new Error(`Invalid key: ${key}`);
     }
+    hasMember(memory: Memory, address: number, key: string): boolean {
+        if (key === 'length') {
+            return true;
+        }
+        return false;
+    }
 }

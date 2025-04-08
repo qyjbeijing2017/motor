@@ -54,6 +54,15 @@ export class MotorString extends Type<string> {
         return arrAddr + index;
     }
 
+    hasMember(memory: Memory, address: number, key: string): boolean {
+        if (key === 'charArray') {
+            return true;
+        } else if (key === 'length') {
+            return true;
+        }
+        return false;
+    }
+
     getMemberType<Key extends keyof StringMemberType>(memory: Memory, address: number, key: Key): StringMemberType[Key] {
         if (key === 'charArray') {
             return new MotorArray(singleton(Char), memory.viewer.getUint32(address, true)) as StringMemberType[Key];

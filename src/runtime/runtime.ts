@@ -1,25 +1,25 @@
-import { Instance } from "../instance";
-import { F32 } from "../types/float";
 import { Struct } from "../types/struct";
+import { U32 } from "../types/uint";
 import { singleton } from "../utils/singleton";
-export const runtimeFields = {
-    pc: singleton(F32),
-    sp: singleton(F32),
-    bp: singleton(F32),
+import { Program } from "./program";
+import { Stack } from "./stack";
+
+const fields = {
+    rpc: singleton(U32),
+    rsp: singleton(U32),
+    lr: singleton(U32),
+    program: singleton(Program),
+    stack: singleton(Stack)
 }
 
-export const runtimeStruct = new Struct(runtimeFields);
-
-export class Runtime extends Instance<Struct<{
-    pc: F32
-    sp: F32
-    bp: F32
-}>> {
+export class Runtime extends Struct<{
+    rpc: U32, // program counter register
+    rsp: U32, // stack pointer register
+    lr: U32, // link register
+    program: Program
+    stack: Stack
+}> {
     constructor() {
-        super(runtimeStruct, {
-            pc: 0,
-            sp: 0,
-            bp: 0,
-        });
+        super(fields);
     }
 }

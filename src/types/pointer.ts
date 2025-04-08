@@ -18,6 +18,9 @@ export class Pointer<T extends Type<any>> extends Type<number> {
     getMemberAddress(memory: Memory, address: number, key: string): number {
         return this.read(memory, address);
     }
+    hasMember(memory: Memory, address: number, key: string): boolean {
+        return key === 'value';
+    }
     constructor(public type: T) {
         super();
         if (Pointer.map.has(type)) {
