@@ -15,5 +15,7 @@ export { Runtime } from './runtime/runtime';
 export { Program } from './runtime/program';
 export { Instruction } from './il/instruction';
 export { OperatorCode } from './il/operator-code';
-export { Operator } from './il/operator';
+export { Push } from './il/operations/push';
+export { Operation } from './il/operation';
 export { TypeTag } from './il/type-tag';
+export { singleton } from './utils/singleton';
