@@ -11,10 +11,9 @@ export class Instance<T extends Type<any>> {
         this.type.write(this.memory, this.address, value as T extends Type<infer U> ? U : never);
     }
 
-    get(...key: Parameters<T['getType']>): Instance<ReturnType<T['getType']>> {
-        const T = this.type.getType(key[0]) as ReturnType<T['getType']>;
-        const offset = this.type.getOffset(key[0]);
-        const address = this.address + offset;
+    get(key: Parameters<T['getType']>[0]): Instance<ReturnType<T['getType']>> {
+        const T = this.type.getType(key, this.memory, this.address) as ReturnType<T['getType']>;
+        const address = this.type.getAddress(key, this.memory, this.address);
         return new Instance(T, undefined, this.memory, address);
     }
 

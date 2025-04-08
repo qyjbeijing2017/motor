@@ -1,4 +1,4 @@
-import { Bool, Char, F32, I8, Instance, Struct, MotorArray, Memory, I16, I32, I64, Pointer } from "../src";
+import { Bool, Char, F32, I8, Instance, Struct, MotorArray, Memory, I16, I32, I64, Pointer, MotorString, U32 } from "../src";
 import { singleton } from "../src/utils/singleton";
 
 describe("type", () => {
@@ -163,6 +163,28 @@ describe("type", () => {
             expect(arrayOnTest.at(0).value).toBe(1)
         })
     })
+    describe('string',()=> {
+        test('string', () => {
+            const stringOnTest = new Instance(singleton(MotorString), 'abc')
+            expect(stringOnTest.value).toBe('abc')
+            stringOnTest.value = 'def'
+            expect(stringOnTest.value).toBe('def')
+        })
+        test('length', () => {
+            const stringOnTest = new Instance(singleton(MotorString), 'abc')
+            const length = stringOnTest.get('length')
+            expect(length instanceof Instance).toBe(true)
+            expect(length.type).toBe(singleton(U32))
+            expect(length.value).toBe(3)
+        });
+        test('charArray', () => {
+            const stringOnTest = new Instance(singleton(MotorString), 'abc')
+            const charArray = stringOnTest.get('charArray')
+            // expect(charArray instanceof Instance).toBe(true)
+            expect(charArray.value).toEqual(['a', 'b', 'c'])
+        })
+    })
+    
     describe('struct',()=> {
         test('struct', () => {
             const structOnTest = new Instance(new Struct({

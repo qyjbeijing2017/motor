@@ -13,4 +13,5 @@ export class Program extends Struct<{
     length: U32
     buffer: MotorArray<U8>
 }> {
+    
 }

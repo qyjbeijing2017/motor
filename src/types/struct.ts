@@ -1,3 +1,4 @@
+import { Memory } from "../memory";
 import { Type } from "./type";
 
 export class Struct<T extends { [key: string]: Type<any> }> extends Type<{[key in keyof T]: T[key] extends Type<infer U>? U : never}> {
@@ -33,11 +34,11 @@ export class Struct<T extends { [key: string]: Type<any> }> extends Type<{[key i
         return this.fields[key];
     }
 
-    getOffset<Key extends keyof T>(key: Key): number {
+    getAddress<Key extends keyof T>(key: Key, _: Memory, address: number): number {
         let offset = 0;
         for (const k in this.fields) {
             if (k === key as string) {
-                return offset;
+                return address + offset;
             }
             offset += this.fields[k].size;
         }
