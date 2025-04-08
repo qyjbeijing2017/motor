@@ -12,9 +12,6 @@ export class Pointer<T extends Type<any>> extends Type<number> {
     write(memory: Memory, address: number, value: number): void {
         memory.viewer.setUint32(address, value, true);
     }
-    getPointerType(): T {
-        return this.type;
-    }
     constructor(public type: T) {
         super();
         if (Pointer.map.has(type)) {

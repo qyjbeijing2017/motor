@@ -158,9 +158,6 @@ describe("type", () => {
         })
         test('at', ()=>{
             const arrayOnTest = new Instance(new MotorArray(singleton(I8), 3), [1, 2, 3])
-            expect(arrayOnTest.at(0) instanceof Instance).toBe(true)
-            expect(arrayOnTest.at(0).type).toBe(singleton(I8))
-            expect(arrayOnTest.at(0).value).toBe(1)
         })
     })
     describe('string',()=> {
@@ -169,19 +166,6 @@ describe("type", () => {
             expect(stringOnTest.value).toBe('abc')
             stringOnTest.value = 'def'
             expect(stringOnTest.value).toBe('def')
-        })
-        test('length', () => {
-            const stringOnTest = new Instance(singleton(MotorString), 'abc')
-            const length = stringOnTest.get('length')
-            expect(length instanceof Instance).toBe(true)
-            expect(length.type).toBe(singleton(U32))
-            expect(length.value).toBe(3)
-        });
-        test('charArray', () => {
-            const stringOnTest = new Instance(singleton(MotorString), 'abc')
-            const charArray = stringOnTest.get('charArray')
-            // expect(charArray instanceof Instance).toBe(true)
-            expect(charArray.value).toEqual(['a', 'b', 'c'])
         })
     })
     
@@ -233,14 +217,6 @@ describe("type", () => {
             expect(structOnTest.value.b).toBe(true)
         })
         test('get', () => {
-            const structOnTest = new Instance(new Struct({
-                f: singleton(F32),
-            }), {
-                f: Math.PI,
-            })
-            expect(structOnTest.get('f') instanceof Instance).toBe(true)
-            expect(structOnTest.get('f').type).toBe(singleton(F32))
-            expect(structOnTest.get('f').value).toBeCloseTo(Math.PI)
         })
     })
     describe('serialization', () => {
@@ -392,9 +368,6 @@ describe("type", () => {
             const floatOnTest = new Instance(singleton(F32), Math.PI, memoryOnTest)
             const pointerOnTest = new Instance(new Pointer(singleton(F32)), floatOnTest.address, memoryOnTest)
             expect(pointerOnTest.value).toBe(floatOnTest.address)
-            expect(pointerOnTest.pointerValue.address).toBe(floatOnTest.address)
-            expect(pointerOnTest.pointerValue.type).toBe(singleton(F32))
-            expect(pointerOnTest.pointerValue.value).toBe(floatOnTest.value)
         })
     })
 });

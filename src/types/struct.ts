@@ -1,15 +1,12 @@
-import { Memory } from "../memory";
 import { Type } from "./type";
 
 export class Struct<T extends { [key: string]: Type<any> }> extends Type<{[key in keyof T]: T[key] extends Type<infer U>? U : never}> {
     constructor(public fields: T) {
         super();
     }
-
     get size(): number {
         return Object.values(this.fields).reduce((sum, field) => sum + field.size, 0);
     }
-
     read(memory: any, address: number): {[key in keyof T]: T[key] extends Type<infer U> ? U : never} {
         const result: any = {};
         let offset = 0;
@@ -20,7 +17,6 @@ export class Struct<T extends { [key: string]: Type<any> }> extends Type<{[key i
         }
         return result;
     }
-
     write(memory: any, address: number, value: {[key in keyof T]: T[key] extends Type<infer U> ? U : never}): void {
         let offset = 0;
         for (const key in this.fields) {
@@ -29,20 +25,4 @@ export class Struct<T extends { [key: string]: Type<any> }> extends Type<{[key i
             offset += field.size;
         }
     }
-
-    getType<Key extends keyof T>(key: Key): T[Key] {
-        return this.fields[key];
-    }
-
-    getAddress<Key extends keyof T>(key: Key, _: Memory, address: number): number {
-        let offset = 0;
-        for (const k in this.fields) {
-            if (k === key as string) {
-                return address + offset;
-            }
-            offset += this.fields[k].size;
-        }
-        throw new Error(`Key ${key as string} not found`);
-    }
-
 }

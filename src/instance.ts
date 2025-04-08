@@ -10,32 +10,12 @@ export class Instance<T extends Type<any>> {
     set value(value: T extends Type<infer U> ? U : never) {
         this.type.write(this.memory, this.address, value as T extends Type<infer U> ? U : never);
     }
-
-    get(key: Parameters<T['getType']>[0]): Instance<ReturnType<T['getType']>> {
-        const T = this.type.getType(key, this.memory, this.address) as ReturnType<T['getType']>;
-        const address = this.type.getAddress(key, this.memory, this.address);
-        return new Instance(T, undefined, this.memory, address);
-    }
-
-    at(index: number): Instance<ReturnType<T['getIndexType']>> {
-        const T = this.type.getIndexType(index) as ReturnType<T['getIndexType']>;
-        const address = this.address + index * T.size;
-        return new Instance(T, undefined, this.memory, address);
-    }
-
     free() {
         this.type.free(this.memory, this.address);
     }
-
     createPointer(): Instance<Pointer<T>> {
         return new Instance(new Pointer(this.type), this.address as any, this.memory);
     }
-
-    get pointerValue(): Instance<T extends Pointer<infer U> ? U : never> {
-        const T = this.type.getPointerType() as Type<any>;
-        return new Instance(T, undefined, this.memory, this.value) as any;
-    }
-
     constructor(
         readonly type: T,
         defaultValue?: T extends Type<infer U> ? U : never,

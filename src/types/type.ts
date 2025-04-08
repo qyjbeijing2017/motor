@@ -7,16 +7,4 @@ export abstract class Type<T> {
     free(memory: Memory, address: number): void {
         memory.free(address, this.size);
     }
-    getType(key: string, memory: Memory, address: number): Type<any> {
-        throw new Error("get method not implemented for this type");
-    }
-    getAddress(key: string, memory: Memory, address: number): number {
-        throw new Error("get method not implemented for this type");
-    }
-    getIndexType(index: number): Type<any> {
-        throw new Error("getSubType method not implemented for this type");
-    }
-    getPointerType(): Type<any> {
-        throw new Error("getPointerType method not implemented for this type");
-    }
 }
