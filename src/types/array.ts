@@ -1,7 +1,7 @@
 import { Memory } from "../memory";
 import { Type } from "./type";
 
-export class Array<T extends Type<any>> extends Type<T extends Type<infer U> ? U[] : never> {
+export class MotorArray<T extends Type<any>> extends Type<T extends Type<infer U> ? U[] : never> {
     constructor(readonly type: T, readonly length: number) {
         super();
     }

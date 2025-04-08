@@ -48,3 +48,5 @@ export class U64 extends Type<bigint> {
         memory.viewer.setBigUint64(address, value, true);
     }
 }
+
+

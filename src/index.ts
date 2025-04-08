@@ -5,7 +5,7 @@ export { U8, U16, U32, U64 } from './types/uint';
 export { Bool } from './types/bool';
 export { Char } from './types/char';
 export { Struct } from './types/struct';
-export { Array } from './types/array';
+export { MotorArray } from './types/array';
 export { Pointer } from './types/pointer';
 export { Type } from './types/type';
 export { Instance } from './instance';
