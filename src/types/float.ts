@@ -1,59 +1,58 @@
-import { Memory } from "../memory";
+import { Instance } from "../instance";
 import { getFloat8, setFloat8 } from "../utils/float8";
-import { Type } from "./type";
 
-export class F8 extends Type<number> {
-    get size(): number {
+export class F8 extends Instance<number> {
+    onGetSize(): number {
         return 1;
     }
 
-    read(memory: Memory, address: number): number {
-        return getFloat8(memory.viewer, address);
+    onGetJs(): number {
+        return getFloat8(this.memory.viewer, this.address);
     }
 
-    write(memory: Memory, address: number, value: number): void {
-        setFloat8(memory.viewer, address, value);
+    onSetJs(value: number): void {
+        setFloat8(this.memory.viewer, this.address, value);
     }
 }
 
-export class F16 extends Type<number> {
-    get size(): number {
+export class F16 extends Instance<number> {
+    onGetSize(): number {
         return 2;
     }
 
-    read(memory: Memory, address: number): number {
-        return memory.viewer.getFloat16(address, true);
+    onGetJs(): number {
+        return this.memory.viewer.getFloat16(this.address, true);
     }
 
-    write(memory: Memory, address: number, value: number): void {
-        memory.viewer.setFloat16(address, value, true);
+    onSetJs(value: number): void {
+        this.memory.viewer.setFloat16(this.address, value, true);
     }
 }
 
-export class F32 extends Type<number> {
-    get size(): number {
+export class F32 extends Instance<number> {
+    onGetSize(): number {
         return 4;
     }
 
-    read(memory: Memory, address: number): number {
-        return memory.viewer.getFloat32(address, true);
+    onGetJs(): number {
+        return this.memory.viewer.getFloat32(this.address, true);
     }
 
-    write(memory: Memory, address: number, value: number): void {
-        memory.viewer.setFloat32(address, value, true);
+    onSetJs(value: number): void {
+        this.memory.viewer.setFloat32(this.address, value, true);
     }
 }
 
-export class F64 extends Type<number> {
-    get size(): number {
+export class F64 extends Instance<number> {
+    onGetSize(): number {
         return 8;
     }
 
-    read(memory: Memory, address: number): number {
-        return memory.viewer.getFloat64(address, true);
+    onGetJs(): number {
+        return this.memory.viewer.getFloat64(this.address, true);
     }
 
-    write(memory: Memory, address: number, value: number): void {
-        memory.viewer.setFloat64(address, value, true);
+    onSetJs(value: number): void {
+        this.memory.viewer.setFloat64(this.address, value, true);
     }
 }

@@ -1,8 +1,5 @@
-import { OperatorCode } from "./operator-code";
-import { TypeTag } from "./type-tag";
+import { Operator } from "./operator";
+import { ILType } from "./type";
 
-export interface Instruction {
-    operator: OperatorCode
-    type?: TypeTag
-    operand?: number
+export abstract class Instruction {
 }
