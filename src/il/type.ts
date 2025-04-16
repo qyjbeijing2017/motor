@@ -1,4 +1,4 @@
-export enum ILType {
+export enum MotorILType {
     U8,
     U16,
     U32,

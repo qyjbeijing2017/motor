@@ -1,18 +1,18 @@
-export interface MemoryBlock {
+export interface MotorBlock {
     address: number;
     size: number;
 }
 
-export interface MemoryProps {
+export interface MotorMemoryProps {
     size?: number;
     createBuffer?: (size: number) => Uint8Array;
 }
 
-export class Memory {
+export class MotorMemory {
     private _buffer: Uint8Array;
     private _viewer: DataView;
     private _createBuffer: (size: number) => Uint8Array;
-    private _emptyBlocks: MemoryBlock[] = [];
+    private _emptyBlocks: MotorBlock[] = [];
 
     get size() {
         return this._buffer.length;
@@ -26,7 +26,7 @@ export class Memory {
         return this._viewer;
     }
 
-    constructor(props?: MemoryProps) {
+    constructor(props?: MotorMemoryProps) {
         this._createBuffer = props?.createBuffer || ((size: number) => new Uint8Array(size));
         this._buffer = this._createBuffer(props?.size || 1024 * 4); // Default size 4KB
         this._viewer = new DataView(this._buffer.buffer);
@@ -38,8 +38,8 @@ export class Memory {
 
     private mergeEmptyBlocks() {
         this._emptyBlocks.sort((a, b) => a.address - b.address);
-        const mergedBlocks: MemoryBlock[] = [];
-        let currentBlock: MemoryBlock | null = null;
+        const mergedBlocks: MotorBlock[] = [];
+        let currentBlock: MotorBlock | null = null;
 
         for (const block of this._emptyBlocks) {
             if (!currentBlock) {
@@ -101,7 +101,7 @@ export class Memory {
     }
 
     public serialize(): Uint8Array {
-        const dataBlocks: MemoryBlock[] = [];
+        const dataBlocks: MotorBlock[] = [];
         let offset = 0;
         this._emptyBlocks.sort((a, b) => a.address - b.address);
         for (const block of this._emptyBlocks) {
@@ -138,7 +138,7 @@ export class Memory {
         return buffer;
     }
 
-    public allocateFromBlock(block: MemoryBlock) {
+    public allocateFromBlock(block: MotorBlock) {
         const address = block.address;
         if (block.size === 0) {
             throw new Error('Block is empty');
