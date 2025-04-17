@@ -697,10 +697,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@petamoriken/float16@^3.9.1":
-  version "3.9.1"
-  resolved "https://registry.yarnpkg.com/@petamoriken/float16/-/float16-3.9.1.tgz#f1239d6721f25c1bf921dde0d7d678efef9c1de2"
-  integrity sha512-j+ejhYwY6PeB+v1kn7lZFACUIG97u90WxMuGosILFsl9d4Ovi0sjk0GlPfoEcx+FzvXZDAfioD+NGnnPamXgMA==
+"@petamoriken/float16@^3.9.2":
+  version "3.9.2"
+  resolved "https://registry.yarnpkg.com/@petamoriken/float16/-/float16-3.9.2.tgz#217a5d349f3655b8e286be447e0ed1eae063a78f"
+  integrity sha512-VgffxawQde93xKxT3qap3OH+meZf7VaSB5Sqd4Rqc+FP5alWbpOyan/7tRbOAvynjpG3GpdtAuGU/NdhQpmrog==
 
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"

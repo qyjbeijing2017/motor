@@ -1,6 +1,7 @@
 import { MotorType } from "../type";
 import { MotorMemory } from "../memory";
 import { motorGetFloat8, motorSetFloat8 } from "../utils/float8";
+import { getFloat16, setFloat16 } from '@petamoriken/float16';
 
 export class MotorF8 extends MotorType<number> {
     readonly size = 1;
@@ -15,10 +16,10 @@ export class MotorF8 extends MotorType<number> {
 export class MotorF16 extends MotorType<number> {
     readonly size = 2;
     setJS(memory: MotorMemory, address: number, value: number): void {
-        memory.viewer.setFloat16(address, value, true);
+        setFloat16(memory.viewer, address, value, true);
     }
     getJS(memory: MotorMemory, address: number): number {
-        return memory.viewer.getFloat16(address, true);
+        return getFloat16(memory.viewer, address, true);
     }
 }
 

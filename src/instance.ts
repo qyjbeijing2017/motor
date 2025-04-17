@@ -3,6 +3,14 @@ import { MotorJSType, MotorType } from "./type";
 import { motorSingleton } from "./utils/singleton";
 
 export class MotorInstance<T extends MotorType<any>> {
+    get js(): MotorJSType<T> {
+        return this.type.getJS(this.memory, this.address);
+    }
+
+    set js(value: MotorJSType<T>) {
+        this.type.setJS(this.memory, this.address, value);
+    }
+
     constructor(
         readonly type: T,
         def?: MotorJSType<T>,
