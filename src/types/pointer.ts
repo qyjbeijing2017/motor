@@ -1,7 +1,7 @@
 import { MotorType } from "../type";
 import { MotorMemory } from "../memory";
 
-export class Pointer<T extends MotorType<any>> extends MotorType<number> {
+export class MotorPointer<T extends MotorType<any>> extends MotorType<number> {
     constructor(readonly type: T) {
         super();
     }
