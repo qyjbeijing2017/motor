@@ -16,15 +16,18 @@ export enum MotorOperator {
     mul,
     div,
     mod,
+    
     and,
     or,
     xor,
     not,
     equal,
+    not_equal,
     less,
     greater,
     less_equal,
     greater_equal,
+
     bit_and,
     bit_or,
     bit_xor,

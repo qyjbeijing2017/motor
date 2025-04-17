@@ -31,12 +31,12 @@ export class MotorU32 extends MotorType<number> {
     }
 }
 
-export class MotorU64 extends MotorType<bigint> {
+export class MotorU64 extends MotorType<number> {
     readonly size = 8;
-    setJS(memory: MotorMemory, address: number, value: bigint): void {
-        memory.viewer.setBigUint64(address, value, true);
+    setJS(memory: MotorMemory, address: number, value: number): void {
+        memory.viewer.setBigUint64(address, BigInt(Math.floor(value)), true);
     }
-    getJS(memory: MotorMemory, address: number): bigint {
-        return memory.viewer.getBigUint64(address, true);
+    getJS(memory: MotorMemory, address: number): number {
+        return Number(memory.viewer.getBigUint64(address, true));
     }
 }

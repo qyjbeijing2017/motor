@@ -57,15 +57,15 @@ describe('type', () => {
         })
     })
     describe('MotorU64', () => {
-        const valueOnTest =  BigInt(Math.floor(Math.PI))
+        const valueOnTest =  Math.PI
         const instanceOnTest = new MotorInstance(motorSingleton(MotorU64), valueOnTest)
         test('defaultValue', () => {
-            expect(instanceOnTest.js).toEqual(valueOnTest)
+            expect(instanceOnTest.js).toBe(Math.floor(valueOnTest))
         })
         test('setValue', () => {
-            const valueOnTest = BigInt(Math.floor(2 * Math.PI))
+            const valueOnTest = 2 * Math.PI
             instanceOnTest.js = valueOnTest
-            expect(instanceOnTest.js).toEqual(valueOnTest)
+            expect(instanceOnTest.js).toBe(Math.floor(valueOnTest))
         })
     })
 
@@ -106,15 +106,15 @@ describe('type', () => {
         })
     })
     describe('MotorI64', () => {
-        const valueOnTest = BigInt(Math.floor(Math.PI))
+        const valueOnTest = Math.floor(Math.PI)
         const instanceOnTest = new MotorInstance(motorSingleton(MotorI64), valueOnTest)
         test('defaultValue', () => {
-            expect(instanceOnTest.js).toEqual(valueOnTest)
+            expect(instanceOnTest.js).toBe(valueOnTest)
         })
         test('setValue', () => {
-            const valueOnTest = BigInt(Math.floor(2 * Math.PI))
+            const valueOnTest = 2 * Math.PI
             instanceOnTest.js = valueOnTest
-            expect(instanceOnTest.js).toEqual(valueOnTest)
+            expect(instanceOnTest.js).toBe(Math.floor(valueOnTest))
         })
     })
 
@@ -173,7 +173,6 @@ describe('type', () => {
             expect(instanceOnTest.js).toEqual(0)
         })
     })
-
     describe('MotorPointer', () => {
         const instanceOnTest = new MotorInstance(motorSingleton(MotorPointer), 0)
         test('defaultValue', () => {
@@ -185,7 +184,6 @@ describe('type', () => {
             expect(instanceOnTest.js).toEqual(valueOnTest)
         })
     })
-    
     describe('MotorStruct', () => {
         const pointerOnTest = new MotorPointer(motorSingleton(MotorF32))
         const arrayOnTest = new MotorArray(motorSingleton(MotorF32), 4)
@@ -271,7 +269,6 @@ describe('type', () => {
             expect(instanceOnTest.js.n).toEqual(0)
         })
     })
-
     describe('MotorArray', () => {
         const arrayOnTest = new MotorArray(motorSingleton(MotorF32), 4)
         test('defaultValue', () => {
