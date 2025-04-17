@@ -21,4 +21,22 @@ export class MotorInstance<T extends MotorType<any>> {
             this.type.setJS(memory, address, def);
         }
     }
+
+    member<K extends Parameters<T['getMemberType']>[2]>(key: K) {
+        return new MotorInstance(
+            this.type.getMemberType(this.memory, this.address, key), 
+            undefined, 
+            this.memory, 
+            this.type.getMemberAddress(this.memory, this.address, key)
+        );
+    }
+
+    index(index: number) {
+        return new MotorInstance(
+            this.type.getIndexType(this.memory, this.address, index),
+            undefined,
+            this.memory,
+            this.type.getIndexAddress(this.memory, this.address, index)
+        );
+    }
 }

@@ -57,7 +57,7 @@ describe('type', () => {
         })
     })
     describe('MotorU64', () => {
-        const valueOnTest =  Math.PI
+        const valueOnTest = Math.PI
         const instanceOnTest = new MotorInstance(motorSingleton(MotorU64), valueOnTest)
         test('defaultValue', () => {
             expect(instanceOnTest.js).toBe(Math.floor(valueOnTest))
@@ -267,6 +267,78 @@ describe('type', () => {
             expect(instanceOnTest.js.s.i).toEqual(-6)
             expect(instanceOnTest.js.s.u).toEqual(6)
             expect(instanceOnTest.js.n).toEqual(0)
+        })
+        test('member Type', () => {
+            const instanceOnTest = new MotorInstance(structOnTest, {
+                f: Math.PI,
+                i: -3,
+                u: 3,
+                p: 24,
+                a: [1, 2, 3, 4],
+                s: {
+                    f: Math.PI,
+                    i: -3,
+                    u: 3,
+                },
+                n: 0,
+            })
+            const memberTypeOnTest = instanceOnTest.member('s')
+            expect(memberTypeOnTest.type).toBe(subStructOnTest)
+        })
+        test('member Address', () => {
+            const instanceOnTest = new MotorInstance(structOnTest, {
+                f: Math.PI,
+                i: -3,
+                u: 3,
+                p: 24,
+                a: [1, 2, 3, 4],
+                s: {
+                    f: Math.PI,
+                    i: -3,
+                    u: 3,
+                },
+                n: 0,
+            })
+            const memberAddressOnTest = subStructOnTest.getMemberAddress(
+                instanceOnTest.memory,
+                instanceOnTest.address,
+                'f'
+            )
+            expect(memberAddressOnTest).toEqual(instanceOnTest.address + 0)
+            const memberAddressOnTest2 = subStructOnTest.getMemberAddress(
+                instanceOnTest.memory,
+                instanceOnTest.address,
+                'i'
+            )
+            expect(memberAddressOnTest2).toEqual(instanceOnTest.address + 4)
+            const memberAddressOnTest3 = subStructOnTest.getMemberAddress(
+                instanceOnTest.memory,
+                instanceOnTest.address,
+                'u'
+            )
+            expect(memberAddressOnTest3).toEqual(instanceOnTest.address + 8)
+        })
+        test('member Value', () => {
+            const instanceOnTest = new MotorInstance(structOnTest, {
+                f: Math.PI,
+                i: -3,
+                u: 3,
+                p: 24,
+                a: [1, 2, 3, 4],
+                s: {
+                    f: Math.PI,
+                    i: -3,
+                    u: 3,
+                },
+                n: 0,
+            })
+            expect(instanceOnTest.member('f').js).toBeCloseTo(instanceOnTest.js.f)
+            expect(instanceOnTest.member('i').js).toBe(instanceOnTest.js.i)
+            expect(instanceOnTest.member('u').js).toBe(instanceOnTest.js.u)
+            expect(instanceOnTest.member('p').js).toBe(instanceOnTest.js.p)
+            expect(instanceOnTest.member('a').js).toEqual(instanceOnTest.js.a)
+            expect(instanceOnTest.member('s').js).toEqual(instanceOnTest.js.s)
+            expect(instanceOnTest.member('n').js).toEqual(instanceOnTest.js.n)
         })
     })
     describe('MotorArray', () => {

@@ -23,4 +23,18 @@ export class MotorArray<T extends MotorType<any>> extends MotorType<MotorJSType<
         }
         return values;
     }
+
+    getIndexType(memory: MotorMemory, address: number, index: number): MotorType<any> {
+        if (index < 0 || index >= this.length) {
+            throw new Error(`Array index out of bounds: ${index}`);
+        }
+        return this.type;
+    }
+
+    getIndexAddress(memory: MotorMemory, address: number, index: number): number {
+        if (index < 0 || index >= this.length) {
+            throw new Error(`Array index out of bounds: ${index}`);
+        }
+        return address + index * this.type.size;
+    }
 }

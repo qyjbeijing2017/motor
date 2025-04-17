@@ -32,4 +32,26 @@ export class MotorStruct<T extends MotorStructMember> extends MotorType<MotorStr
         }
         return result as MotorStructJSType<T>;
     }
+
+    getMemberType(_memory: MotorMemory, _address: number, key: keyof T): MotorType<any> {
+        for (const k in this.types) {
+            if (k === key) {
+                return this.types[k];
+            }
+            const type = this.types[k];
+        }
+        throw new Error(`Member ${key as string} not found in struct`);
+    }
+
+    getMemberAddress(_memory: MotorMemory, address: number, key: string): number {
+        let offset = 0;
+        for (const k in this.types) {
+            if (k === key) {
+                return address + offset;
+            }
+            const type = this.types[k];
+            offset += type.size;
+        }
+        throw new Error(`Member ${key} not found in struct`);
+    }
 }
