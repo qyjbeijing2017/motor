@@ -35,5 +35,5 @@ export enum MotorOperator {
     bit_shift_left,
     bit_shift_right,
 
-    operator = 0x0F,
+    operator_mask = 0x0F,
 }

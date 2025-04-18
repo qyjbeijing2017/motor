@@ -1,49 +1,41 @@
 import { MotorInstance } from "../instance";
 
 export class MotorU8 extends MotorInstance<number> {
-    getSize(): number {
-        return 1;
-    }
-    setJS(value: number): void {
+    static readonly size = 1;
+    set js(value: number) {
         this.memory.viewer.setUint8(this.address, value);
     }
-    getJS(): number {
+    get js(): number {
         return this.memory.viewer.getUint8(this.address);
     }
 }
 
 export class MotorU16 extends MotorInstance<number> {
-    getSize(): number {
-        return 2;
-    }
-    setJS(value: number): void {
+    static readonly size = 2;
+    set js(value: number) {
         this.memory.viewer.setUint16(this.address, value, true);
     }
-    getJS(): number {
+    get js(): number {
         return this.memory.viewer.getUint16(this.address, true);
     }
 }
 
 export class MotorU32 extends MotorInstance<number> {
-    getSize(): number {
-        return 4;
-    }
-    setJS(value: number): void {
+    static readonly size = 4;
+    set js(value: number) {
         this.memory.viewer.setUint32(this.address, value, true);
     }
-    getJS(): number {
+    get js(): number {
         return this.memory.viewer.getUint32(this.address, true);
     }
 }
 
-export class MotorU64 extends MotorInstance<bigint> {
-    getSize(): number {
-        return 8;
+export class MotorU64 extends MotorInstance<number> {
+    static readonly size = 8;
+    set js(value: number) {
+        this.memory.viewer.setBigUint64(this.address, BigInt(Math.floor(value)), true);
     }
-    setJS(value: bigint): void {
-        this.memory.viewer.setBigUint64(this.address, value, true);
-    }
-    getJS(): bigint {
-        return this.memory.viewer.getBigUint64(this.address, true);
+    get js(): number {
+        return Number(this.memory.viewer.getBigUint64(this.address, true));
     }
 }

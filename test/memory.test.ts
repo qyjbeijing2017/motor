@@ -1,4 +1,5 @@
 import { MotorMemory } from "../src";
+
 describe("memory", () => {
     test('default', () => {
         const memoryOnTest = new MotorMemory()

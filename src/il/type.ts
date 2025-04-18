@@ -12,5 +12,5 @@ export enum MotorILType {
     F32,
     F64,
 
-    type = 0xF0,
+    type_mask = 0xF0,
 }
