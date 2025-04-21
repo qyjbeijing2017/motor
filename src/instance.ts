@@ -27,14 +27,6 @@ export abstract class MotorInstance<T> {
         }
     }
 
-    member(key: string): MotorInstance<any> {
-        throw new Error(`Member ${key} not implemented`);
-    }
-
-    at(index: number): MotorInstance<any> {
-        throw new Error(`At ${index} not implemented`);
-    }
-
     free(): void {
         this.memory.free(this.address, motorTypeOf(this).size);
     }

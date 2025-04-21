@@ -9,6 +9,10 @@ export abstract class Pointer<T extends MotorType<any>> extends MotorInstance<nu
     set js(value: number) {
         this.memory.viewer.setBigUint64(this.address, BigInt(value), true);
     }
+
+    delete(): void {
+        this.memory.free(this.js, this.type.size);
+    }
 }
 
 export type PointerType<T extends MotorType<any>> = {
