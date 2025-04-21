@@ -1,6 +1,7 @@
 import { MotorType, MotorInstruction } from "../il/instruction";
 import { MotorOperator } from "../il/operator";
-import { MotorInstance } from "../instance";
+import { MotorInstance, MotorJsType } from "../instance";
+import { MotorRuntime } from "../runtime";
 
 export interface IMotorInstruction {
     code: number;
@@ -12,7 +13,11 @@ export interface IMotorInstructionInfo {
     immediate?: number;
 }
 
-export class MotorFunction<ReturnT extends MotorInstance<any>, Args extends MotorInstance<any>[]> extends MotorInstance<IMotorInstruction[]> {
+type ElementType<T extends readonly unknown[]> = T[number];
+
+export abstract class MotorFunction<ReturnT extends MotorType | void, Args extends MotorType[]> extends MotorInstance<IMotorInstruction[]> {
+    abstract get returnType(): ReturnT;
+    abstract get argsType(): Args;
     get programPointer(): number {
         return Number(this.memory.viewer.getBigUint64(this.address, true));
     }
@@ -86,8 +91,21 @@ export class MotorFunction<ReturnT extends MotorInstance<any>, Args extends Moto
         this.programPointer = address;
     }
 
-    // call(...args: Args): ReturnT {
-    // }
+    call(args: MotorJsType<InstanceType<ElementType<Args>>>[] = [], runtime: MotorRuntime = new MotorRuntime(undefined, this.memory)): InstanceType<ReturnT> {
+        const size = this.argsType.reduce((acc, type) => acc + type.size, 0);
+        const stack = runtime.get('stack');
+        const stackPointer = runtime.get('stackPointer');
+        if(stackPointer.js < size) {
+            throw new Error("Stack overflow");
+        }
+        stackPointer.js -= size;
+        let offset = size;
+        for (let i = 0; i < args.length; i++) {
+            let type = this.argsType[i];
+            new type(args[i], runtime.memory, stack.address + stackPointer.js + offset);
+            offset -= type.size;
+        }
+    }
 
     free(): void {
         this.memory.free(this.programPointer, this.length);
