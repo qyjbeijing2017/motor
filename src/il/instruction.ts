@@ -1,5 +1,6 @@
 import { MotorInstance } from "../instance";
 import { MotorMemory } from "../memory";
+import { MotorRuntime } from "../runtime";
 import { MotorOperator } from "./operator";
 import { MotorILType } from "./type";
 
@@ -22,7 +23,6 @@ export abstract class MotorInstruction extends MotorInstance<number | undefined>
     protected setImmediate(value?: number): void {
         // TODO: Implement this method
     }
-
     static readInstruction(memory: MotorMemory, address: number): MotorInstruction {
         const code = memory.viewer.getUint16(address);
         const instructionClass = this.instructions[code];
@@ -31,6 +31,7 @@ export abstract class MotorInstruction extends MotorInstance<number | undefined>
         }
         return new instructionClass(undefined, memory, address);
     }
+    abstract exec(runtime: MotorRuntime): void;
 }
 
 export type MotorType = {

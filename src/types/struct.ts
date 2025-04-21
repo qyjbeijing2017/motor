@@ -32,7 +32,6 @@ export abstract class MotorStruct<T extends MotorStructMemberType> extends Motor
             offset += type.size;
         }
     }
-
     get(key: keyof T): MotorInstance<any> {
         let offset = 0;
         for (const k in this.types) {

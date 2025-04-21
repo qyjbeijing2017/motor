@@ -8,7 +8,11 @@ export class MotorRuntime extends MotorStruct<{
     stackPointer: typeof MotorU64,
     stack: typeof MotorStack,
 }> {
-    static readonly size = 8 + 8;
+    static readonly size =
+        MotorU16.size +
+        MotorU64.size +
+        MotorU64.size +
+        MotorStack.size;
     get types(): MotorStructMemberType {
         return {
             id: MotorU16,
