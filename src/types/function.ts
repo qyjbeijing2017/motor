@@ -3,6 +3,7 @@ import { MotorJsType, MotorType } from "../instance";
 import { MotorRuntime } from "../runtime";
 import { motorSingleton } from "../utils/singleton";
 import { MotorReference } from "./reference";
+import { MotorU64 } from "./unsigned";
 
 export interface IMotorInstructionInfo {
     type: MotorInstructionType;
@@ -43,7 +44,17 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
         return this.argTypes.reduce((acc, arg) => acc + arg.size, 0);
     }
 
-    // call(args: MotorJsType<InstanceType<Args[number]>>[] = [], runtime: MotorRuntime = motorSingleton(MotorRuntime)): MotorJsType<InstanceType<ReturnType>> {
-    //     runtime.clear();
-    // }
+    call(args: MotorJsType<InstanceType<Args[number]>>[] = [], runtime: MotorRuntime = motorSingleton(MotorRuntime)): MotorJsType<InstanceType<ReturnType>> {
+        runtime.clear();
+        args.reverse();
+        this.argTypes
+            .concat()
+            .reverse()
+            .forEach((argType, i) => {
+                runtime.pushStack(argType, args[i]);
+            });
+        runtime.pushStack(MotorU64, this.refAddress + 8);
+        runtime.call();
+        return runtime.popStack(this.returnType) as MotorJsType<InstanceType<ReturnType>>;
+    }
 }
