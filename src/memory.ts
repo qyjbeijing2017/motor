@@ -74,7 +74,7 @@ export class MotorMemory {
     }
 
     public allocate(size: number): number {
-        if(size == 0) return 0;
+        if (size == 0) return 0;
         let block = this._emptyBlocks.find((block) => block.size >= size);
         while (!block) {
             this.resize(this._buffer.length * 2);
@@ -91,6 +91,7 @@ export class MotorMemory {
     }
 
     public free(address: number, size: number) {
+        if (size == 0) return;
         const block = this._emptyBlocks.find((block) => block.address === address);
         if (block) {
             block.size += size;

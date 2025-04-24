@@ -13,6 +13,10 @@ import {
     MotorF64,
     motorCreateStruct,
     motorCreateArray,
+    MotorString,
+    motorCreatePointer,
+    MotorNull,
+    motorCreateFunction,
 } from '../src';
 
 describe('Type Tests', () => {
@@ -405,5 +409,53 @@ describe('Type Tests', () => {
             instanceOnTest.js = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
             expect(instanceOnTest.js).toEqual([10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
         })
+    })
+    describe('String', () => {
+        test('default', () => {
+            const valueOnTest = new MotorString();
+            expect(valueOnTest.js).toBe('');
+        })
+        test('default value', () => {
+            const valueOnTest = new MotorString('hello');
+            expect(valueOnTest.js).toBe('hello');
+        })
+        test('set js', () => {
+            const valueOnTest = new MotorString();
+            valueOnTest.js = 'world';
+            expect(valueOnTest.js).toBe('world');
+        })
+    })
+    describe('Pointer', () => {
+        const PointerOnTest = motorCreatePointer(MotorU8);
+        const instanceOnTest = new PointerOnTest(0);
+        test('default', () => {
+            expect(instanceOnTest.js).toBe(0);
+        })
+        test('default value', () => {
+            const valueOnTest = new MotorU8(1);
+            const pointerOnTest = new PointerOnTest(valueOnTest.address);
+            expect(pointerOnTest.js).toBe(valueOnTest.address);
+            expect(pointerOnTest.value.js).toBe(1);
+        })
+        test('set js', () => {
+            const valueOnTest = new MotorU8(2);
+            const pointerOnTest = new PointerOnTest();
+            expect(pointerOnTest.js).toBe(0);
+            expect(pointerOnTest.value.js).toBe(null);
+            pointerOnTest.js = valueOnTest.address;
+            expect(pointerOnTest.js).toBe(valueOnTest.address);
+            expect(pointerOnTest.value.js).toBe(2);
+        })
+    })
+    describe('Null', () => {
+        test('default', () => {
+            const valueOnTest = new MotorNull();
+            expect(valueOnTest.js).toBe(null);
+        })
+    })
+    describe('Function', () => {
+        const FunctionOnTest = motorCreateFunction(MotorF32, [MotorF32, MotorF32]);
+        const instanceOnTest = new FunctionOnTest([
+        ]);
     })
 })
