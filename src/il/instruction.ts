@@ -5,7 +5,7 @@ import { MotorOperator } from "./operator";
 import { MotorILType } from "./type";
 
 export abstract class MotorInstruction extends MotorInstance<number | undefined> {
-    static readonly instructions: { [key: string]: MotorType } = {};
+    static readonly instructions: { [key: string]: MotorInstructionType } = {};
     abstract readonly code: number;
     get operator(): number {
         return this.code & MotorOperator.operator_mask;
@@ -34,7 +34,7 @@ export abstract class MotorInstruction extends MotorInstance<number | undefined>
     abstract exec(runtime: MotorRuntime): void;
 }
 
-export type MotorType = {
+export type MotorInstructionType = {
     readonly size: number;
     new (def?: number, memory?: MotorMemory, address?: number): MotorInstruction;
 }

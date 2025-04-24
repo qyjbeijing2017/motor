@@ -17,11 +17,15 @@ export abstract class MotorInstance<T> {
     abstract get js(): T;
     abstract set js(value: T);
 
+    protected onInstanceCreated(): void {
+    }
+
     constructor(
         def?: T,
         public readonly memory: MotorMemory = motorSingleton(MotorMemory),
         public readonly address: number = memory.allocate(motorTypeOf(this).size),
     ) {
+        this.onInstanceCreated();
         if (def !== undefined) {
             (this as MotorInstance<T>).js = def;
         }

@@ -1,18 +1,22 @@
 import { MotorRuntime } from "../../runtime";
+import { MotorU64 } from "../../types/unsigned";
+import { MotorFunctionFrame } from "../function-frame";
 import { MotorInstruction } from "../instruction";
 import { MotorOperator } from "../operator";
 
 export class MotorCall extends MotorInstruction {
-    static readonly size = 10;
+    static readonly size = 2;
     readonly code: number = MotorOperator.call;
-    get js(): number {
-        return Number(this.memory.viewer.getBigUint64(this.address + 2));
-    }
-    setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigUint64(this.address + 2, BigInt(value));
-    }
     exec(runtime: MotorRuntime): void {
-        
+        const functionAddress = runtime.popStack(MotorU64);
+        const programCounter = runtime.get('programCounter');
+        const framePointer = runtime.get('framePointer');
+        runtime.pushStack(MotorFunctionFrame, {
+            returnAddress: programCounter.js,
+            framePointer: framePointer.js,
+        })
+        framePointer.js = runtime.get('stackPointer').js;
+        programCounter.js = functionAddress;
     }
 }
 MotorInstruction.instructions[MotorOperator.call] = MotorCall;

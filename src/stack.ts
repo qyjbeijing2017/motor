@@ -1,12 +1,4 @@
-import { MotorInstance } from "./instance";
+import { motorCreateArray } from "./types/array";
+import { MotorU8 } from "./types/unsigned";
 
-export class MotorStack extends MotorInstance<Uint8Array> {
-    static readonly  size = 4 * 1024 * 1024; // 4MB
-    get js(): Uint8Array<ArrayBufferLike> {
-        return this.memory.buffer.subarray(this.address, this.address + MotorStack.size);
-    }
-    set js(value: Uint8Array<ArrayBufferLike>) {
-        value = value.subarray(0, MotorStack.size);
-        this.memory.buffer.set(value, this.address);
-    }
-}
+export const MotorStack = motorCreateArray(MotorU8, 4 * 1024 * 1024); // 4MB stack

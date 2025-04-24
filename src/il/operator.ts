@@ -5,6 +5,7 @@ export enum MotorOperator {
     store,
     load,
 
+    local,
     call,
     return,
 
@@ -35,5 +36,5 @@ export enum MotorOperator {
     bit_shift_left,
     bit_shift_right,
 
-    operator_mask = 0x0F,
+    operator_mask = 0xFF,
 }

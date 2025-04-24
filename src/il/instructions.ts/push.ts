@@ -1,5 +1,4 @@
 import { MotorRuntime } from "../../runtime";
-import { MotorStack } from "../../stack";
 import { MotorU8, MotorU16, MotorU32, MotorU64 } from "../../types/unsigned";
 import { MotorI8, MotorI16, MotorI32, MotorI64 } from "../../types/int";
 import { MotorF8, MotorF16, MotorF32, MotorF64 } from "../../types/float";
@@ -19,13 +18,7 @@ export class MotorPushU8 extends MotorInstruction {
         return this.memory.viewer.getUint8(this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 1 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js -= 1;
-        const stack = runtime.get('stack');
-        new MotorU8(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorU8, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.U8] = MotorPushU8;
@@ -40,13 +33,7 @@ export class MotorPushU16 extends MotorInstruction {
         return this.memory.viewer.getUint16(this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 2 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 2;
-        const stack = runtime.get('stack');
-        new MotorU16(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorU16, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.U16] = MotorPushU16;
@@ -61,13 +48,7 @@ export class MotorPushU32 extends MotorInstruction {
         return this.memory.viewer.getUint32(this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 4 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 4;
-        const stack = runtime.get('stack');
-        new MotorU32(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorU32, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.U32] = MotorPushU32;
@@ -82,13 +63,7 @@ export class MotorPushU64 extends MotorInstruction {
         return Number(this.memory.viewer.getBigUint64(this.address + 2));
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 8 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 8;
-        const stack = runtime.get('stack');
-        new MotorU64(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorU64, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.U64] = MotorPushU64;
@@ -103,13 +78,7 @@ export class MotorPushI8 extends MotorInstruction {
         return this.memory.viewer.getInt8(this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 1 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 1;
-        const stack = runtime.get('stack');
-        new MotorI8(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorI8, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.I8] = MotorPushI8;
@@ -124,13 +93,7 @@ export class MotorPushI16 extends MotorInstruction {
         return this.memory.viewer.getInt16(this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 2 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 2;
-        const stack = runtime.get('stack');
-        new MotorI16(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorI16, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.I16] = MotorPushI16;
@@ -145,13 +108,7 @@ export class MotorPushI32 extends MotorInstruction {
         return this.memory.viewer.getInt32(this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 4 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 4;
-        const stack = runtime.get('stack');
-        new MotorI32(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorI32, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.I32] = MotorPushI32;
@@ -166,13 +123,7 @@ export class MotorPushI64 extends MotorInstruction {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 8 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 8;
-        const stack = runtime.get('stack');
-        new MotorI64(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorI64, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.I64] = MotorPushI64;
@@ -187,13 +138,7 @@ export class MotorPushF8 extends MotorInstruction {
         return motorGetFloat8(this.memory.viewer, this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 1 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 1;
-        const stack = runtime.get('stack');
-        new MotorF8(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorF8, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.F8] = MotorPushF8;
@@ -208,13 +153,7 @@ export class MotorPushF16 extends MotorInstruction {
         return getFloat16(this.memory.viewer, this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 2 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 2;
-        const stack = runtime.get('stack');
-        new MotorF16(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorF16, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.F16] = MotorPushF16;
@@ -229,13 +168,7 @@ export class MotorPushF32 extends MotorInstruction {
         return this.memory.viewer.getFloat32(this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 4 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 4;
-        const stack = runtime.get('stack');
-        new MotorF32(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorF32, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.F32] = MotorPushF32;
@@ -250,13 +183,7 @@ export class MotorPushF64 extends MotorInstruction {
         return this.memory.viewer.getFloat64(this.address + 2);
     }
     exec(runtime: MotorRuntime): void {
-        const stackPointer = runtime.get('stackPointer');
-        if (stackPointer.js + 8 > MotorStack.size) {
-            throw new Error('Stack overflow');
-        }
-        stackPointer.js += 8;
-        const stack = runtime.get('stack');
-        new MotorF64(this.js, stack.memory, stack.address + stackPointer.js).js = this.js;
+        runtime.pushStack(MotorF64, this.js);
     }
 }
 MotorInstruction.instructions[MotorOperator.push | MotorILType.F64] = MotorPushF64;
