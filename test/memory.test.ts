@@ -1,6 +1,6 @@
 import { MotorMemory } from "../src";
 
-describe("memory", () => {
+describe("Memory Test", () => {
     test('default', () => {
         const memoryOnTest = new MotorMemory()
         expect(memoryOnTest.size).toBe(4096)

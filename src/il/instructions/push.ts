@@ -17,6 +17,9 @@ export class MotorPushU8 extends MotorInstruction {
     get js(): number {
         return this.memory.viewer.getUint8(this.address + 2);
     }
+    set js(value: number) {
+        super.js = value;
+    }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorU8, this.js);
     }
@@ -31,6 +34,9 @@ export class MotorPushU16 extends MotorInstruction {
     }
     get js(): number {
         return this.memory.viewer.getUint16(this.address + 2);
+    }
+    set js(value: number) {
+        super.js = value;
     }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorU16, this.js);
@@ -47,6 +53,9 @@ export class MotorPushU32 extends MotorInstruction {
     get js(): number {
         return this.memory.viewer.getUint32(this.address + 2);
     }
+    set js(value: number) {
+        super.js = value;
+    }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorU32, this.js);
     }
@@ -61,6 +70,9 @@ export class MotorPushU64 extends MotorInstruction {
     }
     get js(): number {
         return Number(this.memory.viewer.getBigUint64(this.address + 2));
+    }
+    set js(value: number) {
+        super.js = value;
     }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorU64, this.js);
@@ -77,6 +89,9 @@ export class MotorPushI8 extends MotorInstruction {
     get js(): number {
         return this.memory.viewer.getInt8(this.address + 2);
     }
+    set js(value: number) {
+        super.js = value;
+    }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorI8, this.js);
     }
@@ -91,6 +106,9 @@ export class MotorPushI16 extends MotorInstruction {
     }
     get js(): number {
         return this.memory.viewer.getInt16(this.address + 2);
+    }
+    set js(value: number) {
+        super.js = value;
     }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorI16, this.js);
@@ -107,6 +125,9 @@ export class MotorPushI32 extends MotorInstruction {
     get js(): number {
         return this.memory.viewer.getInt32(this.address + 2);
     }
+    set js(value: number) {
+        super.js = value;
+    }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorI32, this.js);
     }
@@ -121,6 +142,9 @@ export class MotorPushI64 extends MotorInstruction {
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
+    }
+    set js(value: number) {
+        super.js = value;
     }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorI64, this.js);
@@ -137,6 +161,9 @@ export class MotorPushF8 extends MotorInstruction {
     get js(): number {
         return motorGetFloat8(this.memory.viewer, this.address + 2);
     }
+    set js(value: number) {
+        super.js = value;
+    }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorF8, this.js);
     }
@@ -151,6 +178,9 @@ export class MotorPushF16 extends MotorInstruction {
     }
     get js(): number {
         return getFloat16(this.memory.viewer, this.address + 2);
+    }
+    set js(value: number) {
+        super.js = value;
     }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorF16, this.js);
@@ -167,6 +197,9 @@ export class MotorPushF32 extends MotorInstruction {
     get js(): number {
         return this.memory.viewer.getFloat32(this.address + 2);
     }
+    set js(value: number) {
+        super.js = value;
+    }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorF32, this.js);
     }
@@ -181,6 +214,9 @@ export class MotorPushF64 extends MotorInstruction {
     }
     get js(): number {
         return this.memory.viewer.getFloat64(this.address + 2);
+    }
+    set js(value: number) {
+        super.js = value;
     }
     exec(runtime: MotorRuntime): void {
         runtime.pushStack(MotorF64, this.js);

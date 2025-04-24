@@ -17,7 +17,11 @@ import {
     motorCreatePointer,
     MotorNull,
     motorCreateFunction,
+    MotorLocalF32,
+    MotorAddF32,
+    MotorReturn,
 } from '../src';
+import { MotorFunctionFrame } from '../src/il/function-frame';
 
 describe('Type Tests', () => {
     describe('U8', () => {
@@ -456,6 +460,10 @@ describe('Type Tests', () => {
     describe('Function', () => {
         const FunctionOnTest = motorCreateFunction(MotorF32, [MotorF32, MotorF32]);
         const instanceOnTest = new FunctionOnTest([
+            { type: MotorLocalF32, immediate: 0 },
+            { type: MotorLocalF32, immediate: MotorF32.size },
+            { type: MotorAddF32 },
+            { type: MotorReturn, immediate: MotorF32.size },
         ]);
     })
 })
