@@ -6,7 +6,7 @@ import { MotorInstruction } from "../instruction";
 import { MotorOperator } from "../operator";
 import { MotorILType } from "../type";
 
-export class MotorAndU8 extends MotorInstruction {
+export class MotorOrU8 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.U8;
     }
@@ -22,9 +22,9 @@ export class MotorAndU8 extends MotorInstruction {
         runtime.pushStack(MotorU8, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.U8] = MotorAndU8;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.U8] = MotorOrU8;
 
-export class MotorAndU16 extends MotorInstruction {
+export class MotorOrU16 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.U16;
     }
@@ -40,9 +40,9 @@ export class MotorAndU16 extends MotorInstruction {
         runtime.pushStack(MotorU16, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.U16] = MotorAndU16;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.U16] = MotorOrU16;
 
-export class MotorAndU32 extends MotorInstruction {
+export class MotorOrU32 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.U32;
     }
@@ -58,9 +58,9 @@ export class MotorAndU32 extends MotorInstruction {
         runtime.pushStack(MotorU32, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.U32] = MotorAndU32;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.U32] = MotorOrU32;
 
-export class MotorAndU64 extends MotorInstruction {
+export class MotorOrU64 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.U64;
     }
@@ -76,9 +76,9 @@ export class MotorAndU64 extends MotorInstruction {
         runtime.pushStack(MotorU64, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.U64] = MotorAndU64;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.U64] = MotorOrU64;
 
-export class MotorAndI8 extends MotorInstruction {
+export class MotorOrI8 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.I8;
     }
@@ -94,9 +94,9 @@ export class MotorAndI8 extends MotorInstruction {
         runtime.pushStack(MotorI8, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.I8] = MotorAndI8;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.I8] = MotorOrI8;
 
-export class MotorAndI16 extends MotorInstruction {
+export class MotorOrI16 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.I16;
     }
@@ -112,9 +112,9 @@ export class MotorAndI16 extends MotorInstruction {
         runtime.pushStack(MotorI16, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.I16] = MotorAndI16;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.I16] = MotorOrI16;
 
-export class MotorAndI32 extends MotorInstruction {
+export class MotorOrI32 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.I32;
     }
@@ -130,9 +130,9 @@ export class MotorAndI32 extends MotorInstruction {
         runtime.pushStack(MotorI32, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.I32] = MotorAndI32;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.I32] = MotorOrI32;
 
-export class MotorAndI64 extends MotorInstruction {
+export class MotorOrI64 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.I64;
     }
@@ -148,9 +148,9 @@ export class MotorAndI64 extends MotorInstruction {
         runtime.pushStack(MotorI64, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.I64] = MotorAndI64;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.I64] = MotorOrI64;
 
-export class MotorAndF8 extends MotorInstruction {
+export class MotorOrF8 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.F8;
     }
@@ -166,9 +166,9 @@ export class MotorAndF8 extends MotorInstruction {
         runtime.pushStack(MotorF8, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.F8] = MotorAndF8;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.F8] = MotorOrF8;
 
-export class MotorAndF16 extends MotorInstruction {
+export class MotorOrF16 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.F16;
     }
@@ -184,9 +184,9 @@ export class MotorAndF16 extends MotorInstruction {
         runtime.pushStack(MotorF16, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.F16] = MotorAndF16;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.F16] = MotorOrF16;
 
-export class MotorAndF32 extends MotorInstruction {
+export class MotorOrF32 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.F32;
     }
@@ -202,9 +202,9 @@ export class MotorAndF32 extends MotorInstruction {
         runtime.pushStack(MotorF32, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.F32] = MotorAndF32;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.F32] = MotorOrF32;
 
-export class MotorAndF64 extends MotorInstruction {
+export class MotorOrF64 extends MotorInstruction {
     get code(): number {
         return MotorOperator.or | MotorILType.F64;
     }
@@ -220,4 +220,4 @@ export class MotorAndF64 extends MotorInstruction {
         runtime.pushStack(MotorF64, a || b);
     }
 }
-MotorInstruction.instructions[MotorOperator.or | MotorILType.F64] = MotorAndF64;
+MotorInstruction.instructions[MotorOperator.or | MotorILType.F64] = MotorOrF64;
