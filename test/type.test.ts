@@ -22,6 +22,7 @@ import {
     MotorReturn,
     MotorLocalF16,
     MotorAddF16,
+    motorCreateList,
 } from '../src';
 import { MotorFunctionFrame } from '../src/il/function-frame';
 
@@ -506,6 +507,28 @@ describe('Type Tests', () => {
             expect(valueOnTest).toBe(1);
             const valueOnTest2 = instanceOnTest.call([2]);
             expect(valueOnTest2).toBe(2);
+        })
+    })
+    describe('List', () => {
+        const ListOnTest = motorCreateList(MotorF32);
+        const instanceOnTest = new ListOnTest([1, 2, 3, 4, 5]);
+        test('default', () => {
+            expect(instanceOnTest.js).toEqual([1, 2, 3, 4, 5]);
+        })
+        test('set js', () => {
+            instanceOnTest.js = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+            expect(instanceOnTest.js).toEqual([6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+            instanceOnTest.js = [1, 2, 3, 4, 5];
+        })
+        test('count', () => {
+            expect(instanceOnTest.count).toBe(5);
+        })
+        test('at', () => {
+            expect(instanceOnTest.at(0).js).toBe(1);
+            expect(instanceOnTest.at(1).js).toBe(2);
+            expect(instanceOnTest.at(2).js).toBe(3);
+            expect(instanceOnTest.at(3).js).toBe(4);
+            expect(instanceOnTest.at(4).js).toBe(5);
         })
     })
 })

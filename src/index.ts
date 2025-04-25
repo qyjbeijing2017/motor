@@ -45,6 +45,7 @@ export { MotorReference } from './types/reference';
 export { MotorPointer, MotorPointerType, motorCreatePointer } from './types/pointer';
 export { MotorFunction, MotorFunctionType, motorCreateFunction } from './types/function';
 export { MotorNull } from './types/null';
+export { MotorList, MotorListType, motorCreateList } from './types/list';
 
 export { MotorRuntime } from './runtime';
 export { MotorStack } from './stack';

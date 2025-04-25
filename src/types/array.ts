@@ -1,19 +1,19 @@
 import { MotorInstance, MotorType } from "../instance";
 import { MotorMemory } from "../memory";
 
-export abstract class MotorArray<T> extends MotorInstance<T[]> {
-    abstract get type(): MotorType<T>;
+export abstract class MotorArray<T extends MotorType<any>> extends MotorInstance<(T extends MotorType<infer U> ? U : never)[]> {
+    abstract get type(): T;
     abstract get length(): number;
 
-    get js(): T[] {
-        const result: T[] = [];
+    get js(): (T extends MotorType<infer U> ? U : never)[] {
+        const result: (T extends MotorType<infer U> ? U : never)[] = [];
         for (let i = 0; i < this.length; i++) {
             result.push(new this.type(undefined, this.memory, this.address + i * this.type.size).js);
         }
         return result;
     }
 
-    set js(value: T[]) {
+    set js(value: (T extends MotorType<infer U> ? U : never)[]) {
         for (let i = 0; i < this.length; i++) {
             new this.type(value[i], this.memory, this.address + i * this.type.size);
         }
@@ -27,15 +27,15 @@ export abstract class MotorArray<T> extends MotorInstance<T[]> {
     }
 }
 
-export type MotorArrayType<T> = {
+export type MotorArrayType<T extends MotorType<any>> = {
     readonly size: number;
-    new (def: T[], memory?: MotorMemory, address?: number): MotorArray<T>;
+    new (def: (T extends MotorType<infer U> ? U : never)[], memory?: MotorMemory, address?: number): MotorArray<T>;
 };
 
-export function motorCreateArray<T>(type: MotorType<T>, length: number): MotorArrayType<T> {
+export function motorCreateArray<T extends MotorType<any>>(type: T, length: number): MotorArrayType<T> {
     return class extends MotorArray<T> {
         static readonly size = type.size * length;
-        get type(): MotorType<T> {
+        get type(): T {
             return type;
         }
         get length(): number {
