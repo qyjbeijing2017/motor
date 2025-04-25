@@ -9,15 +9,14 @@ import { MotorFunctionFrame } from "../function-frame";
 
 export class MotorLocalU8 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.U8;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.U8;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -30,15 +29,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.U8] = MotorLocal
 
 export class MotorLocalU16 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.U16;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.U16;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -51,15 +49,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.U16] = MotorLoca
 
 export class MotorLocalU32 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.U32;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.U32;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -72,15 +69,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.U32] = MotorLoca
 
 export class MotorLocalU64 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.U64;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.U64;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -93,15 +89,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.U64] = MotorLoca
 
 export class MotorLocalI8 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.I8;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.I8;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -114,15 +109,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.I8] = MotorLocal
 
 export class MotorLocalI16 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.I16;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.I16;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -135,15 +129,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.I16] = MotorLoca
 
 export class MotorLocalI32 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.I32;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.I32;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -156,15 +149,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.I32] = MotorLoca
 
 export class MotorLocalI64 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.I64;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.I64;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -177,15 +169,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.I64] = MotorLoca
 
 export class MotorLocalF8 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.F8;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.F8;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -198,15 +189,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.F8] = MotorLocal
 
 export class MotorLocalF16 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.F16;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.F16;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -219,15 +209,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.F16] = MotorLoca
 
 export class MotorLocalF32 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.F32;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.F32;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
@@ -240,15 +229,14 @@ MotorInstruction.instructions[MotorOperator.local | MotorILType.F32] = MotorLoca
 
 export class MotorLocalF64 extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.local | MotorILType.F64;
-    protected setImmediate(value: number = 0): void {
-        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
+    get code(): number {
+        return MotorOperator.local | MotorILType.F64;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
     }
     set js(value: number) {
-        super.js = value;
+        this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');

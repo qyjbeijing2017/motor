@@ -5,15 +5,15 @@ import { MotorOperator } from "../operator";
 
 export class MotorReturn extends MotorInstruction {
     static readonly size = 10;
-    readonly code: number = MotorOperator.return;
-    protected setImmediate(value: number = 0): void {
+    get code(): number {
+        return MotorOperator.return;
+    }
+    set js(value: number) {
         this.memory.viewer.setBigUint64(this.address + 2, BigInt(value));
     }
     get js(): number {
+        this.memory.viewer.setUint16(this.address, this.code);
         return Number(this.memory.viewer.getBigUint64(this.address + 2));
-    }
-    set js(value: number) {
-        super.js = value;
     }
     exec(runtime: MotorRuntime): void {
         const stackPointer = runtime.get('stackPointer');
@@ -33,3 +33,4 @@ export class MotorReturn extends MotorInstruction {
         framePointer.js = returnFramePointer;
     }
 }
+MotorInstruction.instructions[MotorOperator.return] = MotorReturn;

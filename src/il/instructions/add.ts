@@ -7,8 +7,15 @@ import { MotorOperator } from "../operator";
 import { MotorILType } from "../type";
 
 export class MotorAddU8 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.U8;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.U8;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorU8);
         const b = runtime.popStack(MotorU8);
@@ -18,8 +25,15 @@ export class MotorAddU8 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.U8] = MotorAddU8;
 
 export class MotorAddU16 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.U16;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.U16;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorU16);
         const b = runtime.popStack(MotorU16);
@@ -29,8 +43,15 @@ export class MotorAddU16 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.U16] = MotorAddU16;
 
 export class MotorAddU32 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.U32;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.U32;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorU32);
         const b = runtime.popStack(MotorU32);
@@ -40,8 +61,15 @@ export class MotorAddU32 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.U32] = MotorAddU32;
 
 export class MotorAddU64 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.U64;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.U64;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorU64);
         const b = runtime.popStack(MotorU64);
@@ -51,8 +79,15 @@ export class MotorAddU64 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.U64] = MotorAddU64;
 
 export class MotorAddI8 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.I8;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.I8;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorI8);
         const b = runtime.popStack(MotorI8);
@@ -62,8 +97,15 @@ export class MotorAddI8 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.I8] = MotorAddI8;
 
 export class MotorAddI16 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.I16;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.I16;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorI16);
         const b = runtime.popStack(MotorI16);
@@ -73,8 +115,15 @@ export class MotorAddI16 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.I16] = MotorAddI16;
 
 export class MotorAddI32 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.I32;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.I32;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorI32);
         const b = runtime.popStack(MotorI32);
@@ -84,8 +133,15 @@ export class MotorAddI32 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.I32] = MotorAddI32;
 
 export class MotorAddI64 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.I64;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.I64;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorI64);
         const b = runtime.popStack(MotorI64);
@@ -95,8 +151,15 @@ export class MotorAddI64 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.I64] = MotorAddI64;
 
 export class MotorAddF8 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.F8;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.F8;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorF8);
         const b = runtime.popStack(MotorF8);
@@ -106,8 +169,15 @@ export class MotorAddF8 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.F8] = MotorAddF8;
 
 export class MotorAddF16 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.F16;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.F16;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorF16);
         const b = runtime.popStack(MotorF16);
@@ -117,8 +187,15 @@ export class MotorAddF16 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.F16] = MotorAddF16;
 
 export class MotorAddF32 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.F32;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.F32;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorF32);
         const b = runtime.popStack(MotorF32);
@@ -128,8 +205,15 @@ export class MotorAddF32 extends MotorInstruction {
 MotorInstruction.instructions[MotorOperator.add | MotorILType.F32] = MotorAddF32;
 
 export class MotorAddF64 extends MotorInstruction {
+    get code(): number {
+        return MotorOperator.add | MotorILType.F64;
+    }
+    get js(): undefined {
+        return undefined;
+    }
+    set js(_:undefined) {
+    }
     static readonly size = 2;
-    readonly code: number = MotorOperator.add | MotorILType.F64;
     exec(runtime: MotorRuntime): void {
         const a = runtime.popStack(MotorF64);
         const b = runtime.popStack(MotorF64);

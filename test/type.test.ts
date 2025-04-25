@@ -465,5 +465,13 @@ describe('Type Tests', () => {
             { type: MotorAddF32 },
             { type: MotorReturn, immediate: MotorF32.size },
         ]);
+        test('default', () => {
+            expect(instanceOnTest.js).toEqual([
+                { type: MotorLocalF32, immediate: 0 },
+                { type: MotorLocalF32, immediate: MotorF32.size },
+                { type: MotorAddF32 },
+                { type: MotorReturn, immediate: MotorF32.size },
+            ]);
+        })
     })
 })

@@ -6,22 +6,15 @@ import { MotorILType } from "./type";
 
 export abstract class MotorInstruction extends MotorInstance<number | undefined> {
     static readonly instructions: { [key: string]: MotorInstructionType } = {};
-    abstract readonly code: number;
+    abstract get code(): number;
     get operator(): number {
         return this.code & MotorOperator.operator_mask;
     }
     get ILType(): number {
         return this.code & MotorILType.type_mask;
     }
-    get js(): number | undefined {
-        return undefined;
-    }
-    set js(value: number | undefined) {
+    protected onInstanceCreated(): void {
         this.memory.viewer.setUint16(this.address, this.code);
-        this.setImmediate(value);
-    }
-    protected setImmediate(value?: number): void {
-        // TODO: Implement this method
     }
     static readInstruction(memory: MotorMemory, address: number): MotorInstruction {
         const code = memory.viewer.getUint16(address);
@@ -36,5 +29,5 @@ export abstract class MotorInstruction extends MotorInstance<number | undefined>
 
 export type MotorInstructionType = {
     readonly size: number;
-    new (def?: number, memory?: MotorMemory, address?: number): MotorInstruction;
+    new(def?: number, memory?: MotorMemory, address?: number): MotorInstruction;
 }

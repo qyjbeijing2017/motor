@@ -6,7 +6,14 @@ import { MotorOperator } from "../operator";
 
 export class MotorCall extends MotorInstruction {
     static readonly size = 2;
-    readonly code: number = MotorOperator.call;
+    get code(): number {
+        return MotorOperator.call;
+    }
+    get js(): number | undefined {
+        return undefined;
+    }
+    set js(_: undefined) {
+    }
     exec(runtime: MotorRuntime): void {
         const functionAddress = runtime.popStack(MotorU64);
         const programCounter = runtime.get('programCounter');
