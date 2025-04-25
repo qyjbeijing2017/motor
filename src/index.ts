@@ -20,7 +20,8 @@ export { MotorIfNotZeroU8, MotorIfNotZeroU16, MotorIfNotZeroU32, MotorIfNotZeroU
 
 export { MotorAddU8, MotorAddU16, MotorAddU32, MotorAddU64, MotorAddI8, MotorAddI16, MotorAddI32, MotorAddI64, MotorAddF8, MotorAddF16, MotorAddF32, MotorAddF64 } from './il/instructions/add';
 export { MotorSubU8, MotorSubU16, MotorSubU32, MotorSubU64, MotorSubI8, MotorSubI16, MotorSubI32, MotorSubI64, MotorSubF8, MotorSubF16, MotorSubF32, MotorSubF64 } from './il/instructions/sub';
-
+export { MotorMulU8, MotorMulU16, MotorMulU32, MotorMulU64, MotorMulI8, MotorMulI16, MotorMulI32, MotorMulI64, MotorMulF8, MotorMulF16, MotorMulF32, MotorMulF64 } from './il/instructions/mul';
+export { MotorDivU8, MotorDivU16, MotorDivU32, MotorDivU64, MotorDivI8, MotorDivI16, MotorDivI32, MotorDivI64, MotorDivF8, MotorDivF16, MotorDivF32, MotorDivF64 } from './il/instructions/div';
 
 export { MotorInstance, MotorType, motorTypeOf } from './instance';
 export { MotorU8, MotorU16, MotorU32, MotorU64 } from './types/unsigned';
