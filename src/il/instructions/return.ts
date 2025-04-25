@@ -24,7 +24,7 @@ export class MotorReturn extends MotorInstruction {
         const returnAddress = functionFrame.get('returnAddress').js;
         const returnFramePointer = functionFrame.get('framePointer').js;
         stack.memory.buffer.copyWithin(
-            stack.address + framePointer.js + 8, 
+            stack.address + framePointer.js + 8 - this.js, 
             stack.address + stackPointer.js, 
             stack.address + stackPointer.js + this.js
         );

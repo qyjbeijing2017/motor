@@ -21,7 +21,7 @@ export class MotorLocalU8 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorU8(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorU8(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorU8, value.js);
     }
 }
@@ -41,7 +41,7 @@ export class MotorLocalU16 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorU16(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorU16(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorU16, value.js);
     }
 }
@@ -61,7 +61,7 @@ export class MotorLocalU32 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorU32(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorU32(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorU32, value.js);
     }
 }
@@ -81,7 +81,7 @@ export class MotorLocalU64 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorU64(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorU64(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorU64, value.js);
     }
 }
@@ -101,7 +101,7 @@ export class MotorLocalI8 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorI8(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorI8(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorI8, value.js);
     }
 }
@@ -121,7 +121,7 @@ export class MotorLocalI16 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorI16(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorI16(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorI16, value.js);
     }
 }
@@ -141,7 +141,7 @@ export class MotorLocalI32 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorI32(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorI32(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorI32, value.js);
     }
 }
@@ -161,7 +161,7 @@ export class MotorLocalI64 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorI64(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorI64(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorI64, value.js);
     }
 }
@@ -181,7 +181,7 @@ export class MotorLocalF8 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorF8(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorF8(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorF8, value.js);
     }
 }
@@ -201,7 +201,7 @@ export class MotorLocalF16 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorF16(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorF16(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorF16, value.js);
     }
 }
@@ -221,7 +221,7 @@ export class MotorLocalF32 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorF32(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorF32(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorF32, value.js);
     }
 }
@@ -241,7 +241,7 @@ export class MotorLocalF64 extends MotorInstruction {
     exec(runtime: MotorRuntime): void {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorF64(undefined, stack.memory, stack.address + framePointer.js + (this.js > 0 ? this.js + MotorFunctionFrame.size : this.js));
+        const value = new MotorF64(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
         runtime.pushStack(MotorF64, value.js);
     }
 }

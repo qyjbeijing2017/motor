@@ -51,6 +51,14 @@ import {
     MotorAddF16,
     MotorAddF32,
     MotorAddF64,
+    motorCreateFunction,
+    MotorU8,
+    MotorI8,
+    MotorF8,
+    MotorF16,
+    MotorF32,
+    MotorF64,
+    MotorNull,
 } from '../src'
 
 describe('IL Tests', () => {
@@ -498,6 +506,373 @@ describe('IL Tests', () => {
                 expect(instructionOnTest.operator).toBe(MotorOperator.add);
                 expect(instructionOnTest.ILType).toBe(MotorILType.F64);
             })
+        })
+    })
+
+    describe("Run", () => {
+        describe("Push", () => {
+            test("PushU8", () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushU8, immediate: 234 },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call()).toBe(234)
+            })
+            test("PushU16", () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushU16, immediate: 234 },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call()).toBe(234)
+            })
+            test("PushU32", () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushU32, immediate: 234 },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call()).toBe(234)
+            })
+            test("PushU64", () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushU64, immediate: 234 },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call()).toBe(234)
+            })
+            test("PushI8", () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushI8, immediate: -21 },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call()).toBe(-21)
+            })
+            test("PushI16", () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushI16, immediate: 21 },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call()).toBe(21)
+            })
+            test("PushI32", () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushI32, immediate: -21 },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call()).toBe(-21)
+            })
+            test("PushI64", () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushI64, immediate: 21 },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call()).toBe(21)
+            })
+            test("PushF8", () => {
+                const FunctionOnTest = motorCreateFunction(MotorF8, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushF8, immediate: -0.3 },
+                    { type: MotorReturn, immediate: MotorF8.size },
+                ])
+                expect(instructionOnTest.call()).toBeCloseTo(-0.3125)
+            })
+            test("PushF16", () => {
+                const FunctionOnTest = motorCreateFunction(MotorF16, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushF16, immediate: 0.3 },
+                    { type: MotorReturn, immediate: MotorF16.size },
+                ])
+                expect(instructionOnTest.call()).toBeCloseTo(0.3)
+            })
+            test("PushF32", () => {
+                const FunctionOnTest = motorCreateFunction(MotorF32, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushF32, immediate: -0.324 },
+                    { type: MotorReturn, immediate: MotorF32.size },
+                ])
+                expect(instructionOnTest.call()).toBeCloseTo(-0.324)
+            })
+            test("PushF64", () => {
+                const FunctionOnTest = motorCreateFunction(MotorF64, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushF64, immediate: 0.324 },
+                    { type: MotorReturn, immediate: MotorF64.size },
+                ])
+                expect(instructionOnTest.call()).toBeCloseTo(0.324)
+            })
+
+        })
+        describe("Pop", () => {
+            test("PopU8", () => {
+                const FunctionOnTest = motorCreateFunction(MotorNull, [])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorPushU8, immediate: 234 },
+                    { type: MotorPopU8 },
+                    { type: MotorReturn },
+                ])
+                expect(instructionOnTest.call()).toBe(null)
+            })
+        })
+        describe('Local', () => {
+            test('LocalU8', () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [MotorU8, MotorU8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalU8, immediate: 0 },
+                    { type: MotorLocalU8, immediate: MotorU8.size },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call([1, 2])).toBe(2)
+            })
+            test('LocalU16', () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [MotorU8, MotorU8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalU16, immediate: 0 },
+                    { type: MotorLocalU16, immediate: MotorU8.size },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call([1, 2])).toBe(2)
+            })
+            test('LocalU32', () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [MotorU8, MotorU8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalU32, immediate: 0 },
+                    { type: MotorLocalU32, immediate: MotorU8.size },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call([1, 2])).toBe(2)
+            })
+            test('LocalU64', () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [MotorU8, MotorU8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalU64, immediate: 0 },
+                    { type: MotorLocalU64, immediate: MotorU8.size },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call([1, 2])).toBe(2)
+            })
+            test('LocalI8', () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [MotorI8, MotorI8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalI8, immediate: 0 },
+                    { type: MotorLocalI8, immediate: MotorI8.size },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-2)
+            })
+            test('LocalI16', () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [MotorI8, MotorI8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalI16, immediate: 0 },
+                    { type: MotorLocalI16, immediate: MotorI8.size },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-2)
+            })
+            test('LocalI32', () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [MotorI8, MotorI8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalI32, immediate: 0 },
+                    { type: MotorLocalI32, immediate: MotorI8.size },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-2)
+            })
+            test('LocalI64', () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [MotorI8, MotorI8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalI64, immediate: 0 },
+                    { type: MotorLocalI64, immediate: MotorI8.size },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-2)
+            })
+            test('LocalF8', () => {
+                const FunctionOnTest = motorCreateFunction(MotorF8, [MotorF8, MotorF8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalF8, immediate: 0 },
+                    { type: MotorLocalF8, immediate: MotorF8.size },
+                    { type: MotorReturn, immediate: MotorF8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-2)
+            })
+            test('LocalF16', () => {
+                const FunctionOnTest = motorCreateFunction(MotorF16, [MotorF16, MotorF16])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalF16, immediate: 0 },
+                    { type: MotorLocalF16, immediate: MotorF16.size },
+                    { type: MotorReturn, immediate: MotorF16.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-2)
+            })
+            test('LocalF32', () => {
+                const FunctionOnTest = motorCreateFunction(MotorF32, [MotorF32, MotorF32])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalF32, immediate: 0 },
+                    { type: MotorLocalF32, immediate: MotorF32.size },
+                    { type: MotorReturn, immediate: MotorF32.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-2)
+            })
+            test('LocalF64', () => {
+                const FunctionOnTest = motorCreateFunction(MotorF64, [MotorF64, MotorF64])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalF64, immediate: 0 },
+                    { type: MotorLocalF64, immediate: MotorF64.size },
+                    { type: MotorReturn, immediate: MotorF64.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-2)
+            })
+        })
+        describe('Add', () => {
+            test('AddU8', () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [MotorU8, MotorU8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalU8, immediate: 0 },
+                    { type: MotorLocalU8, immediate: MotorU8.size },
+                    { type: MotorAddU8 },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call([1, 2])).toBe(3)
+            })
+            test('AddU16', () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [MotorU8, MotorU8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalU16, immediate: 0 },
+                    { type: MotorLocalU16, immediate: MotorU8.size },
+                    { type: MotorAddU16 },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call([1, 2])).toBe(3)
+            })
+            test('AddU32', () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [MotorU8, MotorU8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalU32, immediate: 0 },
+                    { type: MotorLocalU32, immediate: MotorU8.size },
+                    { type: MotorAddU32 },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call([1, 2])).toBe(3)
+            })
+            test('AddU64', () => {
+                const FunctionOnTest = motorCreateFunction(MotorU8, [MotorU8, MotorU8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalU64, immediate: 0 },
+                    { type: MotorLocalU64, immediate: MotorU8.size },
+                    { type: MotorAddU64 },
+                    { type: MotorReturn, immediate: MotorU8.size },
+                ])
+                expect(instructionOnTest.call([1, 2])).toBe(3)
+            })
+            test('AddI8', () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [MotorI8, MotorI8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalI8, immediate: 0 },
+                    { type: MotorLocalI8, immediate: MotorI8.size },
+                    { type: MotorAddI8 },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-3)
+            })
+            test('AddI16', () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [MotorI8, MotorI8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalI16, immediate: 0 },
+                    { type: MotorLocalI16, immediate: MotorI8.size },
+                    { type: MotorAddI16 },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-3)
+            })
+            test('AddI32', () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [MotorI8, MotorI8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalI32, immediate: 0 },
+                    { type: MotorLocalI32, immediate: MotorI8.size },
+                    { type: MotorAddI32 },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-3)
+            })
+            test('AddI64', () => {
+                const FunctionOnTest = motorCreateFunction(MotorI8, [MotorI8, MotorI8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalI64, immediate: 0 },
+                    { type: MotorLocalI64, immediate: MotorI8.size },
+                    { type: MotorAddI64 },
+                    { type: MotorReturn, immediate: MotorI8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-3)
+            })
+            test('AddF8', () => {
+                const FunctionOnTest = motorCreateFunction(MotorF8, [MotorF8, MotorF8])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalF8, immediate: 0 },
+                    { type: MotorLocalF8, immediate: MotorF8.size },
+                    { type: MotorAddF8 },
+                    { type: MotorReturn, immediate: MotorF8.size },
+                ])
+                expect(instructionOnTest.call([-1, -2])).toBe(-3)
+            })
+            test('AddF16', () => {
+                const FunctionOnTest = motorCreateFunction(MotorF16, [MotorF16, MotorF16])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalF16, immediate: 0 },
+                    { type: MotorLocalF16, immediate: MotorF16.size },
+                    { type: MotorAddF16 },
+                    { type: MotorReturn, immediate: MotorF16.size },
+                ])
+                expect(instructionOnTest.call([-1.1, -2.2])).toBeCloseTo(-3.3)
+            })
+            test('AddF32', () => {
+                const FunctionOnTest = motorCreateFunction(MotorF32, [MotorF32, MotorF32])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalF32, immediate: 0 },
+                    { type: MotorLocalF32, immediate: MotorF32.size },
+                    { type: MotorAddF32 },
+                    { type: MotorReturn, immediate: MotorF32.size },
+                ])
+                expect(instructionOnTest.call([-1.1, -2.2])).toBeCloseTo(-3.3)
+            })
+            test('AddF64', () => {
+                const FunctionOnTest = motorCreateFunction(MotorF64, [MotorF64, MotorF64])
+                const instructionOnTest = new FunctionOnTest([
+                    { type: MotorLocalF64, immediate: 0 },
+                    { type: MotorLocalF64, immediate: MotorF64.size },
+                    { type: MotorAddF64 },
+                    { type: MotorReturn, immediate: MotorF64.size },
+                ])
+                expect(instructionOnTest.call([-1.1, -2.2])).toBeCloseTo(-3.3)
+            })
+        })
+        test('Call', () => {
+            const FunctionAdd = motorCreateFunction(MotorF32, [MotorF32, MotorF32])
+            const add = new FunctionAdd([
+                { type: MotorLocalF32, immediate: 0 },
+                { type: MotorLocalF32, immediate: MotorF32.size },
+                { type: MotorAddF32 },
+                { type: MotorReturn, immediate: MotorF32.size },
+            ])
+            const FunctionOnTest = motorCreateFunction(MotorF32, [MotorF32, MotorF32, MotorF32])
+            const instructionOnTest = new FunctionOnTest([
+                { type: MotorLocalF32, immediate: 0 },
+                { type: MotorLocalF32, immediate: MotorF32.size },
+                { type: MotorPushU64, immediate: add.refAddress },
+                { type: MotorCall },
+                { type: MotorLocalF32, immediate: MotorF32.size * 2 },
+                { type: MotorPushU64, immediate: add.refAddress },
+                { type: MotorCall },
+                { type: MotorReturn, immediate: MotorF32.size },
+            ])
+            expect(instructionOnTest.call([1.1, 2.2, 3.3])).toBeCloseTo(6.6)
+
         })
     })
 })

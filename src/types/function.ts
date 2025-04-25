@@ -3,6 +3,8 @@ import { MotorJsType, MotorType } from "../instance";
 import { MotorMemory } from "../memory";
 import { MotorRuntime } from "../runtime";
 import { motorSingleton } from "../utils/singleton";
+import { MotorNull } from "./null";
+import { MotorPointer } from "./pointer";
 import { MotorReference } from "./reference";
 import { MotorU64 } from "./unsigned";
 
@@ -43,7 +45,7 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
     get argsLength(): number {
         return this.argTypes.reduce((acc, arg) => acc + arg.size, 0);
     }
-
+    
     call(args: MotorJsType<InstanceType<Args[number]>>[] = [], runtime: MotorRuntime = motorSingleton(MotorRuntime)): MotorJsType<InstanceType<ReturnType>> {
         runtime.clear();
         args.reverse();
