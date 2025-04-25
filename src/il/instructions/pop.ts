@@ -197,5 +197,3 @@ export class MotorPopF64 extends MotorInstruction {
     }
 }
 MotorInstruction.instructions[MotorOperator.pop | MotorILType.F64] = MotorPopF64;
-
-
