@@ -7,27 +7,29 @@ export abstract class MotorArray<T extends MotorType<any>> extends MotorInstance
     get js(): MotorJSType<T>[] {
         const result: MotorJSType<T>[] = new Array(this.length);
         for (let i = 0; i < this.length; i++) {
-            const address = this.address + i * this.type.size;
-            const instance = new this.type(undefined, this.memory, address);
-            result[i] = instance.js;
+            result[i] = this.at(i).js;
         }
         return result;
     }
     set js(value: MotorJSType<T>[]) {
-        for (let i = 0; i < this.length; i++) {
-            const address = this.address + i * this.type.size;
-            const instance = new this.type(value[i], this.memory, address);
+        for (let i = 0; i < Math.min(value.length, this.length); i++) {
+            const instance = this.at(i);
             instance.js = value[i];
         }
+    }
+
+    at(index: number): MotorJSType<T> {
+        const address = this.address + index * this.type.size;
+        return new this.type(undefined, this.memory, address) as MotorJSType<T>;
     }
 }
 
 export type MotorArrayType<T extends MotorType<any>> = {
     readonly size: number;
-    new(def?: undefined, memory?: MotorMemory, address?: number): MotorArray<T>;
+    new(def?: MotorJSType<T>[], memory?: MotorMemory, address?: number): MotorArray<T>;
 }
 
-export function createPointer<T extends MotorType<any>>(type: T, length: number): MotorArrayType<T> {
+export function motorCreateArray<T extends MotorType<any>>(type: T, length: number): MotorArrayType<T> {
     return class extends MotorArray<T> {
         static readonly size = type.size * length;
         get type(): T {

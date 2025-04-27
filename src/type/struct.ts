@@ -34,7 +34,7 @@ export type MotorStructType<T extends { [key: string]: MotorType<any> }> = {
     new(def?: undefined, memory?: MotorMemory, address?: number): MotorStruct<T>;
 }
 
-export function createStruct<T extends { [key: string]: MotorType<any> }>(type: T): MotorStructType<T> {
+export function motorCreateStruct<T extends { [key: string]: MotorType<any> }>(type: T): MotorStructType<T> {
     return class extends MotorStruct<T> {
         static readonly size = Object.values(type).reduce((acc, curr) => acc + curr.size, 0);
         get type(): T {

@@ -1,36 +1,38 @@
-import { MotorInstance } from "../instance";
+import { MotorInstance } from "../instance"
 
 export abstract class MotorReference<T> extends MotorInstance<T> {
-    get blockAddress() {
+    get memoryAddress(): number {
         return Number(this.memory.viewer.getBigUint64(this.address, true));
     }
 
-    private set blockAddress(value: number) {
+    protected set memoryAddress(value: number) {
         this.memory.viewer.setBigUint64(this.address, BigInt(value), true);
     }
 
-    get size() {
-        if(this.blockAddress === 0) {
-            return 0;
-        }
-        return Number(this.memory.viewer.getBigUint64(this.blockAddress, true));
+    get refAddress(): number {
+        return this.memoryAddress + 8;
+    }
+
+    get size(): number {
+        return Number(this.memory.viewer.getBigUint64(this.memoryAddress, true));
     }
 
     protected set size(value: number) {
-        this.memory.free(this.blockAddress, this.size);
-        this.blockAddress = this.memory.allocate(value)
-        this.memory.viewer.setBigUint64(this.blockAddress, BigInt(value), true);
+        this.delete();
+        this.memoryAddress = this.memory.allocate(value + 8);
+        this.memory.viewer.setBigUint64(this.memoryAddress, BigInt(value), true);
     }
 
-    get refAddress(): number {
-        if(this.refAddress === 0) {
-            return 0;
+    delete(): void {
+        if (this.memoryAddress === 0) {
+            return;
         }
-        return this.refAddress + 8;
+        this.memory.free(this.memoryAddress, this.size + 8);
+        this.memoryAddress = 0;
     }
 
     free(): void {
-        this.memory.free(this.blockAddress, this.size);
+        this.delete();
         super.free();
     }
 }

@@ -1,4 +1,4 @@
-import { MotorInstance, MotorJSType, MotorType } from "../instance";
+import { MotorJSType, MotorType } from "../instance";
 import { MotorMemory } from "../memory";
 import { MotorReference } from "./reference";
 
@@ -6,6 +6,9 @@ export abstract class MotorList<T extends MotorType<any>> extends MotorReference
     abstract get type(): T;
 
     get length(): number {
+        if(this.size === 0) {
+            return 0;
+        }
         return this.size / this.type.size;
     }
 
@@ -13,7 +16,6 @@ export abstract class MotorList<T extends MotorType<any>> extends MotorReference
         const result: MotorJSType<T>[] = [];
         for (let i = 0; i < this.length; i++) {
             result.push(this.at(i).js);
-
         }
         return result;
     }
@@ -31,15 +33,16 @@ export abstract class MotorList<T extends MotorType<any>> extends MotorReference
 }
 
 export type MotorListType<T extends MotorType<any>> = {
-    size: 8;
+    readonly size: 8;
     new (value?: MotorJSType<T>[], memory?: MotorMemory, refAddress?: number): MotorList<T>;
 }
 
-export function motorCreateList<T extends MotorType<any>>(type: MotorListType<T>): MotorListType<T> {
+export function motorCreateList<T extends MotorType<any>>(type: T): MotorListType<T> {
     return class extends MotorList<T> {
+        static readonly size = 8;
         get type(): T {
-            return type.prototype.type;
+            return type;
         }
-    } as MotorListType<T>;
+    };
 }
 

@@ -23,7 +23,7 @@ export type MotorPointerType<T extends MotorType<any>> = {
     new(def?: undefined, memory?: MotorMemory, address?: number): MotorPointer<T>;
 }
 
-export function createPointer<T extends MotorType<any>>(type: T): MotorPointerType<T> {
+export function motorCreatePointer<T extends MotorType<any>>(type: T): MotorPointerType<T> {
     return class extends MotorPointer<T> {
         static readonly size = 8;
         get type(): T {

@@ -5,6 +5,7 @@ export { motorSetFloat8, motorGetFloat8 } from './utils/float8';
 export { MotorOperator } from './il/operator';
 export { MotorILType } from './il/type';
 
+export { MotorNull } from './type/null';
 export { MotorU8 } from './type/u8';
 export { MotorU16 } from './type/u16';
 export { MotorU32 } from './type/u32';
@@ -18,10 +19,10 @@ export { MotorF16 } from './type/f16';
 export { MotorF32 } from './type/f32';
 export { MotorF64 } from './type/f64';
 
-export { MotorPointer } from './type/pointer';
-export { MotorArray } from './type/array';
-export { MotorStruct } from './type/struct';
+export { MotorPointer, MotorPointerType, motorCreatePointer } from './type/pointer';
+export { MotorArray, MotorArrayType, motorCreateArray } from './type/array';
+export { MotorStruct, MotorStructType, motorCreateStruct } from './type/struct';
 
 export { MotorReference } from './type/reference';
 export { MotorString } from './type/string';
-export { MotorList } from './type/list';
+export { MotorList, MotorListType, motorCreateList } from './type/list';
