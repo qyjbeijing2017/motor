@@ -30,12 +30,12 @@ export enum MotorOperator {
     less_equal,
     greater_equal,
 
-    // bit_and,
-    // bit_or,
-    // bit_xor,
-    // bit_not,
-    // bit_shift_left,
-    // bit_shift_right,
+    bit_and,
+    bit_or,
+    bit_xor,
+    bit_not,
+    bit_shift_left,
+    bit_shift_right,
 
-    operator_mask = 0xFF,
+    mask = 0x0F,
 }
