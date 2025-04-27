@@ -1,4 +1,4 @@
-import { MotorInstance, MotorType } from "../instance";
+import { MotorType } from "../instance";
 import { MotorMemory } from "../memory";
 import { MotorReference } from "./reference";
 

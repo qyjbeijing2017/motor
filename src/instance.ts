@@ -38,5 +38,4 @@ export abstract class MotorInstance<T> {
 }
 
 export type MotorJsType<T extends MotorInstance<any>> = T extends MotorInstance<infer U> ? U : never;
-
-
+export type MotorJs<T extends MotorType<any>> = T extends MotorType<infer U> ? U : never;
