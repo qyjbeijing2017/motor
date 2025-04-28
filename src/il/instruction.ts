@@ -1,5 +1,6 @@
 import { MotorInstance } from "../instance";
 import { MotorMemory } from "../memory";
+import { MotorRuntime } from "../runtime";
 import { MotorOperator } from "./operator";
 import { MotorILType } from "./type";
 
