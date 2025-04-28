@@ -1,6 +1,6 @@
-import { MotorInstance } from "../instance";
+import { MotorNumber } from "./number";
 
-export class MotorU16 extends MotorInstance<number> {
+export class MotorU16 extends MotorNumber {
     static readonly size = 2;
     get js(): number {
         return this.memory.viewer.getUint16(this.address, true);

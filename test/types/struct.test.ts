@@ -62,3 +62,19 @@ test('set js', () => {
         a: [1, 2, 3],
     })
 })
+test('get', () => {
+    const ArrayType = motorCreateArray(MotorF32, 3);
+    const SubType = motorCreateStruct({
+        f: MotorF32,
+        i: MotorI32,
+    });
+    const StructType = motorCreateStruct({
+        s: SubType,
+        str: MotorString,
+        a: ArrayType,
+    });
+    const u8 = new StructType();
+    expect(u8.get('s').js).toEqual({ f: 0, i: 0 })
+    expect(u8.get('str').js).toEqual('')
+    expect(u8.get('a').js).toEqual([0, 0, 0])
+})

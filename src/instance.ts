@@ -22,6 +22,16 @@ export abstract class MotorInstance<JSType> {
     free() {
         this.memory.free(this.address, motorTypeof(this).size);
     }
+
+    equal(other: MotorInstance<JSType>): boolean {
+        if(other.constructor !== this.constructor) {
+            return false;
+        }
+        if(this.address === other.address) {
+            return true;
+        }
+        return false;
+    }
 }
 
 export type MotorType<JSType> = {

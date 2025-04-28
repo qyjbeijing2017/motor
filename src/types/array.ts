@@ -18,9 +18,9 @@ export abstract class MotorArray<T extends MotorType<any>> extends MotorInstance
         }
     }
 
-    at(index: number): MotorJSType<T> {
+    at(index: number): InstanceType<T> {
         const address = this.address + index * this.type.size;
-        return new this.type(undefined, this.memory, address) as MotorJSType<T>;
+        return new this.type(undefined, this.memory, address) as InstanceType<T>;
     }
 }
 

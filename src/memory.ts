@@ -87,6 +87,7 @@ export class MotorMemory {
             block.address += size;
             block.size -= size;
         }
+        this.buffer.fill(0, address, address + size);
         return address;
     }
 

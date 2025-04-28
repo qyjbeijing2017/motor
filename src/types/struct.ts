@@ -23,9 +23,8 @@ export abstract class MotorStruct<T extends { [key: string]: MotorType<any> }> e
         }
     }
 
-    get<K extends keyof T>(key: K): MotorJSType<T[K]> {
-        const instance = new this.type[key](undefined, this.memory, this.address + this.type[key].size * Number(key));
-        return instance.js;
+    get<K extends keyof T>(key: K): InstanceType<T[K]> {
+        return new this.type[key](undefined, this.memory, this.address + this.type[key].size * Number(key)) as InstanceType<T[K]>;
     }
 }
 

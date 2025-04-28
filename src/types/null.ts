@@ -5,4 +5,7 @@ export class MotorNull extends MotorInstance<null> {
     get js(): null {
         return null;
     }
+    protected onInstanceCreated(): void {
+        (this.address as any) = 0;
+    }
 }
