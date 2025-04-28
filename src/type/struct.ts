@@ -31,7 +31,7 @@ export abstract class MotorStruct<T extends { [key: string]: MotorType<any> }> e
 
 export type MotorStructType<T extends { [key: string]: MotorType<any> }> = {
     readonly size: number;
-    new(def?: undefined, memory?: MotorMemory, address?: number): MotorStruct<T>;
+    new(def?: { [K in keyof T]: MotorJSType<T[K]> }, memory?: MotorMemory, address?: number): MotorStruct<T>;
 }
 
 export function motorCreateStruct<T extends { [key: string]: MotorType<any> }>(type: T): MotorStructType<T> {

@@ -1,7 +1,7 @@
 import { MotorReference } from "./reference";
 
 export class MotorString  extends MotorReference<string> {
-    static size = 8;
+    static readonly size = 8;
     get js(): string {
         return new TextDecoder().decode(this.memory.buffer.subarray(this.refAddress, this.refAddress + this.size));
     }

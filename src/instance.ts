@@ -11,7 +11,7 @@ export abstract class MotorInstance<JSType> {
     constructor(
         def?: JSType,
         readonly memory = motorSingleton(MotorMemory),
-        readonly address = motorTypeof(this).size,
+        readonly address = memory.allocate(motorTypeof(this).size),
     ) {
         this.onInstanceCreated();
         if (def !== undefined) {
