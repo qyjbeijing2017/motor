@@ -19,18 +19,21 @@ export class MotorReturn extends MotorInstruction {
         const stackPointer = runtime.get('stackPointer');
         const framePointer = runtime.get('framePointer');
         const programCounter = runtime.get('programCounter');
+        const packagePointer = runtime.get('packagePointer');
         const stack = runtime.get('stack');
         const functionFrame = new MotorFunctionFrame(undefined, stack.memory, stack.address + framePointer.js);
         const returnAddress = functionFrame.get('returnAddress').js;
         const returnFramePointer = functionFrame.get('framePointer').js;
+        const returnPackagePointer = functionFrame.get('packagePointer').js;
         stack.memory.buffer.copyWithin(
-            stack.address + framePointer.js + 8 - this.js, 
+            stack.address + framePointer.js + MotorFunctionFrame.size - this.js, 
             stack.address + stackPointer.js, 
             stack.address + stackPointer.js + this.js
         );
-        stackPointer.js = framePointer.js + 8 - this.js;
+        stackPointer.js = framePointer.js + MotorFunctionFrame.size - this.js;
         programCounter.js = returnAddress;
         framePointer.js = returnFramePointer;
+        packagePointer.js = returnPackagePointer;
     }
 }
 MotorInstruction.instructions[MotorOperator.return] = MotorReturn;

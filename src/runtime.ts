@@ -37,6 +37,7 @@ export class MotorRuntime extends MotorStruct<{
         this.get('programCounter').js = 0;
         this.get('stackPointer').js = MotorStack.size;
         this.get('framePointer').js = 0;
+        this.get('packagePointer').js = 0;
     }
 
     pushStack<T extends MotorType<any>>(type: T, value: T extends MotorType<infer U> ? U : never): InstanceType<T> {
