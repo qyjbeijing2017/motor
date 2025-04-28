@@ -6,6 +6,6 @@ export class MotorI64 extends MotorNumber {
         return Number(this.memory.viewer.getBigInt64(this.address, true));
     }
     set js(value: number) {
-        this.memory.viewer.setBigInt64(this.address, BigInt(value), true);
+        this.memory.viewer.setBigInt64(this.address, BigInt(Math.floor(value)), true);
     }
 }

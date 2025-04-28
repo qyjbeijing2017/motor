@@ -37,5 +37,5 @@ export enum MotorOperator {
     bit_shift_left,
     bit_shift_right,
 
-    mask = 0x0F,
+    mask = 0x00FF,
 }

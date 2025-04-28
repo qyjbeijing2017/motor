@@ -64,7 +64,7 @@ export class MotorRuntime extends MotorStruct<{
             if (programCounter.js === 0) {
                 break;
             }
-            const instruction = MotorInstruction.readInstruction(this.memory, programCounter.js)
+            const instruction = MotorInstruction.readInstruction(programCounter.js, this.memory)
             programCounter.js += (instruction.constructor as MotorInstructionType).size;
             instruction.exec(this);
         }

@@ -24,7 +24,14 @@ export abstract class MotorStruct<T extends { [key: string]: MotorType<any> }> e
     }
 
     get<K extends keyof T>(key: K): InstanceType<T[K]> {
-        return new this.type[key](undefined, this.memory, this.address + this.type[key].size * Number(key)) as InstanceType<T[K]>;
+        let offset = 0
+        for (const k in this.type) {
+            if (k === key as string) {
+                return new this.type[k](undefined, this.memory, this.address + offset) as InstanceType<T[K]>;
+            }
+            offset += this.type[k].size;
+        }
+        throw new Error(`Key ${key as string} not found in struct`);
     }
 }
 

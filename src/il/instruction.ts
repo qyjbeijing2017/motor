@@ -1,11 +1,12 @@
 import { MotorInstance } from "../instance";
 import { MotorMemory } from "../memory";
 import { MotorRuntime } from "../runtime";
+import { motorSingleton } from "../utils/singleton";
 import { MotorOperator } from "./operator";
 import { MotorILType } from "./type";
 
 export abstract class MotorInstruction extends MotorInstance<number | undefined> {
-    static readonly instructions: { [key: string]: MotorInstructionType } = {};
+    static readonly instructions: { [key: number]: MotorInstructionType } = {};
     abstract get code(): number;
     get operator(): number {
         return this.code & MotorOperator.mask;
@@ -17,7 +18,7 @@ export abstract class MotorInstruction extends MotorInstance<number | undefined>
         this.memory.viewer.setUint16(this.address, this.code);
     }
 
-    static readInstruction(memory: MotorMemory, address: number): MotorInstruction {
+    static readInstruction(address: number, memory: MotorMemory = motorSingleton(MotorMemory)): MotorInstruction {
         const code = memory.viewer.getUint16(address);
         const instructionClass = this.instructions[code];
         if (!instructionClass) {

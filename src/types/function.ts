@@ -16,7 +16,7 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
         const infos: IMotorInstructionInfo[] = [];
         let offset = 0;
         while (offset < this.size) {
-            const info = MotorInstruction.readInstruction(this.memory, this.refAddress + offset);
+            const info = MotorInstruction.readInstruction(this.refAddress + offset, this.memory);
             const type = info.constructor as MotorInstructionType;
             infos.push({
                 type,
