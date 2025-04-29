@@ -15,7 +15,6 @@ import { MotorInstruction } from "../instruction";
 import { MotorOperator } from "../operator";
 import { MotorILType } from "../type";
 
-
 export class MotorGreaterEqualU8 extends MotorInstruction {
     get code(): number {
         return MotorOperator.greater_equal | MotorILType.U8;

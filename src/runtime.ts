@@ -5,6 +5,13 @@ import { MotorStack } from "./stack";
 import { MotorStruct } from "./types/struct";
 import { MotorU16 } from "./types/number/u16";
 import { MotorU64 } from "./types/number/u64";
+import { motorCreateMap } from "./types/map";
+import { MotorString } from "./types/string";
+
+const PackageMap = motorCreateMap(
+    MotorString,
+    MotorU64,
+)
 
 export class MotorRuntime extends MotorStruct<{
     programCounter: typeof MotorU64,
@@ -12,6 +19,7 @@ export class MotorRuntime extends MotorStruct<{
     framePointer: typeof MotorU64,
     packagePointer: typeof MotorU64,
     stack: typeof MotorStack,
+    packageMap: typeof PackageMap,
 }> {
     static readonly size =
         MotorU64.size +
@@ -26,6 +34,7 @@ export class MotorRuntime extends MotorStruct<{
             framePointer: MotorU64,
             packagePointer: MotorU64,
             stack: MotorStack,
+            packageMap: PackageMap,
         };
     }
 
@@ -75,11 +84,9 @@ export class MotorRuntime extends MotorStruct<{
         const functionAddress = this.popStack(MotorU64);
         const programCounter = this.get('programCounter');
         const framePointer = this.get('framePointer');
-        const packagePointer = this.get('packagePointer');
         this.pushStack(MotorFunctionFrame, {
             returnAddress: programCounter.js,
             framePointer: framePointer.js,
-            packagePointer: packagePointer.js,
         })
         framePointer.js = this.get('stackPointer').js;
         programCounter.js = functionAddress;

@@ -18,11 +18,9 @@ export class MotorCall extends MotorInstruction {
         const functionAddress = runtime.popStack(MotorU64);
         const programCounter = runtime.get('programCounter');
         const framePointer = runtime.get('framePointer');
-        const packagePointer = runtime.get('packagePointer');
         runtime.pushStack(MotorFunctionFrame, {
             returnAddress: programCounter.js,
             framePointer: framePointer.js,
-            packagePointer: packagePointer.js,
         })
         framePointer.js = runtime.get('stackPointer').js;
         programCounter.js = functionAddress;

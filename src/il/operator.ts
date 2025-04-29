@@ -7,7 +7,7 @@ export enum MotorOperator {
 
     local,
     call,
-    call_external,
+    invoke,
     return,
 
     jump,
