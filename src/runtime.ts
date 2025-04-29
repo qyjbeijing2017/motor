@@ -16,15 +16,16 @@ export class MotorRuntime extends MotorStruct<{
     programCounter: typeof MotorU64,
     stackPointer: typeof MotorU64,
     framePointer: typeof MotorU64,
-    packagePointer: typeof MotorU64,
     stack: typeof MotorStack,
     packageMap: typeof PackageMap,
 }> {
+    readonly invokeMap: Map<string, (runtime: MotorRuntime) => void | Promise<void>> = new Map();
     static readonly size =
+        MotorU16.size +
         MotorU64.size +
         MotorU64.size +
-        MotorU64.size +
-        MotorStack.size;
+        MotorStack.size +
+        PackageMap.size;
     get type() {
         return {
             id: MotorU16,
@@ -45,7 +46,6 @@ export class MotorRuntime extends MotorStruct<{
         this.get('programCounter').js = 0;
         this.get('stackPointer').js = MotorStack.size;
         this.get('framePointer').js = 0;
-        this.get('packagePointer').js = 0;
         this.get('packageMap').clear();
     }
 

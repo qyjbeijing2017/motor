@@ -15,6 +15,10 @@ export class MotorInvoke extends MotorInstruction {
     }
     async exec(runtime: MotorRuntime): Promise<void> {
         const functionName = runtime.popStack(MotorString);
+        if(!runtime.invokeMap.has(functionName)) {
+            throw new Error(`Function ${functionName} not found in runtime`);
+        }
+        await runtime.invokeMap.get(functionName)!(runtime);
     }
 }
 MotorInstruction.instructions[MotorOperator.invoke] = MotorInvoke;
