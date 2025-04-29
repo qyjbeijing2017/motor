@@ -1,4 +1,3 @@
-import { MotorFunctionFrame } from "./il/function-frame";
 import { MotorInstruction, MotorInstructionType } from "./il/instruction";
 import { MotorType } from "./instance";
 import { MotorStack } from "./stack";
