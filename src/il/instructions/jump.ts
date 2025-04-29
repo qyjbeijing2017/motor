@@ -13,7 +13,7 @@ export class MotorJump extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.get('programCounter').js += this.js;
     }
 }

@@ -26,7 +26,7 @@ export class MotorIfNotZeroU8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorU8);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -46,7 +46,7 @@ export class MotorIfNotZeroU16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorU16);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -66,7 +66,7 @@ export class MotorIfNotZeroU32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorU32);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -86,7 +86,7 @@ export class MotorIfNotZeroU64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorU64);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -106,7 +106,7 @@ export class MotorIfNotZeroI8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorI8);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -126,7 +126,7 @@ export class MotorIfNotZeroI16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorI16);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -146,7 +146,7 @@ export class MotorIfNotZeroI32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorI32);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -166,7 +166,7 @@ export class MotorIfNotZeroI64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorI64);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -186,7 +186,7 @@ export class MotorIfNotZeroF8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorF8);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -206,7 +206,7 @@ export class MotorIfNotZeroF16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorF16);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -226,7 +226,7 @@ export class MotorIfNotZeroF32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorF32);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;
@@ -246,7 +246,7 @@ export class MotorIfNotZeroF64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const value = runtime.popStack(MotorF64);
         if (value !== 0) {
             runtime.get('programCounter').js += this.js;

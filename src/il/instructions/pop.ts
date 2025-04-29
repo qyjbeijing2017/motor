@@ -25,7 +25,7 @@ export class MotorPopU8 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorU8);
     }
 }
@@ -41,7 +41,7 @@ export class MotorPopU16 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorU16);
     }
 }
@@ -57,7 +57,7 @@ export class MotorPopU32 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorU32);
     }
 }
@@ -73,7 +73,7 @@ export class MotorPopU64 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorU64);
     }
 }
@@ -89,7 +89,7 @@ export class MotorPopI8 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorI8);
     }
 }
@@ -105,7 +105,7 @@ export class MotorPopI16 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorI16);
     }
 }
@@ -121,7 +121,7 @@ export class MotorPopI32 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorI32);
     }
 }
@@ -137,7 +137,7 @@ export class MotorPopI64 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorI64);
     }
 }
@@ -153,7 +153,7 @@ export class MotorPopF8 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorF8);
     }
 }
@@ -169,7 +169,7 @@ export class MotorPopF16 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorF16);
     }
 }
@@ -185,7 +185,7 @@ export class MotorPopF32 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorF32);
     }
 }
@@ -201,7 +201,7 @@ export class MotorPopF64 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.popStack(MotorF64);
     }
 }

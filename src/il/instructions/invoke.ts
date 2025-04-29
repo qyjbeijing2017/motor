@@ -13,7 +13,7 @@ export class MotorInvoke extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const functionName = runtime.popStack(MotorString);
     }
 }

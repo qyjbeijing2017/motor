@@ -26,7 +26,7 @@ export class MotorLessEqualU8 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorU8);
         const a = runtime.popStack(MotorU8);
         runtime.pushStack(MotorU8, a <= b ? 1 : 0);
@@ -44,7 +44,7 @@ export class MotorLessEqualU16 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorU16);
         const a = runtime.popStack(MotorU16);
         runtime.pushStack(MotorU16, a <= b ? 1 : 0);
@@ -62,7 +62,7 @@ export class MotorLessEqualU32 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorU32);
         const a = runtime.popStack(MotorU32);
         runtime.pushStack(MotorU32, a <= b ? 1 : 0);
@@ -80,7 +80,7 @@ export class MotorLessEqualU64 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorU64);
         const a = runtime.popStack(MotorU64);
         runtime.pushStack(MotorU64, a <= b ? 1 : 0);
@@ -98,7 +98,7 @@ export class MotorLessEqualI8 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorI8);
         const a = runtime.popStack(MotorI8);
         runtime.pushStack(MotorI8, a <= b ? 1 : 0);
@@ -116,7 +116,7 @@ export class MotorLessEqualI16 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorI16);
         const a = runtime.popStack(MotorI16);
         runtime.pushStack(MotorI16, a <= b ? 1 : 0);
@@ -134,7 +134,7 @@ export class MotorLessEqualI32 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorI32);
         const a = runtime.popStack(MotorI32);
         runtime.pushStack(MotorI32, a <= b ? 1 : 0);
@@ -152,7 +152,7 @@ export class MotorLessEqualI64 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorI64);
         const a = runtime.popStack(MotorI64);
         runtime.pushStack(MotorI64, a <= b ? 1 : 0);
@@ -170,7 +170,7 @@ export class MotorLessEqualF8 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorF8);
         const a = runtime.popStack(MotorF8);
         runtime.pushStack(MotorF8, a <= b ? 1 : 0);
@@ -188,7 +188,7 @@ export class MotorLessEqualF16 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorF16);
         const a = runtime.popStack(MotorF16);
         runtime.pushStack(MotorF16, a <= b ? 1 : 0);
@@ -206,7 +206,7 @@ export class MotorLessEqualF32 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorF32);
         const a = runtime.popStack(MotorF32);
         runtime.pushStack(MotorF32, a <= b ? 1 : 0);
@@ -224,7 +224,7 @@ export class MotorLessEqualF64 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const b = runtime.popStack(MotorF64);
         const a = runtime.popStack(MotorF64);
         runtime.pushStack(MotorF64, a <= b ? 1 : 0);

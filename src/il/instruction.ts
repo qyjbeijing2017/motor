@@ -26,7 +26,7 @@ export abstract class MotorInstruction extends MotorInstance<number | undefined>
         }
         return new instructionClass(undefined, memory, address);
     }
-    abstract exec(runtime: MotorRuntime): void;
+    abstract exec(runtime: MotorRuntime): Promise<void>;
 }
 
 export type MotorInstructionType = {

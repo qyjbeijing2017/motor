@@ -43,7 +43,7 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
         return this.argTypes.reduce((acc, arg) => acc + arg.size, 0);
     }
 
-    call(args: MotorJSType<InstanceType<Args[number]>>[] = [], runtime: MotorRuntime = motorSingleton(MotorRuntime)): MotorJSType<InstanceType<ReturnType>> {
+    async call(args: MotorJSType<InstanceType<Args[number]>>[] = [], runtime: MotorRuntime = motorSingleton(MotorRuntime)): Promise<MotorJSType<InstanceType<ReturnType>>> {
         args.reverse();
         this.argTypes
             .concat()
@@ -59,7 +59,7 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
         })
         framePointer.js = runtime.get('stackPointer').js;
         programCounter.js = this.refAddress;
-        runtime.run();
+        await runtime.run();
         return runtime.popStack(this.returnType) as MotorJSType<InstanceType<ReturnType>>;
     }
 }

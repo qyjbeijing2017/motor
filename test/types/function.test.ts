@@ -45,14 +45,14 @@ test('set js', () => {
         { type: MotorReturn, immediate: MotorF16.size },
     ]);
 })
-test('call', () => {
+test('call', async () => {
     const FunctionOnTest = motorCreateFunction(MotorF32, [MotorF32]);
     const instanceOnTest = new FunctionOnTest([
         { type: MotorLocalF32, immediate: 0 },
         { type: MotorReturn, immediate: MotorF32.size },
     ]);
-    const valueOnTest = instanceOnTest.call([1]);
+    const valueOnTest = await instanceOnTest.call([1]);
     expect(valueOnTest).toBe(1);
-    const valueOnTest2 = instanceOnTest.call([2]);
+    const valueOnTest2 = await instanceOnTest.call([2]);
     expect(valueOnTest2).toBe(2);
 })

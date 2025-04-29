@@ -14,7 +14,7 @@ export class MotorCall extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const functionAddress = runtime.popStack(MotorU64);
         const programCounter = runtime.get('programCounter');
         const framePointer = runtime.get('framePointer');

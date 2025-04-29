@@ -46,6 +46,11 @@ export class MotorRuntime extends MotorStruct<{
         this.get('stackPointer').js = MotorStack.size;
         this.get('framePointer').js = 0;
         this.get('packagePointer').js = 0;
+        this.get('packageMap').clear();
+    }
+
+    async init() {
+
     }
 
     pushStack<T extends MotorType<any>>(type: T, value: T extends MotorType<infer U> ? U : never): InstanceType<T> {
@@ -67,7 +72,7 @@ export class MotorRuntime extends MotorStruct<{
         return value;
     }
 
-    run() {
+    async run() {
         const programCounter = this.get('programCounter');
         while (true) {
             if (programCounter.js === 0) {
@@ -75,7 +80,7 @@ export class MotorRuntime extends MotorStruct<{
             }
             const instruction = MotorInstruction.readInstruction(programCounter.js, this.memory)
             programCounter.js += (instruction.constructor as MotorInstructionType).size;
-            instruction.exec(this);
+            await instruction.exec(this);
         }
     }
 }

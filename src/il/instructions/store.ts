@@ -25,7 +25,7 @@ export class MotorStoreU8 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorU8);
         new MotorU8(value, runtime.memory, target)
@@ -43,7 +43,7 @@ export class MotorStoreU16 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorU16);
         new MotorU16(value, runtime.memory, target)
@@ -61,7 +61,7 @@ export class MotorStoreU32 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorU32);
         new MotorU32(value, runtime.memory, target)
@@ -79,7 +79,7 @@ export class MotorStoreU64 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorU64);
         new MotorU64(value, runtime.memory, target)
@@ -97,7 +97,7 @@ export class MotorStoreI8 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorI8);
         new MotorI8(value, runtime.memory, target)
@@ -115,7 +115,7 @@ export class MotorStoreI16 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorI16);
         new MotorI16(value, runtime.memory, target)
@@ -133,7 +133,7 @@ export class MotorStoreI32 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorI32);
         new MotorI32(value, runtime.memory, target)
@@ -151,7 +151,7 @@ export class MotorStoreI64 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorI64);
         new MotorI64(value, runtime.memory, target)
@@ -169,7 +169,7 @@ export class MotorStoreF8 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorF8);
         new MotorF8(value, runtime.memory, target)
@@ -187,7 +187,7 @@ export class MotorStoreF16 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorF16);
         new MotorF16(value, runtime.memory, target)
@@ -205,7 +205,7 @@ export class MotorStoreF32 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorF32);
         new MotorF32(value, runtime.memory, target)
@@ -223,7 +223,7 @@ export class MotorStoreF64 extends MotorInstruction {
     }
     set js(_: undefined) {
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const target = runtime.popStack(MotorU64);
         const value = runtime.popStack(MotorF64);
         new MotorF64(value, runtime.memory, target)

@@ -28,7 +28,7 @@ export class MotorPushU8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setUint8(this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorU8, this.js);
     }
 }
@@ -45,7 +45,7 @@ export class MotorPushU16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setUint16(this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorU16, this.js);
     }
 }
@@ -62,7 +62,7 @@ export class MotorPushU32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setUint32(this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorU32, this.js);
     }
 }
@@ -79,7 +79,7 @@ export class MotorPushU64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigUint64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorU64, this.js);
     }
 }
@@ -96,7 +96,7 @@ export class MotorPushI8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setInt8(this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorI8, this.js);
     }
 }
@@ -113,7 +113,7 @@ export class MotorPushI16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setInt16(this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorI16, this.js);
     }
 }
@@ -130,7 +130,7 @@ export class MotorPushI32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setInt32(this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorI32, this.js);
     }
 }
@@ -147,7 +147,7 @@ export class MotorPushI64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorI64, this.js);
     }
 }
@@ -164,7 +164,7 @@ export class MotorPushF8 extends MotorInstruction {
     set js(value: number) {
         motorSetFloat8(this.memory.viewer, this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorF8, this.js);
     }
 }
@@ -181,7 +181,7 @@ export class MotorPushF16 extends MotorInstruction {
     set js(value: number) {
         setFloat16(this.memory.viewer, this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorF16, this.js);
     }
 }
@@ -198,7 +198,7 @@ export class MotorPushF32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setFloat32(this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorF32, this.js);
     }
 }
@@ -215,7 +215,7 @@ export class MotorPushF64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setFloat64(this.address + 2, value);
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         runtime.pushStack(MotorF64, this.js);
     }
 }

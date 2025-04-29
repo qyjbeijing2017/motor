@@ -15,7 +15,7 @@ export class MotorReturn extends MotorInstruction {
         this.memory.viewer.setUint16(this.address, this.code);
         return Number(this.memory.viewer.getBigUint64(this.address + 2));
     }
-    exec(runtime: MotorRuntime): void {
+    async exec(runtime: MotorRuntime): Promise<void> {
         const stackPointer = runtime.get('stackPointer');
         const framePointer = runtime.get('framePointer');
         const programCounter = runtime.get('programCounter');

@@ -59,6 +59,10 @@ export abstract class MotorMap<K extends MotorType<any>, V extends MotorType<any
         }
         return new MotorNull(undefined, this.memory);
     }
+
+    clear(): void {
+        this.js = [];
+    }
 }
 
 export type MotorMapType<K extends MotorType<any>, V extends MotorType<any>> = {
