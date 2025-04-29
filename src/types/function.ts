@@ -5,6 +5,7 @@ import { MotorRuntime } from "../runtime";
 import { motorSingleton } from "../utils/singleton";
 import { MotorReference } from "./reference";
 import { MotorU64 } from "./number/u64";
+import { MotorFunctionFrame } from "../il/function-frame";
 
 export interface IMotorInstructionInfo {
     type: MotorInstructionType;
@@ -41,9 +42,8 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
     get argsLength(): number {
         return this.argTypes.reduce((acc, arg) => acc + arg.size, 0);
     }
-    
+
     call(args: MotorJSType<InstanceType<Args[number]>>[] = [], runtime: MotorRuntime = motorSingleton(MotorRuntime)): MotorJSType<InstanceType<ReturnType>> {
-        runtime.clear();
         args.reverse();
         this.argTypes
             .concat()
@@ -51,15 +51,22 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
             .forEach((argType, i) => {
                 runtime.pushStack(argType, args[i]);
             });
-        runtime.pushStack(MotorU64, this.refAddress);
-        runtime.call();
+        const programCounter = runtime.get('programCounter');
+        const framePointer = runtime.get('framePointer');
+        runtime.pushStack(MotorFunctionFrame, {
+            returnAddress: programCounter.js,
+            framePointer: framePointer.js,
+        })
+        framePointer.js = runtime.get('stackPointer').js;
+        programCounter.js = this.refAddress;
+        runtime.run();
         return runtime.popStack(this.returnType) as MotorJSType<InstanceType<ReturnType>>;
     }
 }
 
 export type MotorFunctionType<ReturnType extends MotorType<any>, Args extends MotorType<any>[]> = {
     readonly size: 8;
-    new (def?: IMotorInstructionInfo[], memory?: MotorMemory, address?: number): MotorFunction<ReturnType, Args>;
+    new(def?: IMotorInstructionInfo[], memory?: MotorMemory, address?: number): MotorFunction<ReturnType, Args>;
 }
 
 export function motorCreateFunction<ReturnType extends MotorType<any>, Args extends MotorType<any>[]>(returnType: ReturnType, argTypes: Args): MotorFunctionType<ReturnType, Args> {

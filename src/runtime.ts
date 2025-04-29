@@ -79,17 +79,4 @@ export class MotorRuntime extends MotorStruct<{
             instruction.exec(this);
         }
     }
-
-    call() {
-        const functionAddress = this.popStack(MotorU64);
-        const programCounter = this.get('programCounter');
-        const framePointer = this.get('framePointer');
-        this.pushStack(MotorFunctionFrame, {
-            returnAddress: programCounter.js,
-            framePointer: framePointer.js,
-        })
-        framePointer.js = this.get('stackPointer').js;
-        programCounter.js = functionAddress;
-        this.run();
-    }
 }
