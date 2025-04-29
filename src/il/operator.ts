@@ -6,12 +6,15 @@ export enum MotorOperator {
     load,
 
     local,
+
     call,
     invoke,
     return,
 
     jump,
     if_not_zero,
+
+    transform,
 
     add,
     sub,

@@ -18,6 +18,8 @@ export { MotorReturn } from './il/instructions/return';
 export { MotorJump } from './il/instructions/jump';
 export { MotorIfNotZeroU8, MotorIfNotZeroU16, MotorIfNotZeroU32, MotorIfNotZeroU64, MotorIfNotZeroI8, MotorIfNotZeroI16, MotorIfNotZeroI32, MotorIfNotZeroI64, MotorIfNotZeroF8, MotorIfNotZeroF16, MotorIfNotZeroF32, MotorIfNotZeroF64 } from './il/instructions/if_not_zero';
 
+export { MotorTransformU8, MotorTransformU16, MotorTransformU32, MotorTransformU64, MotorTransformI8, MotorTransformI16, MotorTransformI32, MotorTransformI64, MotorTransformF8, MotorTransformF16, MotorTransformF32, MotorTransformF64 } from './il/instructions/transform';
+
 export { MotorAddU8, MotorAddU16, MotorAddU32, MotorAddU64, MotorAddI8, MotorAddI16, MotorAddI32, MotorAddI64, MotorAddF8, MotorAddF16, MotorAddF32, MotorAddF64 } from './il/instructions/add';
 export { MotorSubU8, MotorSubU16, MotorSubU32, MotorSubU64, MotorSubI8, MotorSubI16, MotorSubI32, MotorSubI64, MotorSubF8, MotorSubF16, MotorSubF32, MotorSubF64 } from './il/instructions/sub';
 export { MotorMulU8, MotorMulU16, MotorMulU32, MotorMulU64, MotorMulI8, MotorMulI16, MotorMulI32, MotorMulI64, MotorMulF8, MotorMulF16, MotorMulF32, MotorMulF64 } from './il/instructions/mul';
@@ -34,6 +36,13 @@ export { MotorAndU8, MotorAndU16, MotorAndU32, MotorAndU64, MotorAndI8, MotorAnd
 export { MotorOrU8, MotorOrU16, MotorOrU32, MotorOrU64, MotorOrI8, MotorOrI16, MotorOrI32, MotorOrI64 } from './il/instructions/or';
 export { MotorXorU8, MotorXorU16, MotorXorU32, MotorXorU64, MotorXorI8, MotorXorI16, MotorXorI32, MotorXorI64 } from './il/instructions/xor';
 export { MotorNotU8, MotorNotU16, MotorNotU32, MotorNotU64, MotorNotI8, MotorNotI16, MotorNotI32, MotorNotI64 } from './il/instructions/not';
+
+export { MotorBitAndU8, MotorBitAndU16, MotorBitAndU32, MotorBitAndU64, MotorBitAndI8, MotorBitAndI16, MotorBitAndI32, MotorBitAndI64 } from './il/instructions/bit_and';
+export { MotorBitOrU8, MotorBitOrU16, MotorBitOrU32, MotorBitOrU64, MotorBitOrI8, MotorBitOrI16, MotorBitOrI32, MotorBitOrI64 } from './il/instructions/bit_or';
+export { MotorBitXorU8, MotorBitXorU16, MotorBitXorU32, MotorBitXorU64, MotorBitXorI8, MotorBitXorI16, MotorBitXorI32, MotorBitXorI64 } from './il/instructions/bit_xor';
+export { MotorBitNotU8, MotorBitNotU16, MotorBitNotU32, MotorBitNotU64, MotorBitNotI8, MotorBitNotI16, MotorBitNotI32, MotorBitNotI64 } from './il/instructions/bit_not';
+export { MotorBitShiftLeftU8, MotorBitShiftLeftU16, MotorBitShiftLeftU32, MotorBitShiftLeftU64, MotorBitShiftLeftI8, MotorBitShiftLeftI16, MotorBitShiftLeftI32, MotorBitShiftLeftI64 } from './il/instructions/bit_shift_left';
+export { MotorBitShiftRightU8, MotorBitShiftRightU16, MotorBitShiftRightU32, MotorBitShiftRightU64, MotorBitShiftRightI8, MotorBitShiftRightI16, MotorBitShiftRightI32, MotorBitShiftRightI64 } from './il/instructions/bit_shift_right';
 
 export { MotorNull } from './types/null';
 export { MotorU8 } from './types/number/u8';
