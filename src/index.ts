@@ -13,6 +13,7 @@ export { MotorLoadU8, MotorLoadU16, MotorLoadU32, MotorLoadU64, MotorLoadI8, Mot
 
 export { MotorLocalU8, MotorLocalU16, MotorLocalU32, MotorLocalU64, MotorLocalI8, MotorLocalI16, MotorLocalI32, MotorLocalI64, MotorLocalF8, MotorLocalF16, MotorLocalF32, MotorLocalF64 } from './il/instructions/local';
 export { MotorCall } from './il/instructions/call';
+export { MotorInvoke } from './il/instructions/invoke';
 export { MotorReturn } from './il/instructions/return';
 
 export { MotorJump } from './il/instructions/jump';

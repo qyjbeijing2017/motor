@@ -21,7 +21,10 @@ export class MotorRuntime extends MotorStruct<{
     packageMap: typeof PackageMap,
 }> {
     readonly invokeMap: Map<string, (runtime: MotorRuntime) => void | Promise<void>> = new Map([
-        ['system.print', async (runtime) => console.log(runtime.popStack(MotorString))],
+        ['system.print', async (runtime) => {
+            const logStr = runtime.popStack(MotorString);
+            console.log(logStr);
+        }],
         ['system.import', async (runtime) => {
             const newPackage = new MotorPackage(runtime.popStack(MotorString), runtime);
             const targetAddress = await newPackage.init();

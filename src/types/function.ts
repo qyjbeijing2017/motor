@@ -60,7 +60,15 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
         framePointer.js = runtime.get('stackPointer').js;
         programCounter.js = this.refAddress;
         await runtime.run();
-        return runtime.popStack(this.returnType) as MotorJSType<InstanceType<ReturnType>>;
+        const retVal = runtime.popStack(this.returnType) as MotorJSType<InstanceType<ReturnType>>;
+
+        this.argTypes
+        .concat()
+        .reverse()
+        .forEach((argType, i) => {
+            runtime.popStack(argType);
+        });
+        return retVal;
     }
 }
 
