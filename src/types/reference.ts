@@ -30,9 +30,4 @@ export abstract class MotorReference<T> extends MotorInstance<T> {
         this.memory.free(this.memoryAddress, this.size + 8);
         this.memoryAddress = 0;
     }
-
-    free(): void {
-        this.delete();
-        super.free();
-    }
 }

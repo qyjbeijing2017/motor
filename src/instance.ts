@@ -19,7 +19,12 @@ export abstract class MotorInstance<JSType> {
         }
     }
 
+    delete() {
+        // free memory from heap
+    }
+
     free() {
+        this.delete();
         this.memory.free(this.address, motorTypeof(this).size);
     }
 

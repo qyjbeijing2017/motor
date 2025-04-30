@@ -6,6 +6,7 @@ import { MotorU16 } from "./types/number/u16";
 import { MotorU64 } from "./types/number/u64";
 import { motorCreateMap } from "./types/map";
 import { MotorString } from "./types/string";
+import { MotorPackage } from "./package";
 
 const PackageMap = motorCreateMap(
     MotorString,
@@ -19,7 +20,16 @@ export class MotorRuntime extends MotorStruct<{
     stack: typeof MotorStack,
     packageMap: typeof PackageMap,
 }> {
-    readonly invokeMap: Map<string, (runtime: MotorRuntime) => void | Promise<void>> = new Map();
+    readonly invokeMap: Map<string, (runtime: MotorRuntime) => void | Promise<void>> = new Map([
+        ['system.print', async (runtime) => console.log(runtime.popStack(MotorString))],
+        ['system.import', async (runtime) => {
+            const newPackage = new MotorPackage(runtime.popStack(MotorString), runtime);
+            const targetAddress = await newPackage.init();
+            this.packages.set(newPackage.url, newPackage);
+            runtime.pushStack(MotorU64, targetAddress);
+        }]
+    ]);
+    readonly packages: Map<string, MotorPackage> = new Map();
     static readonly size =
         MotorU16.size +
         MotorU64.size +
@@ -50,7 +60,19 @@ export class MotorRuntime extends MotorStruct<{
     }
 
     async init() {
-
+        const packageMap = this.get('packageMap');
+        for(let i = 0; i < packageMap.length; i++) {
+            const [key, value] = packageMap.at(i);
+            let pack = this.packages.get(key.js);
+            if(!pack) {
+                const newPack = new MotorPackage(key.js, this);
+                this.packages.set(key.js, newPack);
+                pack = newPack;
+            }
+            if(!pack.initialized) {
+                value.js = await pack.init(value.js);
+            }
+        }
     }
 
     pushStack<T extends MotorType<any>>(type: T, value: T extends MotorType<infer U> ? U : never): InstanceType<T> {
@@ -67,9 +89,11 @@ export class MotorRuntime extends MotorStruct<{
         if (stackPointer.js + type.size > MotorStack.size) {
             throw new Error('Stack underflow');
         }
-        const value = new type(undefined, this.get('stack').memory, this.get('stack').address + stackPointer.js).js;
+        const value = new type(undefined, this.memory, this.get('stack').address + stackPointer.js);
+        const jsValue = value.js;
         stackPointer.js += type.size;
-        return value;
+        value.delete();
+        return jsValue;
     }
 
     async run() {
