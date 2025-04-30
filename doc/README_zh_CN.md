@@ -4,7 +4,7 @@
 
 #### 语言
 
-* [英文](../README.md)
+* [English](../README.md)
 
 #### 1. 为什么要开发Motor？
 
