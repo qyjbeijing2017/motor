@@ -46,8 +46,8 @@ export class MotorRuntime extends MotorStruct<{
                 if (result) {
                     const initFunc = new Function('runtime', 'targetAddress', result);
                     const targetAddress = initFunc(this);
-                    this.get('packageMap').set(key, targetAddress);
-                    continue;
+                    this.get('packageMap').set(key, targetAddress ?? 0);
+                    return;
                 }
             }
             throw new Error(`Package ${key} not found`);
@@ -64,7 +64,6 @@ export class MotorRuntime extends MotorStruct<{
             programCounter: MotorU64,
             stackPointer: MotorU64,
             framePointer: MotorU64,
-            packagePointer: MotorU64,
             stack: MotorStack,
             packageMap: PackageMap,
         };
