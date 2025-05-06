@@ -13,6 +13,7 @@ import {
     MotorF32,
     MotorF64,
     MotorStack,
+    MotorString,
 } from '../src';
 describe('Runtime Test', () => {
     const runtimeOnTest = new MotorRuntime();
@@ -30,6 +31,7 @@ describe('Runtime Test', () => {
         runtimeOnTest.pushStack(MotorF16, -10.1);
         runtimeOnTest.pushStack(MotorF32, 11.11);
         runtimeOnTest.pushStack(MotorF64, -12.12);
+        runtimeOnTest.pushStack(MotorString, 'hello world12345678');
         expect(MotorStack.size - runtimeOnTest.get('stackPointer').js).toBe(
             MotorU8.size +
             MotorU16.size +
@@ -42,8 +44,10 @@ describe('Runtime Test', () => {
             MotorF8.size +
             MotorF16.size +
             MotorF32.size +
-            MotorF64.size
+            MotorF64.size +
+            MotorString.size
         )
+        expect(runtimeOnTest.popStack(MotorString)).toBe('hello world12345678');
         expect(runtimeOnTest.popStack(MotorF64)).toBeCloseTo(-12.12);
         expect(runtimeOnTest.popStack(MotorF32)).toBeCloseTo(11.11);
         expect(runtimeOnTest.popStack(MotorF16)).toBeCloseTo(-10.1);

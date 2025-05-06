@@ -44,6 +44,9 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
     }
 
     async call(args: MotorJSType<InstanceType<Args[number]>>[] = [], runtime: MotorRuntime = motorSingleton(MotorRuntime)): Promise<MotorJSType<InstanceType<ReturnType>>> {
+        if(args.length  !== this.argTypes.length) {
+            throw new Error(`Function ${this.refAddress} expects ${this.argTypes.length} arguments, but got ${args.length}`);
+        }
         args.reverse();
         this.argTypes
             .concat()

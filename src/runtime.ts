@@ -34,14 +34,13 @@ export class MotorRuntime extends MotorStruct<{
     ]);
     readonly packages: Map<string, MotorPackage> = new Map();
     static readonly size =
-        MotorU16.size +
+        MotorU64.size +
         MotorU64.size +
         MotorU64.size +
         MotorStack.size +
         PackageMap.size;
     get type() {
         return {
-            id: MotorU16,
             programCounter: MotorU64,
             stackPointer: MotorU64,
             framePointer: MotorU64,
@@ -64,15 +63,15 @@ export class MotorRuntime extends MotorStruct<{
 
     async init() {
         const packageMap = this.get('packageMap');
-        for(let i = 0; i < packageMap.length; i++) {
+        for (let i = 0; i < packageMap.length; i++) {
             const [key, value] = packageMap.at(i);
             let pack = this.packages.get(key.js);
-            if(!pack) {
+            if (!pack) {
                 const newPack = new MotorPackage(key.js, this);
                 this.packages.set(key.js, newPack);
                 pack = newPack;
             }
-            if(!pack.initialized) {
+            if (!pack.initialized) {
                 value.js = await pack.init(value.js);
             }
         }

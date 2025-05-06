@@ -1,6 +1,7 @@
-import { motorCreateFunction, MotorInvoke, MotorLocalU64, MotorNull, MotorPushU64, MotorReturn, MotorString } from "../../src"
+import { motorCreateFunction, MotorInvoke, MotorLocalU64, MotorMemory, MotorNull, MotorPushU64, MotorReturn, MotorRuntime, motorSingleton, MotorStack, MotorString, MotorU64 } from "../../src"
 
 test('Call External', () => {
+    const runtime = new MotorRuntime();
     const FunctionOnTest = motorCreateFunction(MotorNull, [
         MotorString,
         MotorString,
@@ -9,7 +10,7 @@ test('Call External', () => {
     const str = new MotorString('hello world');
 
     const logInstance = new FunctionOnTest([
-        { type: MotorPushU64, immediate: str.memoryAddress},
+        { type: MotorPushU64, immediate: str.memoryAddress },
         { type: MotorLocalU64, immediate: 0 },
         { type: MotorInvoke },
         { type: MotorReturn },
@@ -17,6 +18,9 @@ test('Call External', () => {
 
     logInstance.call([
         'system.print',
-        '12345566'
-    ]);
+        '123455',
+    ], runtime);
+
+
+
 })
