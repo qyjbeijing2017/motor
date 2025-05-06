@@ -21,7 +21,6 @@ test('write', () => {
 
 test('readFromInstruction', () => {
     const instructionOnTest = new MotorPushF8(3)
-    console.log(instructionOnTest.code)
     const instruction = MotorInstruction.readInstruction(instructionOnTest.address)
     expect(instruction).toBeInstanceOf(MotorPushF8)
     expect(instruction.js).toBe(3)

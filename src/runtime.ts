@@ -2,11 +2,9 @@ import { MotorInstruction, MotorInstructionType } from "./il/instruction";
 import { MotorType } from "./instance";
 import { MotorStack } from "./stack";
 import { MotorStruct } from "./types/struct";
-import { MotorU16 } from "./types/number/u16";
 import { MotorU64 } from "./types/number/u64";
 import { motorCreateMap } from "./types/map";
 import { MotorString } from "./types/string";
-import { MotorPackage } from "./package";
 
 const PackageMap = motorCreateMap(
     MotorString,
@@ -21,18 +19,13 @@ export class MotorRuntime extends MotorStruct<{
     packageMap: typeof PackageMap,
 }> {
     readonly invokeMap: Map<string, (runtime: MotorRuntime) => void | Promise<void>> = new Map([
-        ['system.print', async (runtime) => {
+        ['print', async (runtime) => {
             const logStr = runtime.popStack(MotorString);
             console.log(logStr);
         }],
-        ['system.import', async (runtime) => {
-            const newPackage = new MotorPackage(runtime.popStack(MotorString), runtime);
-            const targetAddress = await newPackage.init();
-            this.packages.set(newPackage.url, newPackage);
-            runtime.pushStack(MotorU64, targetAddress);
+        ['import', async (runtime) => {
         }]
     ]);
-    readonly packages: Map<string, MotorPackage> = new Map();
     static readonly size =
         MotorU64.size +
         MotorU64.size +
@@ -62,19 +55,6 @@ export class MotorRuntime extends MotorStruct<{
     }
 
     async init() {
-        const packageMap = this.get('packageMap');
-        for (let i = 0; i < packageMap.length; i++) {
-            const [key, value] = packageMap.at(i);
-            let pack = this.packages.get(key.js);
-            if (!pack) {
-                const newPack = new MotorPackage(key.js, this);
-                this.packages.set(key.js, newPack);
-                pack = newPack;
-            }
-            if (!pack.initialized) {
-                value.js = await pack.init(value.js);
-            }
-        }
     }
 
     pushStack<T extends MotorType<any>>(type: T, value: T extends MotorType<infer U> ? U : never): InstanceType<T> {
