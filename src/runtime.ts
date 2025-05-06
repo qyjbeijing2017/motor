@@ -11,6 +11,8 @@ const PackageMap = motorCreateMap(
     MotorU64,
 )
 
+export type PackageLoader = (name: string) => Promise<string | void> | string | void;
+
 export class MotorRuntime extends MotorStruct<{
     programCounter: typeof MotorU64,
     stackPointer: typeof MotorU64,
@@ -18,12 +20,37 @@ export class MotorRuntime extends MotorStruct<{
     stack: typeof MotorStack,
     packageMap: typeof PackageMap,
 }> {
+    loaders: PackageLoader[] = [
+        async (name: string) => {
+            if(name.startsWith('http://') || name.startsWith('https://')) {
+                try {
+                    const response = await fetch(name);
+                    if (response.ok) {
+                        return await response.text();
+                    }
+                } catch (e) {
+                    console.error(`Error loading package ${name}:`, e);
+                }
+            }
+        },
+    ];
     readonly invokeMap: Map<string, (runtime: MotorRuntime) => void | Promise<void>> = new Map([
         ['print', async (runtime) => {
             const logStr = runtime.popStack(MotorString);
             console.log(logStr);
         }],
         ['import', async (runtime) => {
+            const key = runtime.popStack(MotorString);
+            for (const loader of this.loaders) {
+                const result = await loader(key);
+                if (result) {
+                    const initFunc = new Function('runtime', 'targetAddress', result);
+                    const targetAddress = initFunc(this);
+                    this.get('packageMap').set(key, targetAddress);
+                    continue;
+                }
+            }
+            throw new Error(`Package ${key} not found`);
         }]
     ]);
     static readonly size =
@@ -55,6 +82,20 @@ export class MotorRuntime extends MotorStruct<{
     }
 
     async init() {
+        const packageMap = this.get('packageMap');
+        for (let i = 0; i < packageMap.length; i++) {
+            const [key, address] = packageMap.at(i);
+            for (const loader of this.loaders) {
+                const result = await loader(key.js);
+                if (result) {
+                    const initFunc = new Function('runtime', 'targetAddress', result);
+                    const targetAddress = initFunc(this, address.js);
+                    address.js = targetAddress;
+                    continue;
+                }
+            }
+            throw new Error(`Package ${key.js} not found`);
+        }
     }
 
     pushStack<T extends MotorType<any>>(type: T, value: T extends MotorType<infer U> ? U : never): InstanceType<T> {
