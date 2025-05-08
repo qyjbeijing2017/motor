@@ -45,7 +45,7 @@ export class MotorRuntime extends MotorStruct<{
             for (const loader of this.loaders) {
                 const result = await loader(key);
                 if (result) {
-                    const initFunc = new (Object.getPrototypeOf(async function() {}).constructor)(
+                    const initFunc = new (Object.getPrototypeOf(async function () { }).constructor)(
                         'runtime',
                         'targetAddress',
                         ...Object.keys(motorPackageEnvironments),
@@ -62,6 +62,16 @@ export class MotorRuntime extends MotorStruct<{
                 }
             }
             throw new Error(`Package ${key} not found`);
+        }],
+        ['allocate', async (runtime) => {
+            const size = runtime.popStack(MotorU64);
+            const address = runtime.memory.allocate(size);
+            runtime.pushStack(MotorU64, address);
+        }],
+        ['free', async (runtime) => {
+            const size = runtime.popStack(MotorU64);
+            const address = runtime.popStack(MotorU64);
+            runtime.memory.free(address, size);
         }]
     ]);
     static readonly size =

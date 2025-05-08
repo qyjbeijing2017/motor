@@ -7,7 +7,7 @@ describe('Package', () => {
         runtime.loaders.push((name) => {
             if (name !== 'test') return;
             return `
-runtime.invokeMap.set('test.add', async (runtime) => {
+runtime.invokeMap.set('test.add', (runtime) => {
     const b = runtime.popStack(MotorI32);
     const a = runtime.popStack(MotorI32);
     const result = a + b;
