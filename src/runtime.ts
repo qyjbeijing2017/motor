@@ -45,14 +45,14 @@ export class MotorRuntime extends MotorStruct<{
             for (const loader of this.loaders) {
                 const result = await loader(key);
                 if (result) {
-                    const initFunc = new Function(
+                    const initFunc = new (Object.getPrototypeOf(async function() {}).constructor)(
                         'runtime',
                         'targetAddress',
                         ...Object.keys(motorPackageEnvironments),
                         result
                     );
                     let targetAddress = 0
-                    targetAddress = initFunc(
+                    targetAddress = await initFunc(
                         this,
                         targetAddress,
                         ...Object.values(motorPackageEnvironments),
