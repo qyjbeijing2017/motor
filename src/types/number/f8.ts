@@ -1,3 +1,4 @@
+import { motorPackageEnvironments } from "../../package-environment";
 import { motorGetFloat8, motorSetFloat8 } from "../../utils/float8";
 import { MotorNumber } from "./number";
 
@@ -10,3 +11,4 @@ export class MotorF8 extends MotorNumber {
         motorSetFloat8(this.memory.viewer, this.address, value);
     }
 }
+motorPackageEnvironments['MotorF8'] = MotorF8;

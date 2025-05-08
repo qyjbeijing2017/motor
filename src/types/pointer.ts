@@ -1,5 +1,6 @@
 import { MotorType } from "../instance";
 import { MotorMemory } from "../memory";
+import { motorPackageEnvironments } from "../package-environment";
 import { MotorNull } from "./null";
 import { MotorU64 } from "./number/u64";
 
@@ -31,3 +32,4 @@ export function motorCreatePointer<T extends MotorType<any>>(type: T): MotorPoin
         }
     };
 }
+motorPackageEnvironments['motorCreatePointer'] = motorCreatePointer;

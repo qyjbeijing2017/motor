@@ -45,4 +45,3 @@ export function motorCreateList<T extends MotorType<any>>(type: T): MotorListTyp
         }
     };
 }
-

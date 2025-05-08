@@ -6,6 +6,7 @@ import { motorSingleton } from "../utils/singleton";
 import { MotorReference } from "./reference";
 import { MotorU64 } from "./number/u64";
 import { MotorFunctionFrame } from "../il/function-frame";
+import { motorPackageEnvironments } from "../package-environment";
 
 export interface IMotorInstructionInfo {
     type: MotorInstructionType;
@@ -91,3 +92,4 @@ export function motorCreateFunction<ReturnType extends MotorType<any>, Args exte
         }
     }
 }
+motorPackageEnvironments['motorCreateFunction'] = motorCreateFunction;

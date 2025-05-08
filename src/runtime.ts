@@ -5,6 +5,7 @@ import { MotorStruct } from "./types/struct";
 import { MotorU64 } from "./types/number/u64";
 import { motorCreateMap } from "./types/map";
 import { MotorString } from "./types/string";
+import { motorPackageEnvironments } from "./package-environment";
 
 const PackageMap = motorCreateMap(
     MotorString,
@@ -22,7 +23,7 @@ export class MotorRuntime extends MotorStruct<{
 }> {
     loaders: PackageLoader[] = [
         async (name: string) => {
-            if(name.startsWith('http://') || name.startsWith('https://')) {
+            if (name.startsWith('http://') || name.startsWith('https://')) {
                 try {
                     const response = await fetch(name);
                     if (response.ok) {
@@ -44,8 +45,18 @@ export class MotorRuntime extends MotorStruct<{
             for (const loader of this.loaders) {
                 const result = await loader(key);
                 if (result) {
-                    const initFunc = new Function('runtime', 'targetAddress', result);
-                    const targetAddress = initFunc(this);
+                    const initFunc = new Function(
+                        'runtime',
+                        'targetAddress',
+                        ...Object.keys(motorPackageEnvironments),
+                        result
+                    );
+                    let targetAddress = 0
+                    targetAddress = initFunc(
+                        this,
+                        targetAddress,
+                        ...Object.values(motorPackageEnvironments),
+                    );
                     this.get('packageMap').set(key, targetAddress ?? 0);
                     return;
                 }

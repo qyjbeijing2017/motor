@@ -10,10 +10,16 @@ export abstract class MotorReference<T> extends MotorInstance<T> {
     }
 
     get refAddress(): number {
+        if(this.memoryAddress === 0) {
+            return 0;
+        }
         return this.memoryAddress + 8;
     }
 
     get size(): number {
+        if(this.memoryAddress === 0) {
+            return 0;
+        }
         return Number(this.memory.viewer.getBigUint64(this.memoryAddress, true));
     }
 

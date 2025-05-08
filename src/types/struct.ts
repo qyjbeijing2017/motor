@@ -1,5 +1,6 @@
 import { MotorInstance, MotorJSType, MotorType } from "../instance";
 import { MotorMemory } from "../memory";
+import { motorPackageEnvironments } from "../package-environment";
 
 export abstract class MotorStruct<T extends { [key: string]: MotorType<any> }> extends MotorInstance<{ [K in keyof T]: MotorJSType<T[K]> }> {
     abstract get type(): T;
@@ -48,3 +49,4 @@ export function motorCreateStruct<T extends { [key: string]: MotorType<any> }>(t
         }
     };
 }
+motorPackageEnvironments['motorCreateStruct'] = motorCreateStruct;

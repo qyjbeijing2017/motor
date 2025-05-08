@@ -1,3 +1,4 @@
+import { motorPackageEnvironments } from "../../package-environment";
 import { MotorNumber } from "./number";
 
 export class MotorI64 extends MotorNumber {
@@ -9,3 +10,4 @@ export class MotorI64 extends MotorNumber {
         this.memory.viewer.setBigInt64(this.address, BigInt(Math.trunc(value)), true);
     }
 }
+motorPackageEnvironments['MotorI64'] = MotorI64;

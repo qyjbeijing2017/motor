@@ -1,3 +1,4 @@
+import { motorPackageEnvironments } from "../../package-environment";
 import { MotorNumber } from "./number";
 
 export class MotorF32 extends MotorNumber {
@@ -9,3 +10,4 @@ export class MotorF32 extends MotorNumber {
         this.memory.viewer.setFloat32(this.address, value, true);
     }
 }
+motorPackageEnvironments['MotorF32'] = MotorF32;

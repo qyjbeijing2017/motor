@@ -1,5 +1,6 @@
 import { MotorJSType, MotorType } from "../instance";
 import { MotorMemory } from "../memory";
+import { motorPackageEnvironments } from "../package-environment";
 import { MotorNull } from "./null";
 import { MotorReference } from "./reference";
 
@@ -81,3 +82,4 @@ export function motorCreateMap<K extends MotorType<any>, V extends MotorType<any
         }
     }
 }
+motorPackageEnvironments['motorCreateMap'] = motorCreateMap;

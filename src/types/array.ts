@@ -1,5 +1,6 @@
 import { MotorInstance, MotorJSType, MotorType } from "../instance";
 import { MotorMemory } from "../memory";
+import { motorPackageEnvironments } from "../package-environment";
 
 export abstract class MotorArray<T extends MotorType<any>> extends MotorInstance<MotorJSType<T>[]> {
     abstract get type(): T;
@@ -40,3 +41,4 @@ export function motorCreateArray<T extends MotorType<any>>(type: T, length: numb
         }
     };
 }
+motorPackageEnvironments['motorCreateArray'] = motorCreateArray;

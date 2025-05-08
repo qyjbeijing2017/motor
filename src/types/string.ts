@@ -1,3 +1,4 @@
+import { motorPackageEnvironments } from "../package-environment";
 import { MotorReference } from "./reference";
 
 export class MotorString  extends MotorReference<string> {
@@ -10,3 +11,4 @@ export class MotorString  extends MotorReference<string> {
         this.memory.buffer.set(new TextEncoder().encode(value), this.refAddress);
     }
 }
+motorPackageEnvironments["MotorString"] = MotorString;
