@@ -1,7 +1,7 @@
-import { MotorInstance } from "../instance";
-import { motorPackageEnvironments } from "../package-environment";
+import { QzaInstance } from "../instance";
+import { qzaPackageEnvironments } from "../package-environment";
 
-export class MotorNull extends MotorInstance<null> {
+export class QzaNull extends QzaInstance<null> {
     static readonly size = 0;
     get js(): null {
         return null;
@@ -10,4 +10,4 @@ export class MotorNull extends MotorInstance<null> {
         (this.address as any) = 0;
     }
 }
-motorPackageEnvironments["MotorNull"] = MotorNull;
+qzaPackageEnvironments["QzaNull"] = QzaNull;

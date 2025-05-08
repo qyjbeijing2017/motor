@@ -1,14 +1,14 @@
-import { motorPackageEnvironments } from "../../package-environment";
-import { motorGetFloat8, motorSetFloat8 } from "../../utils/float8";
-import { MotorNumber } from "./number";
+import { qzaPackageEnvironments } from "../../package-environment";
+import { qzaGetFloat8, qzaSetFloat8 } from "../../utils/float8";
+import { QzaNumber } from "./number";
 
-export class MotorF8 extends MotorNumber {
+export class QzaF8 extends QzaNumber {
     static readonly size = 1;
     get js(): number {
-        return motorGetFloat8(this.memory.viewer, this.address);
+        return qzaGetFloat8(this.memory.viewer, this.address);
     }
     set js(value: number) {
-        motorSetFloat8(this.memory.viewer, this.address, value);
+        qzaSetFloat8(this.memory.viewer, this.address, value);
     }
 }
-motorPackageEnvironments['MotorF8'] = MotorF8;
+qzaPackageEnvironments['QzaF8'] = QzaF8;

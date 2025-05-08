@@ -1,13 +1,13 @@
-import { MotorF32, MotorI32, motorCreateStruct, motorCreateArray, MotorString } from '../../src'
+import { QzaF32, QzaI32, qzaCreateStruct, qzaCreateArray, QzaString } from '../../src'
 test('default', () => {
-    const ArrayType = motorCreateArray(MotorF32, 3);
-    const SubType = motorCreateStruct({
-        f: MotorF32,
-        i: MotorI32,
+    const ArrayType = qzaCreateArray(QzaF32, 3);
+    const SubType = qzaCreateStruct({
+        f: QzaF32,
+        i: QzaI32,
     });
-    const StructType = motorCreateStruct({
+    const StructType = qzaCreateStruct({
         s: SubType,
-        str: MotorString,
+        str: QzaString,
         a: ArrayType,
     });
     const array = new StructType();
@@ -18,14 +18,14 @@ test('default', () => {
     })
 })
 test('default value', () => {
-    const ArrayType = motorCreateArray(MotorF32, 3);
-    const SubType = motorCreateStruct({
-        f: MotorF32,
-        i: MotorI32,
+    const ArrayType = qzaCreateArray(QzaF32, 3);
+    const SubType = qzaCreateStruct({
+        f: QzaF32,
+        i: QzaI32,
     });
-    const StructType = motorCreateStruct({
+    const StructType = qzaCreateStruct({
         s: SubType,
-        str: MotorString,
+        str: QzaString,
         a: ArrayType,
     });
     const u8 = new StructType({
@@ -40,14 +40,14 @@ test('default value', () => {
     })
 })
 test('set js', () => {
-    const ArrayType = motorCreateArray(MotorF32, 3);
-    const SubType = motorCreateStruct({
-        f: MotorF32,
-        i: MotorI32,
+    const ArrayType = qzaCreateArray(QzaF32, 3);
+    const SubType = qzaCreateStruct({
+        f: QzaF32,
+        i: QzaI32,
     });
-    const StructType = motorCreateStruct({
+    const StructType = qzaCreateStruct({
         s: SubType,
-        str: MotorString,
+        str: QzaString,
         a: ArrayType,
     });
     const u8 = new StructType();
@@ -63,14 +63,14 @@ test('set js', () => {
     })
 })
 test('get', () => {
-    const ArrayType = motorCreateArray(MotorF32, 3);
-    const SubType = motorCreateStruct({
-        f: MotorF32,
-        i: MotorI32,
+    const ArrayType = qzaCreateArray(QzaF32, 3);
+    const SubType = qzaCreateStruct({
+        f: QzaF32,
+        i: QzaI32,
     });
-    const StructType = motorCreateStruct({
+    const StructType = qzaCreateStruct({
         s: SubType,
-        str: MotorString,
+        str: QzaString,
         a: ArrayType,
     });
     const u8 = new StructType();

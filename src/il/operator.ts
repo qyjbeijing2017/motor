@@ -1,4 +1,4 @@
-export enum MotorOperator {
+export enum QzaOperator {
     push,
     pop,
 

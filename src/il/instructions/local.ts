@@ -1,25 +1,25 @@
-import { MotorRuntime } from "../../runtime";
-import { MotorF16 } from "../../types/number/f16";
-import { MotorF32 } from "../../types/number/f32";
-import { MotorF64 } from "../../types/number/f64";
-import { MotorF8 } from "../../types/number/f8";
-import { MotorI16 } from "../../types/number/i16";
-import { MotorI32 } from "../../types/number/i32";
-import { MotorI64 } from "../../types/number/i64";
-import { MotorI8 } from "../../types/number/i8";
-import { MotorU16 } from "../../types/number/u16";
-import { MotorU32 } from "../../types/number/u32";
-import { MotorU64 } from "../../types/number/u64";
-import { MotorU8 } from "../../types/number/u8";
-import { MotorInstruction } from "../instruction";
-import { MotorOperator } from "../operator";
-import { MotorILType } from "../type";
-import { MotorFunctionFrame } from "../function-frame";
+import { QzaRuntime } from "../../runtime";
+import { QzaF16 } from "../../types/number/f16";
+import { QzaF32 } from "../../types/number/f32";
+import { QzaF64 } from "../../types/number/f64";
+import { QzaF8 } from "../../types/number/f8";
+import { QzaI16 } from "../../types/number/i16";
+import { QzaI32 } from "../../types/number/i32";
+import { QzaI64 } from "../../types/number/i64";
+import { QzaI8 } from "../../types/number/i8";
+import { QzaU16 } from "../../types/number/u16";
+import { QzaU32 } from "../../types/number/u32";
+import { QzaU64 } from "../../types/number/u64";
+import { QzaU8 } from "../../types/number/u8";
+import { QzaInstruction } from "../instruction";
+import { QzaOperator } from "../operator";
+import { QzaILType } from "../type";
+import { QzaFunctionFrame } from "../function-frame";
 
-export class MotorLocalU8 extends MotorInstruction {
+export class QzaLocalU8 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.U8;
+        return QzaOperator.local | QzaILType.U8;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -27,19 +27,19 @@ export class MotorLocalU8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorU8(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorU8, value.js);
+        const value = new QzaU8(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaU8, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.U8] = MotorLocalU8;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.U8] = QzaLocalU8;
 
-export class MotorLocalU16 extends MotorInstruction {
+export class QzaLocalU16 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.U16;
+        return QzaOperator.local | QzaILType.U16;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -47,19 +47,19 @@ export class MotorLocalU16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorU16(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorU16, value.js);
+        const value = new QzaU16(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaU16, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.U16] = MotorLocalU16;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.U16] = QzaLocalU16;
 
-export class MotorLocalU32 extends MotorInstruction {
+export class QzaLocalU32 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.U32;
+        return QzaOperator.local | QzaILType.U32;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -67,19 +67,19 @@ export class MotorLocalU32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorU32(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorU32, value.js);
+        const value = new QzaU32(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaU32, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.U32] = MotorLocalU32;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.U32] = QzaLocalU32;
 
-export class MotorLocalU64 extends MotorInstruction {
+export class QzaLocalU64 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.U64;
+        return QzaOperator.local | QzaILType.U64;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -87,19 +87,19 @@ export class MotorLocalU64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorU64(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorU64, value.js);
+        const value = new QzaU64(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaU64, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.U64] = MotorLocalU64;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.U64] = QzaLocalU64;
 
-export class MotorLocalI8 extends MotorInstruction {
+export class QzaLocalI8 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.I8;
+        return QzaOperator.local | QzaILType.I8;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -107,19 +107,19 @@ export class MotorLocalI8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorI8(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorI8, value.js);
+        const value = new QzaI8(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaI8, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.I8] = MotorLocalI8;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.I8] = QzaLocalI8;
 
-export class MotorLocalI16 extends MotorInstruction {
+export class QzaLocalI16 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.I16;
+        return QzaOperator.local | QzaILType.I16;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -127,19 +127,19 @@ export class MotorLocalI16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorI16(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorI16, value.js);
+        const value = new QzaI16(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaI16, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.I16] = MotorLocalI16;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.I16] = QzaLocalI16;
 
-export class MotorLocalI32 extends MotorInstruction {
+export class QzaLocalI32 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.I32;
+        return QzaOperator.local | QzaILType.I32;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -147,19 +147,19 @@ export class MotorLocalI32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorI32(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorI32, value.js);
+        const value = new QzaI32(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaI32, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.I32] = MotorLocalI32;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.I32] = QzaLocalI32;
 
-export class MotorLocalI64 extends MotorInstruction {
+export class QzaLocalI64 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.I64;
+        return QzaOperator.local | QzaILType.I64;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -167,19 +167,19 @@ export class MotorLocalI64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorI64(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorI64, value.js);
+        const value = new QzaI64(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaI64, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.I64] = MotorLocalI64;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.I64] = QzaLocalI64;
 
-export class MotorLocalF8 extends MotorInstruction {
+export class QzaLocalF8 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.F8;
+        return QzaOperator.local | QzaILType.F8;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -187,19 +187,19 @@ export class MotorLocalF8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorF8(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorF8, value.js);
+        const value = new QzaF8(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaF8, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.F8] = MotorLocalF8;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.F8] = QzaLocalF8;
 
-export class MotorLocalF16 extends MotorInstruction {
+export class QzaLocalF16 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.F16;
+        return QzaOperator.local | QzaILType.F16;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -207,19 +207,19 @@ export class MotorLocalF16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorF16(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorF16, value.js);
+        const value = new QzaF16(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaF16, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.F16] = MotorLocalF16;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.F16] = QzaLocalF16;
 
-export class MotorLocalF32 extends MotorInstruction {
+export class QzaLocalF32 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.F32;
+        return QzaOperator.local | QzaILType.F32;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -227,19 +227,19 @@ export class MotorLocalF32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorF32(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorF32, value.js);
+        const value = new QzaF32(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaF32, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.F32] = MotorLocalF32;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.F32] = QzaLocalF32;
 
-export class MotorLocalF64 extends MotorInstruction {
+export class QzaLocalF64 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.local | MotorILType.F64;
+        return QzaOperator.local | QzaILType.F64;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -247,11 +247,11 @@ export class MotorLocalF64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const framePointer = runtime.get('framePointer');
         const stack = runtime.get('stack');
-        const value = new MotorF64(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + MotorFunctionFrame.size : this.js));
-        runtime.pushStack(MotorF64, value.js);
+        const value = new QzaF64(undefined, stack.memory, stack.address + framePointer.js + (this.js >= 0 ? this.js + QzaFunctionFrame.size : this.js));
+        runtime.pushStack(QzaF64, value.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.local | MotorILType.F64] = MotorLocalF64;
+QzaInstruction.instructions[QzaOperator.local | QzaILType.F64] = QzaLocalF64;

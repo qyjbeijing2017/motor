@@ -1,12 +1,12 @@
-import { MotorInstance, MotorJSType, MotorType } from "../instance";
-import { MotorMemory } from "../memory";
-import { motorPackageEnvironments } from "../package-environment";
+import { QzaInstance, QzaJSType, QzaType } from "../instance";
+import { QzaMemory } from "../memory";
+import { qzaPackageEnvironments } from "../package-environment";
 
-export abstract class MotorStruct<T extends { [key: string]: MotorType<any> }> extends MotorInstance<{ [K in keyof T]: MotorJSType<T[K]> }> {
+export abstract class QzaStruct<T extends { [key: string]: QzaType<any> }> extends QzaInstance<{ [K in keyof T]: QzaJSType<T[K]> }> {
     abstract get type(): T;
 
-    get js(): { [K in keyof T]: MotorJSType<T[K]> } {
-        const result: { [K in keyof T]: MotorJSType<T[K]> } = {} as any;
+    get js(): { [K in keyof T]: QzaJSType<T[K]> } {
+        const result: { [K in keyof T]: QzaJSType<T[K]> } = {} as any;
         let offset = 0;
         for (const key in this.type) {
             result[key] = new this.type[key](undefined, this.memory, this.address + offset).js;
@@ -15,7 +15,7 @@ export abstract class MotorStruct<T extends { [key: string]: MotorType<any> }> e
         return result;
     }
 
-    set js(value: { [K in keyof T]: MotorJSType<T[K]> }) {
+    set js(value: { [K in keyof T]: QzaJSType<T[K]> }) {
         let offset = 0;
         for (const key in this.type) {
             const instance = new this.type[key](value[key], this.memory, this.address + offset);
@@ -36,17 +36,17 @@ export abstract class MotorStruct<T extends { [key: string]: MotorType<any> }> e
     }
 }
 
-export type MotorStructType<T extends { [key: string]: MotorType<any> }> = {
+export type QzaStructType<T extends { [key: string]: QzaType<any> }> = {
     readonly size: number;
-    new(def?: { [K in keyof T]: MotorJSType<T[K]> }, memory?: MotorMemory, address?: number): MotorStruct<T>;
+    new(def?: { [K in keyof T]: QzaJSType<T[K]> }, memory?: QzaMemory, address?: number): QzaStruct<T>;
 }
 
-export function motorCreateStruct<T extends { [key: string]: MotorType<any> }>(type: T): MotorStructType<T> {
-    return class extends MotorStruct<T> {
+export function qzaCreateStruct<T extends { [key: string]: QzaType<any> }>(type: T): QzaStructType<T> {
+    return class extends QzaStruct<T> {
         static readonly size = Object.values(type).reduce((acc, curr) => acc + curr.size, 0);
         get type(): T {
             return type;
         }
     };
 }
-motorPackageEnvironments['motorCreateStruct'] = motorCreateStruct;
+qzaPackageEnvironments['qzaCreateStruct'] = qzaCreateStruct;

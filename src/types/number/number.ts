@@ -1,7 +1,7 @@
-import { MotorInstance } from "../../instance";
+import { QzaInstance } from "../../instance";
 
-export abstract class MotorNumber extends MotorInstance<number> {
-    equal(other: MotorInstance<number>): boolean {
+export abstract class QzaNumber extends QzaInstance<number> {
+    equal(other: QzaInstance<number>): boolean {
         return this.js === other.js;
     }
 }

@@ -1,1 +1,1 @@
-export const motorPackageEnvironments: { [key: string]: any } = {}
+export const qzaPackageEnvironments: { [key: string]: any } = {}

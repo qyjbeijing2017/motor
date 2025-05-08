@@ -1,7 +1,7 @@
-import { motorPackageEnvironments } from "../../package-environment";
-import { MotorNumber } from "./number";
+import { qzaPackageEnvironments } from "../../package-environment";
+import { QzaNumber } from "./number";
 
-export class MotorU8 extends MotorNumber {
+export class QzaU8 extends QzaNumber {
     static readonly size = 1;
     get js(): number {
         return this.memory.viewer.getUint8(this.address);
@@ -10,4 +10,4 @@ export class MotorU8 extends MotorNumber {
         this.memory.viewer.setUint8(this.address, value);
     }
 }
-motorPackageEnvironments['MotorU8'] = MotorU8;
+qzaPackageEnvironments['QzaU8'] = QzaU8;

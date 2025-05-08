@@ -1,7 +1,7 @@
-import { MotorMemory } from "./memory";
-import { motorSingleton } from "./utils/singleton";
+import { QzaMemory } from "./memory";
+import { qzaSingleton } from "./utils/singleton";
 
-export abstract class MotorInstance<JSType> {
+export abstract class QzaInstance<JSType> {
     abstract get js(): JSType;
     abstract set js(value: JSType);
 
@@ -10,12 +10,12 @@ export abstract class MotorInstance<JSType> {
 
     constructor(
         def?: JSType,
-        readonly memory = motorSingleton(MotorMemory),
-        readonly address = memory.allocate(motorTypeof(this).size),
+        readonly memory = qzaSingleton(QzaMemory),
+        readonly address = memory.allocate(qzaTypeof(this).size),
     ) {
         this.onInstanceCreated();
         if (def !== undefined) {
-            (this as MotorInstance<JSType>).js = def;
+            (this as QzaInstance<JSType>).js = def;
         }
     }
 
@@ -25,10 +25,10 @@ export abstract class MotorInstance<JSType> {
 
     free() {
         this.delete();
-        this.memory.free(this.address, motorTypeof(this).size);
+        this.memory.free(this.address, qzaTypeof(this).size);
     }
 
-    equal(other: MotorInstance<JSType>): boolean {
+    equal(other: QzaInstance<JSType>): boolean {
         if(other.constructor !== this.constructor) {
             return false;
         }
@@ -39,16 +39,16 @@ export abstract class MotorInstance<JSType> {
     }
 }
 
-export type MotorType<JSType> = {
+export type QzaType<JSType> = {
     readonly size: number;
-    new(def?: JSType, memory?: MotorMemory, address?: number): MotorInstance<JSType>;
+    new(def?: JSType, memory?: QzaMemory, address?: number): QzaInstance<JSType>;
 }
 
-export type MotorJSType<T extends MotorInstance<any> | MotorType<any>> = T extends MotorInstance<infer U> ? U : T extends MotorType<infer U> ? U : never;
+export type QzaJSType<T extends QzaInstance<any> | QzaType<any>> = T extends QzaInstance<infer U> ? U : T extends QzaType<infer U> ? U : never;
 
-export function motorTypeof<JSType>(type: MotorInstance<JSType>): MotorType<JSType> {
+export function qzaTypeof<JSType>(type: QzaInstance<JSType>): QzaType<JSType> {
     if ('size' in type.constructor) {
-        return type.constructor as MotorType<JSType>;
+        return type.constructor as QzaType<JSType>;
     }
     throw new Error('Invalid type: ' + type.constructor.name);
 }

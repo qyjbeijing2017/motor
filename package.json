@@ -1,12 +1,13 @@
 {
-  "name": "motor",
+  "name": "quetzalcoatlus",
   "version": "0.0.4",
-  "main": "index.js",
+  "main": "index.cjs",
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "tsup src/index.ts --dts",
-    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest"
+    "build": "tsup --config tsup.config.ts",
+    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest",
+    "publish": "tsup --config tsup.config.ts && npm publish ./dist --access public"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

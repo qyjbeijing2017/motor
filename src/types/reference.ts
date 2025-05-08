@@ -1,6 +1,6 @@
-import { MotorInstance } from "../instance"
+import { QzaInstance } from "../instance"
 
-export abstract class MotorReference<T> extends MotorInstance<T> {
+export abstract class QzaReference<T> extends QzaInstance<T> {
     get memoryAddress(): number {
         return Number(this.memory.viewer.getBigUint64(this.address, true));
     }

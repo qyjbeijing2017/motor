@@ -1,43 +1,43 @@
 import {
-    MotorILType,
-    MotorOperator,
+    QzaILType,
+    QzaOperator,
 } from '../../src'
 
 test('Operators', () => {
-    const u8 = MotorOperator.push | MotorILType.U8
-    const u16 = MotorOperator.push | MotorILType.U16
-    const u32 = MotorOperator.push | MotorILType.U32
-    const u64 = MotorOperator.push | MotorILType.U64
-    const i8 = MotorOperator.push | MotorILType.I8
-    const i16 = MotorOperator.push | MotorILType.I16
-    const i32 = MotorOperator.push | MotorILType.I32
-    const i64 = MotorOperator.push | MotorILType.I64
-    const f8 = MotorOperator.push | MotorILType.F8
-    const f16 = MotorOperator.push | MotorILType.F16
-    const f32 = MotorOperator.push | MotorILType.F32
-    const f64 = MotorOperator.push | MotorILType.F64
-    expect(u8 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(u16 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(u32 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(u64 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(i8 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(i16 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(i32 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(i64 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(f8 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(f16 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(f32 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(f64 & MotorOperator.mask).toBe(MotorOperator.push)
-    expect(u8 & MotorILType.mask).toBe(MotorILType.U8)
-    expect(u16 & MotorILType.mask).toBe(MotorILType.U16)
-    expect(u32 & MotorILType.mask).toBe(MotorILType.U32)
-    expect(u64 & MotorILType.mask).toBe(MotorILType.U64)
-    expect(i8 & MotorILType.mask).toBe(MotorILType.I8)
-    expect(i16 & MotorILType.mask).toBe(MotorILType.I16)
-    expect(i32 & MotorILType.mask).toBe(MotorILType.I32)
-    expect(i64 & MotorILType.mask).toBe(MotorILType.I64)
-    expect(f8 & MotorILType.mask).toBe(MotorILType.F8)
-    expect(f16 & MotorILType.mask).toBe(MotorILType.F16)
-    expect(f32 & MotorILType.mask).toBe(MotorILType.F32)
-    expect(f64 & MotorILType.mask).toBe(MotorILType.F64)
+    const u8 = QzaOperator.push | QzaILType.U8
+    const u16 = QzaOperator.push | QzaILType.U16
+    const u32 = QzaOperator.push | QzaILType.U32
+    const u64 = QzaOperator.push | QzaILType.U64
+    const i8 = QzaOperator.push | QzaILType.I8
+    const i16 = QzaOperator.push | QzaILType.I16
+    const i32 = QzaOperator.push | QzaILType.I32
+    const i64 = QzaOperator.push | QzaILType.I64
+    const f8 = QzaOperator.push | QzaILType.F8
+    const f16 = QzaOperator.push | QzaILType.F16
+    const f32 = QzaOperator.push | QzaILType.F32
+    const f64 = QzaOperator.push | QzaILType.F64
+    expect(u8 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(u16 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(u32 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(u64 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(i8 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(i16 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(i32 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(i64 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(f8 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(f16 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(f32 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(f64 & QzaOperator.mask).toBe(QzaOperator.push)
+    expect(u8 & QzaILType.mask).toBe(QzaILType.U8)
+    expect(u16 & QzaILType.mask).toBe(QzaILType.U16)
+    expect(u32 & QzaILType.mask).toBe(QzaILType.U32)
+    expect(u64 & QzaILType.mask).toBe(QzaILType.U64)
+    expect(i8 & QzaILType.mask).toBe(QzaILType.I8)
+    expect(i16 & QzaILType.mask).toBe(QzaILType.I16)
+    expect(i32 & QzaILType.mask).toBe(QzaILType.I32)
+    expect(i64 & QzaILType.mask).toBe(QzaILType.I64)
+    expect(f8 & QzaILType.mask).toBe(QzaILType.F8)
+    expect(f16 & QzaILType.mask).toBe(QzaILType.F16)
+    expect(f32 & QzaILType.mask).toBe(QzaILType.F32)
+    expect(f64 & QzaILType.mask).toBe(QzaILType.F64)
 })

@@ -1,18 +1,18 @@
-import { motorCreateFunction, MotorInvoke, MotorLocalU64, MotorNull, MotorPushU64, MotorReturn, MotorString } from "../../src"
+import { qzaCreateFunction, QzaInvoke, QzaLocalU64, QzaNull, QzaPushU64, QzaReturn, QzaString } from "../../src"
 
 test('Invoke', () => {
-    const FunctionOnTest = motorCreateFunction(MotorNull, [
-        MotorString,
-        MotorString,
+    const FunctionOnTest = qzaCreateFunction(QzaNull, [
+        QzaString,
+        QzaString,
     ]);
 
-    const str = new MotorString('hello world');
+    const str = new QzaString('hello world');
 
     const logInstance = new FunctionOnTest([
-        { type: MotorPushU64, immediate: str.memoryAddress },
-        { type: MotorLocalU64, immediate: 0 },
-        { type: MotorInvoke },
-        { type: MotorReturn },
+        { type: QzaPushU64, immediate: str.memoryAddress },
+        { type: QzaLocalU64, immediate: 0 },
+        { type: QzaInvoke },
+        { type: QzaReturn },
     ]);
 
     logInstance.call([

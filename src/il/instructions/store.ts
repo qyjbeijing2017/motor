@@ -1,232 +1,232 @@
-import { MotorRuntime } from "../../runtime";
-import { MotorF16 } from "../../types/number/f16";
-import { MotorF32 } from "../../types/number/f32";
-import { MotorF64 } from "../../types/number/f64";
-import { MotorF8 } from "../../types/number/f8";
-import { MotorI16 } from "../../types/number/i16";
-import { MotorI32 } from "../../types/number/i32";
-import { MotorI64 } from "../../types/number/i64";
-import { MotorI8 } from "../../types/number/i8";
-import { MotorU16 } from "../../types/number/u16";
-import { MotorU32 } from "../../types/number/u32";
-import { MotorU64 } from "../../types/number/u64";
-import { MotorU8 } from "../../types/number/u8";
-import { MotorInstruction } from "../instruction";
-import { MotorOperator } from "../operator";
-import { MotorILType } from "../type";
+import { QzaRuntime } from "../../runtime";
+import { QzaF16 } from "../../types/number/f16";
+import { QzaF32 } from "../../types/number/f32";
+import { QzaF64 } from "../../types/number/f64";
+import { QzaF8 } from "../../types/number/f8";
+import { QzaI16 } from "../../types/number/i16";
+import { QzaI32 } from "../../types/number/i32";
+import { QzaI64 } from "../../types/number/i64";
+import { QzaI8 } from "../../types/number/i8";
+import { QzaU16 } from "../../types/number/u16";
+import { QzaU32 } from "../../types/number/u32";
+import { QzaU64 } from "../../types/number/u64";
+import { QzaU8 } from "../../types/number/u8";
+import { QzaInstruction } from "../instruction";
+import { QzaOperator } from "../operator";
+import { QzaILType } from "../type";
 
-export class MotorStoreU8 extends MotorInstruction {
+export class QzaStoreU8 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.U8;
+        return QzaOperator.store | QzaILType.U8;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorU8);
-        new MotorU8(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaU8);
+        new QzaU8(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.U8] = MotorStoreU8;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.U8] = QzaStoreU8;
 
-export class MotorStoreU16 extends MotorInstruction {
+export class QzaStoreU16 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.U16;
+        return QzaOperator.store | QzaILType.U16;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorU16);
-        new MotorU16(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaU16);
+        new QzaU16(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.U16] = MotorStoreU16;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.U16] = QzaStoreU16;
 
-export class MotorStoreU32 extends MotorInstruction {
+export class QzaStoreU32 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.U32;
+        return QzaOperator.store | QzaILType.U32;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorU32);
-        new MotorU32(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaU32);
+        new QzaU32(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.U32] = MotorStoreU32;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.U32] = QzaStoreU32;
 
-export class MotorStoreU64 extends MotorInstruction {
+export class QzaStoreU64 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.U64;
+        return QzaOperator.store | QzaILType.U64;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorU64);
-        new MotorU64(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaU64);
+        new QzaU64(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.U64] = MotorStoreU64;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.U64] = QzaStoreU64;
 
-export class MotorStoreI8 extends MotorInstruction {
+export class QzaStoreI8 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.I8;
+        return QzaOperator.store | QzaILType.I8;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorI8);
-        new MotorI8(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaI8);
+        new QzaI8(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.I8] = MotorStoreI8;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.I8] = QzaStoreI8;
 
-export class MotorStoreI16 extends MotorInstruction {
+export class QzaStoreI16 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.I16;
+        return QzaOperator.store | QzaILType.I16;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorI16);
-        new MotorI16(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaI16);
+        new QzaI16(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.I16] = MotorStoreI16;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.I16] = QzaStoreI16;
 
-export class MotorStoreI32 extends MotorInstruction {
+export class QzaStoreI32 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.I32;
+        return QzaOperator.store | QzaILType.I32;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorI32);
-        new MotorI32(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaI32);
+        new QzaI32(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.I32] = MotorStoreI32;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.I32] = QzaStoreI32;
 
-export class MotorStoreI64 extends MotorInstruction {
+export class QzaStoreI64 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.I64;
+        return QzaOperator.store | QzaILType.I64;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorI64);
-        new MotorI64(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaI64);
+        new QzaI64(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.I64] = MotorStoreI64;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.I64] = QzaStoreI64;
 
-export class MotorStoreF8 extends MotorInstruction {
+export class QzaStoreF8 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.F8;
+        return QzaOperator.store | QzaILType.F8;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorF8);
-        new MotorF8(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaF8);
+        new QzaF8(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.F8] = MotorStoreF8;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.F8] = QzaStoreF8;
 
-export class MotorStoreF16 extends MotorInstruction {
+export class QzaStoreF16 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.F16;
+        return QzaOperator.store | QzaILType.F16;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorF16);
-        new MotorF16(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaF16);
+        new QzaF16(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.F16] = MotorStoreF16;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.F16] = QzaStoreF16;
 
-export class MotorStoreF32 extends MotorInstruction {
+export class QzaStoreF32 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.F32;
+        return QzaOperator.store | QzaILType.F32;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorF32);
-        new MotorF32(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaF32);
+        new QzaF32(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.F32] = MotorStoreF32;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.F32] = QzaStoreF32;
 
-export class MotorStoreF64 extends MotorInstruction {
+export class QzaStoreF64 extends QzaInstruction {
     static readonly size = 2;
     get code(): number {
-        return MotorOperator.store | MotorILType.F64;
+        return QzaOperator.store | QzaILType.F64;
     }
     get js(): undefined {
         return undefined;
     }
     set js(_: undefined) {
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const target = runtime.popStack(MotorU64);
-        const value = runtime.popStack(MotorF64);
-        new MotorF64(value, runtime.memory, target)
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const target = runtime.popStack(QzaU64);
+        const value = runtime.popStack(QzaF64);
+        new QzaF64(value, runtime.memory, target)
     }
 }
-MotorInstruction.instructions[MotorOperator.store | MotorILType.F64] = MotorStoreF64;
+QzaInstruction.instructions[QzaOperator.store | QzaILType.F64] = QzaStoreF64;

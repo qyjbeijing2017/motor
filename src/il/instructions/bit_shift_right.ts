@@ -1,19 +1,19 @@
-import { MotorRuntime } from "../../runtime";
-import { MotorU8 } from "../../types/number/u8";
-import { MotorU16 } from "../../types/number/u16";
-import { MotorU32 } from "../../types/number/u32";
-import { MotorU64 } from "../../types/number/u64";
-import { MotorI8 } from "../../types/number/i8";
-import { MotorI16 } from "../../types/number/i16";
-import { MotorI32 } from "../../types/number/i32";
-import { MotorI64 } from "../../types/number/i64";
-import { MotorInstruction } from "../instruction";
-import { MotorOperator } from "../operator";
-import { MotorILType } from "../type";
+import { QzaRuntime } from "../../runtime";
+import { QzaU8 } from "../../types/number/u8";
+import { QzaU16 } from "../../types/number/u16";
+import { QzaU32 } from "../../types/number/u32";
+import { QzaU64 } from "../../types/number/u64";
+import { QzaI8 } from "../../types/number/i8";
+import { QzaI16 } from "../../types/number/i16";
+import { QzaI32 } from "../../types/number/i32";
+import { QzaI64 } from "../../types/number/i64";
+import { QzaInstruction } from "../instruction";
+import { QzaOperator } from "../operator";
+import { QzaILType } from "../type";
 
-export class MotorBitShiftRightU8 extends MotorInstruction {
+export class QzaBitShiftRightU8 extends QzaInstruction {
     get code(): number {
-        return MotorOperator.bit_shift_right | MotorILType.U8;
+        return QzaOperator.bit_shift_right | QzaILType.U8;
     }
     get js(): undefined {
         return undefined;
@@ -21,17 +21,17 @@ export class MotorBitShiftRightU8 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const b = runtime.popStack(MotorU8);
-        const a = runtime.popStack(MotorU8);
-        runtime.pushStack(MotorU8, a >> b);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const b = runtime.popStack(QzaU8);
+        const a = runtime.popStack(QzaU8);
+        runtime.pushStack(QzaU8, a >> b);
     }
 }
-MotorInstruction.instructions[MotorOperator.bit_shift_right | MotorILType.U8] = MotorBitShiftRightU8;
+QzaInstruction.instructions[QzaOperator.bit_shift_right | QzaILType.U8] = QzaBitShiftRightU8;
 
-export class MotorBitShiftRightU16 extends MotorInstruction {
+export class QzaBitShiftRightU16 extends QzaInstruction {
     get code(): number {
-        return MotorOperator.bit_shift_right | MotorILType.U16;
+        return QzaOperator.bit_shift_right | QzaILType.U16;
     }
     get js(): undefined {
         return undefined;
@@ -39,17 +39,17 @@ export class MotorBitShiftRightU16 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const b = runtime.popStack(MotorU16);
-        const a = runtime.popStack(MotorU16);
-        runtime.pushStack(MotorU16, a >> b);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const b = runtime.popStack(QzaU16);
+        const a = runtime.popStack(QzaU16);
+        runtime.pushStack(QzaU16, a >> b);
     }
 }
-MotorInstruction.instructions[MotorOperator.bit_shift_right | MotorILType.U16] = MotorBitShiftRightU16;
+QzaInstruction.instructions[QzaOperator.bit_shift_right | QzaILType.U16] = QzaBitShiftRightU16;
 
-export class MotorBitShiftRightU32 extends MotorInstruction {
+export class QzaBitShiftRightU32 extends QzaInstruction {
     get code(): number {
-        return MotorOperator.bit_shift_right | MotorILType.U32;
+        return QzaOperator.bit_shift_right | QzaILType.U32;
     }
     get js(): undefined {
         return undefined;
@@ -57,17 +57,17 @@ export class MotorBitShiftRightU32 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const b = runtime.popStack(MotorU32);
-        const a = runtime.popStack(MotorU32);
-        runtime.pushStack(MotorU32, a >> b);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const b = runtime.popStack(QzaU32);
+        const a = runtime.popStack(QzaU32);
+        runtime.pushStack(QzaU32, a >> b);
     }
 }
-MotorInstruction.instructions[MotorOperator.bit_shift_right | MotorILType.U32] = MotorBitShiftRightU32;
+QzaInstruction.instructions[QzaOperator.bit_shift_right | QzaILType.U32] = QzaBitShiftRightU32;
 
-export class MotorBitShiftRightU64 extends MotorInstruction {
+export class QzaBitShiftRightU64 extends QzaInstruction {
     get code(): number {
-        return MotorOperator.bit_shift_right | MotorILType.U64;
+        return QzaOperator.bit_shift_right | QzaILType.U64;
     }
     get js(): undefined {
         return undefined;
@@ -75,17 +75,17 @@ export class MotorBitShiftRightU64 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const b = runtime.popStack(MotorU64);
-        const a = runtime.popStack(MotorU64);
-        runtime.pushStack(MotorU64, a >> b);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const b = runtime.popStack(QzaU64);
+        const a = runtime.popStack(QzaU64);
+        runtime.pushStack(QzaU64, a >> b);
     }
 }
-MotorInstruction.instructions[MotorOperator.bit_shift_right | MotorILType.U64] = MotorBitShiftRightU64;
+QzaInstruction.instructions[QzaOperator.bit_shift_right | QzaILType.U64] = QzaBitShiftRightU64;
 
-export class MotorBitShiftRightI8 extends MotorInstruction {
+export class QzaBitShiftRightI8 extends QzaInstruction {
     get code(): number {
-        return MotorOperator.bit_shift_right | MotorILType.I8;
+        return QzaOperator.bit_shift_right | QzaILType.I8;
     }
     get js(): undefined {
         return undefined;
@@ -93,17 +93,17 @@ export class MotorBitShiftRightI8 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const b = runtime.popStack(MotorI8);
-        const a = runtime.popStack(MotorI8);
-        runtime.pushStack(MotorI8, a >> b);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const b = runtime.popStack(QzaI8);
+        const a = runtime.popStack(QzaI8);
+        runtime.pushStack(QzaI8, a >> b);
     }
 }
-MotorInstruction.instructions[MotorOperator.bit_shift_right | MotorILType.I8] = MotorBitShiftRightI8;
+QzaInstruction.instructions[QzaOperator.bit_shift_right | QzaILType.I8] = QzaBitShiftRightI8;
 
-export class MotorBitShiftRightI16 extends MotorInstruction {
+export class QzaBitShiftRightI16 extends QzaInstruction {
     get code(): number {
-        return MotorOperator.bit_shift_right | MotorILType.I16;
+        return QzaOperator.bit_shift_right | QzaILType.I16;
     }
     get js(): undefined {
         return undefined;
@@ -111,17 +111,17 @@ export class MotorBitShiftRightI16 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const b = runtime.popStack(MotorI16);
-        const a = runtime.popStack(MotorI16);
-        runtime.pushStack(MotorI16, a >> b);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const b = runtime.popStack(QzaI16);
+        const a = runtime.popStack(QzaI16);
+        runtime.pushStack(QzaI16, a >> b);
     }
 }
-MotorInstruction.instructions[MotorOperator.bit_shift_right | MotorILType.I16] = MotorBitShiftRightI16;
+QzaInstruction.instructions[QzaOperator.bit_shift_right | QzaILType.I16] = QzaBitShiftRightI16;
 
-export class MotorBitShiftRightI32 extends MotorInstruction {
+export class QzaBitShiftRightI32 extends QzaInstruction {
     get code(): number {
-        return MotorOperator.bit_shift_right | MotorILType.I32;
+        return QzaOperator.bit_shift_right | QzaILType.I32;
     }
     get js(): undefined {
         return undefined;
@@ -129,17 +129,17 @@ export class MotorBitShiftRightI32 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const b = runtime.popStack(MotorI32);
-        const a = runtime.popStack(MotorI32);
-        runtime.pushStack(MotorI32, a >> b);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const b = runtime.popStack(QzaI32);
+        const a = runtime.popStack(QzaI32);
+        runtime.pushStack(QzaI32, a >> b);
     }
 }
-MotorInstruction.instructions[MotorOperator.bit_shift_right | MotorILType.I32] = MotorBitShiftRightI32;
+QzaInstruction.instructions[QzaOperator.bit_shift_right | QzaILType.I32] = QzaBitShiftRightI32;
 
-export class MotorBitShiftRightI64 extends MotorInstruction {
+export class QzaBitShiftRightI64 extends QzaInstruction {
     get code(): number {
-        return MotorOperator.bit_shift_right | MotorILType.I64;
+        return QzaOperator.bit_shift_right | QzaILType.I64;
     }
     get js(): undefined {
         return undefined;
@@ -147,10 +147,10 @@ export class MotorBitShiftRightI64 extends MotorInstruction {
     set js(_: undefined) {
     }
     static readonly size = 2;
-    async exec(runtime: MotorRuntime): Promise<void> {
-        const b = runtime.popStack(MotorI64);
-        const a = runtime.popStack(MotorI64);
-        runtime.pushStack(MotorI64, a >> b);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        const b = runtime.popStack(QzaI64);
+        const a = runtime.popStack(QzaI64);
+        runtime.pushStack(QzaI64, a >> b);
     }
 }
-MotorInstruction.instructions[MotorOperator.bit_shift_right | MotorILType.I64] = MotorBitShiftRightI64;
+QzaInstruction.instructions[QzaOperator.bit_shift_right | QzaILType.I64] = QzaBitShiftRightI64;

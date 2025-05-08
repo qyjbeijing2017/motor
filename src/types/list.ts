@@ -1,8 +1,8 @@
-import { MotorJSType, MotorType } from "../instance";
-import { MotorMemory } from "../memory";
-import { MotorReference } from "./reference";
+import { QzaJSType, QzaType } from "../instance";
+import { QzaMemory } from "../memory";
+import { QzaReference } from "./reference";
 
-export abstract class MotorList<T extends MotorType<any>> extends MotorReference<MotorJSType<T>[]> {
+export abstract class QzaList<T extends QzaType<any>> extends QzaReference<QzaJSType<T>[]> {
     abstract get type(): T;
 
     get length(): number {
@@ -12,15 +12,15 @@ export abstract class MotorList<T extends MotorType<any>> extends MotorReference
         return this.size / this.type.size;
     }
 
-    get js(): MotorJSType<T>[] {
-        const result: MotorJSType<T>[] = [];
+    get js(): QzaJSType<T>[] {
+        const result: QzaJSType<T>[] = [];
         for (let i = 0; i < this.length; i++) {
             result.push(this.at(i).js);
         }
         return result;
     }
 
-    set js(value: MotorJSType<T>[]) {
+    set js(value: QzaJSType<T>[]) {
         this.size = value.length * this.type.size;
         for (let i = 0; i < value.length; i++) {
             this.at(i).js = value[i];
@@ -32,13 +32,13 @@ export abstract class MotorList<T extends MotorType<any>> extends MotorReference
     }
 }
 
-export type MotorListType<T extends MotorType<any>> = {
+export type QzaListType<T extends QzaType<any>> = {
     readonly size: 8;
-    new (value?: MotorJSType<T>[], memory?: MotorMemory, refAddress?: number): MotorList<T>;
+    new (value?: QzaJSType<T>[], memory?: QzaMemory, refAddress?: number): QzaList<T>;
 }
 
-export function motorCreateList<T extends MotorType<any>>(type: T): MotorListType<T> {
-    return class extends MotorList<T> {
+export function qzaCreateList<T extends QzaType<any>>(type: T): QzaListType<T> {
+    return class extends QzaList<T> {
         static readonly size = 8;
         get type(): T {
             return type;

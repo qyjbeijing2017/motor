@@ -1,24 +1,24 @@
-import { MotorInstruction, MotorInstructionType } from "./il/instruction";
-import { MotorType } from "./instance";
-import { MotorStack } from "./stack";
-import { MotorStruct } from "./types/struct";
-import { MotorU64 } from "./types/number/u64";
-import { motorCreateMap } from "./types/map";
-import { MotorString } from "./types/string";
-import { motorPackageEnvironments } from "./package-environment";
+import { QzaInstruction, QzaInstructionType } from "./il/instruction";
+import { QzaType } from "./instance";
+import { QzaStack } from "./stack";
+import { QzaStruct } from "./types/struct";
+import { QzaU64 } from "./types/number/u64";
+import { qzaCreateMap } from "./types/map";
+import { QzaString } from "./types/string";
+import { qzaPackageEnvironments } from "./package-environment";
 
-const PackageMap = motorCreateMap(
-    MotorString,
-    MotorU64,
+const PackageMap = qzaCreateMap(
+    QzaString,
+    QzaU64,
 )
 
 export type PackageLoader = (name: string) => Promise<string | void> | string | void;
 
-export class MotorRuntime extends MotorStruct<{
-    programCounter: typeof MotorU64,
-    stackPointer: typeof MotorU64,
-    framePointer: typeof MotorU64,
-    stack: typeof MotorStack,
+export class QzaRuntime extends QzaStruct<{
+    programCounter: typeof QzaU64,
+    stackPointer: typeof QzaU64,
+    framePointer: typeof QzaU64,
+    stack: typeof QzaStack,
     packageMap: typeof PackageMap,
 }> {
     loaders: PackageLoader[] = [
@@ -35,27 +35,27 @@ export class MotorRuntime extends MotorStruct<{
             }
         },
     ];
-    readonly invokeMap: Map<string, (runtime: MotorRuntime) => void | Promise<void>> = new Map([
+    readonly invokeMap: Map<string, (runtime: QzaRuntime) => void | Promise<void>> = new Map([
         ['print', async (runtime) => {
-            const logStr = runtime.popStack(MotorString);
+            const logStr = runtime.popStack(QzaString);
             console.log(logStr);
         }],
         ['import', async (runtime) => {
-            const key = runtime.popStack(MotorString);
+            const key = runtime.popStack(QzaString);
             for (const loader of this.loaders) {
                 const result = await loader(key);
                 if (result) {
                     const initFunc = new (Object.getPrototypeOf(async function () { }).constructor)(
                         'runtime',
                         'targetAddress',
-                        ...Object.keys(motorPackageEnvironments),
+                        ...Object.keys(qzaPackageEnvironments),
                         result
                     );
                     let targetAddress = 0
                     targetAddress = await initFunc(
                         this,
                         targetAddress,
-                        ...Object.values(motorPackageEnvironments),
+                        ...Object.values(qzaPackageEnvironments),
                     );
                     this.get('packageMap').set(key, targetAddress ?? 0);
                     return;
@@ -64,39 +64,39 @@ export class MotorRuntime extends MotorStruct<{
             throw new Error(`Package ${key} not found`);
         }],
         ['allocate', async (runtime) => {
-            const size = runtime.popStack(MotorU64);
+            const size = runtime.popStack(QzaU64);
             const address = runtime.memory.allocate(size);
-            runtime.pushStack(MotorU64, address);
+            runtime.pushStack(QzaU64, address);
         }],
         ['free', async (runtime) => {
-            const size = runtime.popStack(MotorU64);
-            const address = runtime.popStack(MotorU64);
+            const size = runtime.popStack(QzaU64);
+            const address = runtime.popStack(QzaU64);
             runtime.memory.free(address, size);
         }]
     ]);
     static readonly size =
-        MotorU64.size +
-        MotorU64.size +
-        MotorU64.size +
-        MotorStack.size +
+        QzaU64.size +
+        QzaU64.size +
+        QzaU64.size +
+        QzaStack.size +
         PackageMap.size;
     get type() {
         return {
-            programCounter: MotorU64,
-            stackPointer: MotorU64,
-            framePointer: MotorU64,
-            stack: MotorStack,
+            programCounter: QzaU64,
+            stackPointer: QzaU64,
+            framePointer: QzaU64,
+            stack: QzaStack,
             packageMap: PackageMap,
         };
     }
 
     protected onInstanceCreated(): void {
-        this.get('stackPointer').js = MotorStack.size;
+        this.get('stackPointer').js = QzaStack.size;
     }
 
     clear() {
         this.get('programCounter').js = 0;
-        this.get('stackPointer').js = MotorStack.size;
+        this.get('stackPointer').js = QzaStack.size;
         this.get('framePointer').js = 0;
         this.get('packageMap').clear();
     }
@@ -118,7 +118,7 @@ export class MotorRuntime extends MotorStruct<{
         }
     }
 
-    pushStack<T extends MotorType<any>>(type: T, value: T extends MotorType<infer U> ? U : never): InstanceType<T> {
+    pushStack<T extends QzaType<any>>(type: T, value: T extends QzaType<infer U> ? U : never): InstanceType<T> {
         const stackPointer = this.get('stackPointer');
         if (stackPointer.js < type.size) {
             throw new Error('Stack overflow');
@@ -127,9 +127,9 @@ export class MotorRuntime extends MotorStruct<{
         return new type(value, this.memory, this.get('stack').address + stackPointer.js) as InstanceType<T>;
     }
 
-    popStack<T extends MotorType<any>>(type: T): T extends MotorType<infer U> ? U : never {
+    popStack<T extends QzaType<any>>(type: T): T extends QzaType<infer U> ? U : never {
         const stackPointer = this.get('stackPointer');
-        if (stackPointer.js + type.size > MotorStack.size) {
+        if (stackPointer.js + type.size > QzaStack.size) {
             throw new Error('Stack underflow');
         }
         const value = new type(undefined, this.memory, this.get('stack').address + stackPointer.js);
@@ -145,8 +145,8 @@ export class MotorRuntime extends MotorStruct<{
             if (programCounter.js === 0) {
                 break;
             }
-            const instruction = MotorInstruction.readInstruction(programCounter.js, this.memory)
-            programCounter.js += (instruction.constructor as MotorInstructionType).size;
+            const instruction = QzaInstruction.readInstruction(programCounter.js, this.memory)
+            programCounter.js += (instruction.constructor as QzaInstructionType).size;
             await instruction.exec(this);
         }
     }

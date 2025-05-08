@@ -1,18 +1,18 @@
-export interface MotorBlock {
+export interface QzaBlock {
     address: number;
     size: number;
 }
 
-export interface MotorMemoryProps {
+export interface QzaMemoryProps {
     size?: number;
     createBuffer?: (size: number) => Uint8Array;
 }
 
-export class MotorMemory {
+export class QzaMemory {
     private _buffer: Uint8Array;
     private _viewer: DataView;
     private _createBuffer: (size: number) => Uint8Array;
-    private _emptyBlocks: MotorBlock[] = [];
+    private _emptyBlocks: QzaBlock[] = [];
 
     get size() {
         return this._buffer.length;
@@ -26,7 +26,7 @@ export class MotorMemory {
         return this._viewer;
     }
 
-    constructor(props?: MotorMemoryProps) {
+    constructor(props?: QzaMemoryProps) {
         this._createBuffer = props?.createBuffer || ((size: number) => new Uint8Array(size));
         this._buffer = this._createBuffer(props?.size || 1024 * 4); // Default size 4KB
         this._viewer = new DataView(this._buffer.buffer);
@@ -38,8 +38,8 @@ export class MotorMemory {
 
     private mergeEmptyBlocks() {
         this._emptyBlocks.sort((a, b) => a.address - b.address);
-        const mergedBlocks: MotorBlock[] = [];
-        let currentBlock: MotorBlock | null = null;
+        const mergedBlocks: QzaBlock[] = [];
+        let currentBlock: QzaBlock | null = null;
 
         for (const block of this._emptyBlocks) {
             if (!currentBlock) {
@@ -103,7 +103,7 @@ export class MotorMemory {
     }
 
     public serialize(): Uint8Array {
-        const dataBlocks: MotorBlock[] = [];
+        const dataBlocks: QzaBlock[] = [];
         let offset = 0;
         this._emptyBlocks.sort((a, b) => a.address - b.address);
         for (const block of this._emptyBlocks) {
@@ -140,7 +140,7 @@ export class MotorMemory {
         return buffer;
     }
 
-    public allocateFromBlock(block: MotorBlock) {
+    public allocateFromBlock(block: QzaBlock) {
         const address = block.address;
         if (block.size === 0) {
             throw new Error('Block is empty');

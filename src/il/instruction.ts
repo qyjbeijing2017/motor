@@ -1,24 +1,24 @@
-import { MotorInstance } from "../instance";
-import { MotorMemory } from "../memory";
-import { MotorRuntime } from "../runtime";
-import { motorSingleton } from "../utils/singleton";
-import { MotorOperator } from "./operator";
-import { MotorILType } from "./type";
+import { QzaInstance } from "../instance";
+import { QzaMemory } from "../memory";
+import { QzaRuntime } from "../runtime";
+import { qzaSingleton } from "../utils/singleton";
+import { QzaOperator } from "./operator";
+import { QzaILType } from "./type";
 
-export abstract class MotorInstruction extends MotorInstance<number | undefined> {
-    static readonly instructions: { [key: number]: MotorInstructionType } = {};
+export abstract class QzaInstruction extends QzaInstance<number | undefined> {
+    static readonly instructions: { [key: number]: QzaInstructionType } = {};
     abstract get code(): number;
     get operator(): number {
-        return this.code & MotorOperator.mask;
+        return this.code & QzaOperator.mask;
     }
     get ILType(): number {
-        return this.code & MotorILType.mask;
+        return this.code & QzaILType.mask;
     }
     protected onInstanceCreated(): void {
         this.memory.viewer.setUint16(this.address, this.code);
     }
 
-    static readInstruction(address: number, memory: MotorMemory = motorSingleton(MotorMemory)): MotorInstruction {
+    static readInstruction(address: number, memory: QzaMemory = qzaSingleton(QzaMemory)): QzaInstruction {
         const code = memory.viewer.getUint16(address);
         const instructionClass = this.instructions[code];
         if (!instructionClass) {
@@ -26,10 +26,10 @@ export abstract class MotorInstruction extends MotorInstance<number | undefined>
         }
         return new instructionClass(undefined, memory, address);
     }
-    abstract exec(runtime: MotorRuntime): Promise<void>;
+    abstract exec(runtime: QzaRuntime): Promise<void>;
 }
 
-export type MotorInstructionType = {
+export type QzaInstructionType = {
     readonly size: number;
-    new(def?: number, memory?: MotorMemory, address?: number): MotorInstruction;
+    new(def?: number, memory?: QzaMemory, address?: number): QzaInstruction;
 }

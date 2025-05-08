@@ -1,4 +1,4 @@
-export enum MotorILType {
+export enum QzaILType {
     VOID = 0,
     U8 = 0x0100,
     U16 = 0x0200,

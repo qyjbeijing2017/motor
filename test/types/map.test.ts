@@ -1,11 +1,11 @@
-import { MotorF32, MotorString, motorCreateMap } from '../../src'
+import { QzaF32, QzaString, qzaCreateMap } from '../../src'
 test('default', () => {
-    const MapType = motorCreateMap(MotorString, MotorF32);
+    const MapType = qzaCreateMap(QzaString, QzaF32);
     const map = new MapType();
     expect(map.js).toEqual([])
 })
 test('default value', () => {
-    const MapType = motorCreateMap(MotorString, MotorF32);
+    const MapType = qzaCreateMap(QzaString, QzaF32);
     const map = new MapType([
         ['a', 1],
         ['b', 2],
@@ -18,7 +18,7 @@ test('default value', () => {
     ])
 })
 test('set js', () => {
-    const MapType = motorCreateMap(MotorString, MotorF32);
+    const MapType = qzaCreateMap(QzaString, QzaF32);
     const map = new MapType([
         ['a', 1],
         ['b', 2],
@@ -36,7 +36,7 @@ test('set js', () => {
     ])
 })
 test('get', () => {
-    const MapType = motorCreateMap(MotorString, MotorF32);
+    const MapType = qzaCreateMap(QzaString, QzaF32);
     const map = new MapType([
         ['a', 1],
         ['b', 2],
@@ -47,7 +47,7 @@ test('get', () => {
     expect(map.get('c').js).toBe(3)
 })
 test('set', () => {
-    const MapType = motorCreateMap(MotorString, MotorF32);
+    const MapType = qzaCreateMap(QzaString, QzaF32);
     const map = new MapType([
         ['a', 1],
         ['b', 2],

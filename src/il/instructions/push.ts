@@ -1,26 +1,26 @@
-import { MotorRuntime } from "../../runtime";
-import { MotorF16 } from "../../types/number/f16";
-import { MotorF32 } from "../../types/number/f32";
-import { MotorF64 } from "../../types/number/f64";
-import { MotorF8 } from "../../types/number/f8";
-import { MotorI16 } from "../../types/number/i16";
-import { MotorI32 } from "../../types/number/i32";
-import { MotorI64 } from "../../types/number/i64";
-import { MotorI8 } from "../../types/number/i8";
-import { MotorU16 } from "../../types/number/u16";
-import { MotorU32 } from "../../types/number/u32";
-import { MotorU64 } from "../../types/number/u64";
-import { MotorU8 } from "../../types/number/u8";
+import { QzaRuntime } from "../../runtime";
+import { QzaF16 } from "../../types/number/f16";
+import { QzaF32 } from "../../types/number/f32";
+import { QzaF64 } from "../../types/number/f64";
+import { QzaF8 } from "../../types/number/f8";
+import { QzaI16 } from "../../types/number/i16";
+import { QzaI32 } from "../../types/number/i32";
+import { QzaI64 } from "../../types/number/i64";
+import { QzaI8 } from "../../types/number/i8";
+import { QzaU16 } from "../../types/number/u16";
+import { QzaU32 } from "../../types/number/u32";
+import { QzaU64 } from "../../types/number/u64";
+import { QzaU8 } from "../../types/number/u8";
 import { getFloat16, setFloat16 } from "@petamoriken/float16";
-import { motorGetFloat8, motorSetFloat8 } from "../../utils/float8";
-import { MotorInstruction } from "../instruction";
-import { MotorOperator } from "../operator";
-import { MotorILType } from "../type";
+import { qzaGetFloat8, qzaSetFloat8 } from "../../utils/float8";
+import { QzaInstruction } from "../instruction";
+import { QzaOperator } from "../operator";
+import { QzaILType } from "../type";
 
-export class MotorPushU8 extends MotorInstruction {
+export class QzaPushU8 extends QzaInstruction {
     static readonly size = 3;
     get code(): number {
-        return MotorOperator.push | MotorILType.U8;
+        return QzaOperator.push | QzaILType.U8;
     }
     get js(): number {
         return this.memory.viewer.getUint8(this.address + 2);
@@ -28,16 +28,16 @@ export class MotorPushU8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setUint8(this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorU8, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaU8, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.U8] = MotorPushU8;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.U8] = QzaPushU8;
 
-export class MotorPushU16 extends MotorInstruction {
+export class QzaPushU16 extends QzaInstruction {
     static readonly size = 4;
     get code(): number {
-        return MotorOperator.push | MotorILType.U16;
+        return QzaOperator.push | QzaILType.U16;
     }
     get js(): number {
         return this.memory.viewer.getUint16(this.address + 2);
@@ -45,16 +45,16 @@ export class MotorPushU16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setUint16(this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorU16, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaU16, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.U16] = MotorPushU16;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.U16] = QzaPushU16;
 
-export class MotorPushU32 extends MotorInstruction {
+export class QzaPushU32 extends QzaInstruction {
     static readonly size = 6;
     get code(): number {
-        return MotorOperator.push | MotorILType.U32;
+        return QzaOperator.push | QzaILType.U32;
     }
     get js(): number {
         return this.memory.viewer.getUint32(this.address + 2);
@@ -62,16 +62,16 @@ export class MotorPushU32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setUint32(this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorU32, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaU32, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.U32] = MotorPushU32;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.U32] = QzaPushU32;
 
-export class MotorPushU64 extends MotorInstruction {
+export class QzaPushU64 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.push | MotorILType.U64;
+        return QzaOperator.push | QzaILType.U64;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigUint64(this.address + 2));
@@ -79,16 +79,16 @@ export class MotorPushU64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigUint64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorU64, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaU64, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.U64] = MotorPushU64;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.U64] = QzaPushU64;
 
-export class MotorPushI8 extends MotorInstruction {
+export class QzaPushI8 extends QzaInstruction {
     static readonly size = 3;
     get code(): number {
-        return MotorOperator.push | MotorILType.I8;
+        return QzaOperator.push | QzaILType.I8;
     }
     get js(): number {
         return this.memory.viewer.getInt8(this.address + 2);
@@ -96,16 +96,16 @@ export class MotorPushI8 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setInt8(this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorI8, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaI8, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.I8] = MotorPushI8;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.I8] = QzaPushI8;
 
-export class MotorPushI16 extends MotorInstruction {
+export class QzaPushI16 extends QzaInstruction {
     static readonly size = 4;
     get code(): number {
-        return MotorOperator.push | MotorILType.I16;
+        return QzaOperator.push | QzaILType.I16;
     }
     get js(): number {
         return this.memory.viewer.getInt16(this.address + 2);
@@ -113,16 +113,16 @@ export class MotorPushI16 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setInt16(this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorI16, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaI16, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.I16] = MotorPushI16;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.I16] = QzaPushI16;
 
-export class MotorPushI32 extends MotorInstruction {
+export class QzaPushI32 extends QzaInstruction {
     static readonly size = 6;
     get code(): number {
-        return MotorOperator.push | MotorILType.I32;
+        return QzaOperator.push | QzaILType.I32;
     }
     get js(): number {
         return this.memory.viewer.getInt32(this.address + 2);
@@ -130,16 +130,16 @@ export class MotorPushI32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setInt32(this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorI32, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaI32, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.I32] = MotorPushI32;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.I32] = QzaPushI32;
 
-export class MotorPushI64 extends MotorInstruction {
+export class QzaPushI64 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.push | MotorILType.I64;
+        return QzaOperator.push | QzaILType.I64;
     }
     get js(): number {
         return Number(this.memory.viewer.getBigInt64(this.address + 2));
@@ -147,33 +147,33 @@ export class MotorPushI64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setBigInt64(this.address + 2, BigInt(value));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorI64, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaI64, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.I64] = MotorPushI64;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.I64] = QzaPushI64;
 
-export class MotorPushF8 extends MotorInstruction {
+export class QzaPushF8 extends QzaInstruction {
     static readonly size = 3;
     get code(): number {
-        return MotorOperator.push | MotorILType.F8;
+        return QzaOperator.push | QzaILType.F8;
     }
     get js(): number {
-        return motorGetFloat8(this.memory.viewer, this.address + 2);
+        return qzaGetFloat8(this.memory.viewer, this.address + 2);
     }
     set js(value: number) {
-        motorSetFloat8(this.memory.viewer, this.address + 2, value);
+        qzaSetFloat8(this.memory.viewer, this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorF8, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaF8, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.F8] = MotorPushF8;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.F8] = QzaPushF8;
 
-export class MotorPushF16 extends MotorInstruction {
+export class QzaPushF16 extends QzaInstruction {
     static readonly size = 4;
     get code(): number {
-        return MotorOperator.push | MotorILType.F16;
+        return QzaOperator.push | QzaILType.F16;
     }
     get js(): number {
         return getFloat16(this.memory.viewer, this.address + 2);
@@ -181,16 +181,16 @@ export class MotorPushF16 extends MotorInstruction {
     set js(value: number) {
         setFloat16(this.memory.viewer, this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorF16, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaF16, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.F16] = MotorPushF16;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.F16] = QzaPushF16;
 
-export class MotorPushF32 extends MotorInstruction {
+export class QzaPushF32 extends QzaInstruction {
     static readonly size = 6;
     get code(): number {
-        return MotorOperator.push | MotorILType.F32;
+        return QzaOperator.push | QzaILType.F32;
     }
     get js(): number {
         return this.memory.viewer.getFloat32(this.address + 2);
@@ -198,16 +198,16 @@ export class MotorPushF32 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setFloat32(this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorF32, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaF32, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.F32] = MotorPushF32;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.F32] = QzaPushF32;
 
-export class MotorPushF64 extends MotorInstruction {
+export class QzaPushF64 extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.push | MotorILType.F64;
+        return QzaOperator.push | QzaILType.F64;
     }
     get js(): number {
         return this.memory.viewer.getFloat64(this.address + 2);
@@ -215,8 +215,8 @@ export class MotorPushF64 extends MotorInstruction {
     set js(value: number) {
         this.memory.viewer.setFloat64(this.address + 2, value);
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
-        runtime.pushStack(MotorF64, this.js);
+    async exec(runtime: QzaRuntime): Promise<void> {
+        runtime.pushStack(QzaF64, this.js);
     }
 }
-MotorInstruction.instructions[MotorOperator.push | MotorILType.F64] = MotorPushF64;
+QzaInstruction.instructions[QzaOperator.push | QzaILType.F64] = QzaPushF64;

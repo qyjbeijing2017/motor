@@ -1,18 +1,18 @@
-import { MotorInstance, MotorJSType, MotorType } from "../instance";
-import { MotorMemory } from "../memory";
-import { motorPackageEnvironments } from "../package-environment";
+import { QzaInstance, QzaJSType, QzaType } from "../instance";
+import { QzaMemory } from "../memory";
+import { qzaPackageEnvironments } from "../package-environment";
 
-export abstract class MotorArray<T extends MotorType<any>> extends MotorInstance<MotorJSType<T>[]> {
+export abstract class QzaArray<T extends QzaType<any>> extends QzaInstance<QzaJSType<T>[]> {
     abstract get type(): T;
     abstract get length(): number;
-    get js(): MotorJSType<T>[] {
-        const result: MotorJSType<T>[] = new Array(this.length);
+    get js(): QzaJSType<T>[] {
+        const result: QzaJSType<T>[] = new Array(this.length);
         for (let i = 0; i < this.length; i++) {
             result[i] = this.at(i).js;
         }
         return result;
     }
-    set js(value: MotorJSType<T>[]) {
+    set js(value: QzaJSType<T>[]) {
         for (let i = 0; i < Math.min(value.length, this.length); i++) {
             const instance = this.at(i);
             instance.js = value[i];
@@ -25,13 +25,13 @@ export abstract class MotorArray<T extends MotorType<any>> extends MotorInstance
     }
 }
 
-export type MotorArrayType<T extends MotorType<any>> = {
+export type QzaArrayType<T extends QzaType<any>> = {
     readonly size: number;
-    new(def?: MotorJSType<T>[], memory?: MotorMemory, address?: number): MotorArray<T>;
+    new(def?: QzaJSType<T>[], memory?: QzaMemory, address?: number): QzaArray<T>;
 }
 
-export function motorCreateArray<T extends MotorType<any>>(type: T, length: number): MotorArrayType<T> {
-    return class extends MotorArray<T> {
+export function qzaCreateArray<T extends QzaType<any>>(type: T, length: number): QzaArrayType<T> {
+    return class extends QzaArray<T> {
         static readonly size = type.size * length;
         get type(): T {
             return type;
@@ -41,4 +41,4 @@ export function motorCreateArray<T extends MotorType<any>>(type: T, length: numb
         }
     };
 }
-motorPackageEnvironments['motorCreateArray'] = motorCreateArray;
+qzaPackageEnvironments['qzaCreateArray'] = qzaCreateArray;

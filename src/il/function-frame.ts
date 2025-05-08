@@ -1,15 +1,15 @@
-import { MotorStruct } from "../types/struct";
-import { MotorU64 } from "../types/number/u64";
+import { QzaStruct } from "../types/struct";
+import { QzaU64 } from "../types/number/u64";
 
-export class MotorFunctionFrame extends MotorStruct<{
-    returnAddress: typeof MotorU64,
-    framePointer: typeof MotorU64,
+export class QzaFunctionFrame extends QzaStruct<{
+    returnAddress: typeof QzaU64,
+    framePointer: typeof QzaU64,
 }> {
-    static readonly size = MotorU64.size + MotorU64.size;
+    static readonly size = QzaU64.size + QzaU64.size;
     get type() {
         return {
-            returnAddress: MotorU64,
-            framePointer: MotorU64,
+            returnAddress: QzaU64,
+            framePointer: QzaU64,
         };
     }
 }

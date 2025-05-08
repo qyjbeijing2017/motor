@@ -1,4 +1,4 @@
-export function motorGetFloat8(dataView: DataView, byteOffset: number) {
+export function qzaGetFloat8(dataView: DataView, byteOffset: number) {
     const byte = dataView.getUint8(byteOffset);
     const sign = (byte & 0x80) ? -1 : 1;
     const exponent = (byte >> 3) & 0x0F; // 4-bit exponent
@@ -16,7 +16,7 @@ export function motorGetFloat8(dataView: DataView, byteOffset: number) {
     return sign * (1 + mantissa / 8) * Math.pow(2, exponent - 7);
 }
 
-export function motorSetFloat8(dataView: DataView, byteOffset: number, value: number) {
+export function qzaSetFloat8(dataView: DataView, byteOffset: number, value: number) {
     if (isNaN(value)) {
         dataView.setUint8(byteOffset, 0x7F); // NaN
         return;

@@ -1,10 +1,10 @@
-import { MotorJSType, MotorType } from "../instance";
-import { MotorMemory } from "../memory";
-import { motorPackageEnvironments } from "../package-environment";
-import { MotorNull } from "./null";
-import { MotorReference } from "./reference";
+import { QzaJSType, QzaType } from "../instance";
+import { QzaMemory } from "../memory";
+import { qzaPackageEnvironments } from "../package-environment";
+import { QzaNull } from "./null";
+import { QzaReference } from "./reference";
 
-export abstract class MotorMap<K extends MotorType<any>, V extends MotorType<any>> extends MotorReference<[MotorJSType<K>, MotorJSType<V>][]> {
+export abstract class QzaMap<K extends QzaType<any>, V extends QzaType<any>> extends QzaReference<[QzaJSType<K>, QzaJSType<V>][]> {
     abstract get keyType(): K;
     abstract get valueType(): V;
 
@@ -15,8 +15,8 @@ export abstract class MotorMap<K extends MotorType<any>, V extends MotorType<any
         return this.size / (this.keyType.size + this.valueType.size);
     }
 
-    get js(): [MotorJSType<K>, MotorJSType<V>][] {
-        const result: [MotorJSType<K>, MotorJSType<V>][] = [];
+    get js(): [QzaJSType<K>, QzaJSType<V>][] {
+        const result: [QzaJSType<K>, QzaJSType<V>][] = [];
         for (let i = 0; i < this.length; i++) {
             const [key, value] = this.at(i);
             result.push([key.js, value.js]);
@@ -24,7 +24,7 @@ export abstract class MotorMap<K extends MotorType<any>, V extends MotorType<any
         return result;
     }
 
-    set js(value: [MotorJSType<K>, MotorJSType<V>][]) {
+    set js(value: [QzaJSType<K>, QzaJSType<V>][]) {
         this.size = value.length * (this.keyType.size + this.valueType.size);
         for (let i = 0; i < value.length; i++) {
             const [k, v] = this.at(i);
@@ -40,7 +40,7 @@ export abstract class MotorMap<K extends MotorType<any>, V extends MotorType<any
         return [key, value];
     }
 
-    set(k: MotorJSType<K>, v: MotorJSType<V>): void {
+    set(k: QzaJSType<K>, v: QzaJSType<V>): void {
         for (let i = 0; i < this.length; i++) {
             const [key, value] = this.at(i);
             if (key.js === k) {
@@ -51,14 +51,14 @@ export abstract class MotorMap<K extends MotorType<any>, V extends MotorType<any
         this.js = [...this.js, [k, v]];
     }
 
-    get(k: MotorJSType<K>): InstanceType<V> | MotorNull {
+    get(k: QzaJSType<K>): InstanceType<V> | QzaNull {
         for (let i = 0; i < this.length; i++) {
             const [key, value] = this.at(i);
             if (key.js === k) {
                 return value;
             }
         }
-        return new MotorNull(undefined, this.memory);
+        return new QzaNull(undefined, this.memory);
     }
 
     clear(): void {
@@ -66,13 +66,13 @@ export abstract class MotorMap<K extends MotorType<any>, V extends MotorType<any
     }
 }
 
-export type MotorMapType<K extends MotorType<any>, V extends MotorType<any>> = {
+export type QzaMapType<K extends QzaType<any>, V extends QzaType<any>> = {
     readonly size: 8;
-    new(def?: [MotorJSType<K>, MotorJSType<V>][], memory?: MotorMemory, address?: number): MotorMap<K, V>;
+    new(def?: [QzaJSType<K>, QzaJSType<V>][], memory?: QzaMemory, address?: number): QzaMap<K, V>;
 }
 
-export function motorCreateMap<K extends MotorType<any>, V extends MotorType<any>>(keyType: K, valueType: V): MotorMapType<K, V> {
-    return class extends MotorMap<K, V> {
+export function qzaCreateMap<K extends QzaType<any>, V extends QzaType<any>>(keyType: K, valueType: V): QzaMapType<K, V> {
+    return class extends QzaMap<K, V> {
         static readonly size = 8
         get keyType(): K {
             return keyType;
@@ -82,4 +82,4 @@ export function motorCreateMap<K extends MotorType<any>, V extends MotorType<any
         }
     }
 }
-motorPackageEnvironments['motorCreateMap'] = motorCreateMap;
+qzaPackageEnvironments['qzaCreateMap'] = qzaCreateMap;

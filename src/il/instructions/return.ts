@@ -1,12 +1,12 @@
-import { MotorRuntime } from "../../runtime";
-import { MotorFunctionFrame } from "../function-frame";
-import { MotorInstruction } from "../instruction";
-import { MotorOperator } from "../operator";
+import { QzaRuntime } from "../../runtime";
+import { QzaFunctionFrame } from "../function-frame";
+import { QzaInstruction } from "../instruction";
+import { QzaOperator } from "../operator";
 
-export class MotorReturn extends MotorInstruction {
+export class QzaReturn extends QzaInstruction {
     static readonly size = 10;
     get code(): number {
-        return MotorOperator.return;
+        return QzaOperator.return;
     }
     set js(value: number) {
         this.memory.viewer.setBigUint64(this.address + 2, BigInt(value));
@@ -15,22 +15,22 @@ export class MotorReturn extends MotorInstruction {
         this.memory.viewer.setUint16(this.address, this.code);
         return Number(this.memory.viewer.getBigUint64(this.address + 2));
     }
-    async exec(runtime: MotorRuntime): Promise<void> {
+    async exec(runtime: QzaRuntime): Promise<void> {
         const stackPointer = runtime.get('stackPointer');
         const framePointer = runtime.get('framePointer');
         const programCounter = runtime.get('programCounter');
         const stack = runtime.get('stack');
-        const functionFrame = new MotorFunctionFrame(undefined, stack.memory, stack.address + framePointer.js);
+        const functionFrame = new QzaFunctionFrame(undefined, stack.memory, stack.address + framePointer.js);
         const returnAddress = functionFrame.get('returnAddress').js;
         const returnFramePointer = functionFrame.get('framePointer').js;
         stack.memory.buffer.copyWithin(
-            stack.address + framePointer.js + MotorFunctionFrame.size - this.js, 
+            stack.address + framePointer.js + QzaFunctionFrame.size - this.js, 
             stack.address + stackPointer.js, 
             stack.address + stackPointer.js + this.js
         );
-        stackPointer.js = framePointer.js + MotorFunctionFrame.size - this.js;
+        stackPointer.js = framePointer.js + QzaFunctionFrame.size - this.js;
         programCounter.js = returnAddress;
         framePointer.js = returnFramePointer;
     }
 }
-MotorInstruction.instructions[MotorOperator.return] = MotorReturn;
+QzaInstruction.instructions[QzaOperator.return] = QzaReturn;

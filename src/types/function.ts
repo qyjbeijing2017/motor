@@ -1,25 +1,25 @@
-import { MotorInstruction, MotorInstructionType } from "../il/instruction";
-import { MotorJSType, MotorType } from "../instance";
-import { MotorMemory } from "../memory";
-import { MotorRuntime } from "../runtime";
-import { motorSingleton } from "../utils/singleton";
-import { MotorReference } from "./reference";
-import { MotorU64 } from "./number/u64";
-import { MotorFunctionFrame } from "../il/function-frame";
-import { motorPackageEnvironments } from "../package-environment";
+import { QzaInstruction, QzaInstructionType } from "../il/instruction";
+import { QzaJSType, QzaType } from "../instance";
+import { QzaMemory } from "../memory";
+import { QzaRuntime } from "../runtime";
+import { qzaSingleton } from "../utils/singleton";
+import { QzaReference } from "./reference";
+import { QzaU64 } from "./number/u64";
+import { QzaFunctionFrame } from "../il/function-frame";
+import { qzaPackageEnvironments } from "../package-environment";
 
-export interface IMotorInstructionInfo {
-    type: MotorInstructionType;
+export interface IQzaInstructionInfo {
+    type: QzaInstructionType;
     immediate?: number;
 }
 
-export abstract class MotorFunction<ReturnType extends MotorType<any>, Args extends MotorType<any>[]> extends MotorReference<IMotorInstructionInfo[]> {
-    get js(): IMotorInstructionInfo[] {
-        const infos: IMotorInstructionInfo[] = [];
+export abstract class QzaFunction<ReturnType extends QzaType<any>, Args extends QzaType<any>[]> extends QzaReference<IQzaInstructionInfo[]> {
+    get js(): IQzaInstructionInfo[] {
+        const infos: IQzaInstructionInfo[] = [];
         let offset = 0;
         while (offset < this.size) {
-            const info = MotorInstruction.readInstruction(this.refAddress + offset, this.memory);
-            const type = info.constructor as MotorInstructionType;
+            const info = QzaInstruction.readInstruction(this.refAddress + offset, this.memory);
+            const type = info.constructor as QzaInstructionType;
             infos.push({
                 type,
                 immediate: info.js
@@ -28,7 +28,7 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
         }
         return infos;
     }
-    set js(value: IMotorInstructionInfo[]) {
+    set js(value: IQzaInstructionInfo[]) {
         this.size = value.reduce((acc, info) => acc + info.type.size, 0);
         let offset = 0;
         for (const info of value) {
@@ -44,7 +44,7 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
         return this.argTypes.reduce((acc, arg) => acc + arg.size, 0);
     }
 
-    async call(args: MotorJSType<InstanceType<Args[number]>>[] = [], runtime: MotorRuntime = motorSingleton(MotorRuntime)): Promise<MotorJSType<InstanceType<ReturnType>>> {
+    async call(args: QzaJSType<InstanceType<Args[number]>>[] = [], runtime: QzaRuntime = qzaSingleton(QzaRuntime)): Promise<QzaJSType<InstanceType<ReturnType>>> {
         if(args.length  !== this.argTypes.length) {
             throw new Error(`Function ${this.refAddress} expects ${this.argTypes.length} arguments, but got ${args.length}`);
         }
@@ -57,14 +57,14 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
             });
         const programCounter = runtime.get('programCounter');
         const framePointer = runtime.get('framePointer');
-        runtime.pushStack(MotorFunctionFrame, {
+        runtime.pushStack(QzaFunctionFrame, {
             returnAddress: programCounter.js,
             framePointer: framePointer.js,
         })
         framePointer.js = runtime.get('stackPointer').js;
         programCounter.js = this.refAddress;
         await runtime.run();
-        const retVal = runtime.popStack(this.returnType) as MotorJSType<InstanceType<ReturnType>>;
+        const retVal = runtime.popStack(this.returnType) as QzaJSType<InstanceType<ReturnType>>;
 
         this.argTypes
         .concat()
@@ -76,13 +76,13 @@ export abstract class MotorFunction<ReturnType extends MotorType<any>, Args exte
     }
 }
 
-export type MotorFunctionType<ReturnType extends MotorType<any>, Args extends MotorType<any>[]> = {
+export type QzaFunctionType<ReturnType extends QzaType<any>, Args extends QzaType<any>[]> = {
     readonly size: 8;
-    new(def?: IMotorInstructionInfo[], memory?: MotorMemory, address?: number): MotorFunction<ReturnType, Args>;
+    new(def?: IQzaInstructionInfo[], memory?: QzaMemory, address?: number): QzaFunction<ReturnType, Args>;
 }
 
-export function motorCreateFunction<ReturnType extends MotorType<any>, Args extends MotorType<any>[]>(returnType: ReturnType, argTypes: Args): MotorFunctionType<ReturnType, Args> {
-    return class extends MotorFunction<ReturnType, Args> {
+export function qzaCreateFunction<ReturnType extends QzaType<any>, Args extends QzaType<any>[]>(returnType: ReturnType, argTypes: Args): QzaFunctionType<ReturnType, Args> {
+    return class extends QzaFunction<ReturnType, Args> {
         static readonly size = 8;
         get returnType(): ReturnType {
             return returnType;
@@ -92,4 +92,4 @@ export function motorCreateFunction<ReturnType extends MotorType<any>, Args exte
         }
     }
 }
-motorPackageEnvironments['motorCreateFunction'] = motorCreateFunction;
+qzaPackageEnvironments['qzaCreateFunction'] = qzaCreateFunction;

@@ -1,7 +1,7 @@
-import { motorPackageEnvironments } from "../package-environment";
-import { MotorReference } from "./reference";
+import { qzaPackageEnvironments } from "../package-environment";
+import { QzaReference } from "./reference";
 
-export class MotorString  extends MotorReference<string> {
+export class QzaString  extends QzaReference<string> {
     static readonly size = 8;
     get js(): string {
         return new TextDecoder().decode(this.memory.buffer.subarray(this.refAddress, this.refAddress + this.size));
@@ -11,4 +11,4 @@ export class MotorString  extends MotorReference<string> {
         this.memory.buffer.set(new TextEncoder().encode(value), this.refAddress);
     }
 }
-motorPackageEnvironments["MotorString"] = MotorString;
+qzaPackageEnvironments["QzaString"] = QzaString;
