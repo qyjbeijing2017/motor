@@ -45,6 +45,9 @@ export abstract class QzaFunction<ReturnType extends QzaType<any>, Args extends 
     }
 
     async call(args: QzaJSType<InstanceType<Args[number]>>[] = [], runtime: QzaRuntime = qzaSingleton(QzaRuntime)): Promise<QzaJSType<InstanceType<ReturnType>>> {
+        if(runtime.memory !== this.memory) {
+            throw new Error(`Function ${this.refAddress} is not in the same memory as the runtime`);
+        }
         if(args.length  !== this.argTypes.length) {
             throw new Error(`Function ${this.refAddress} expects ${this.argTypes.length} arguments, but got ${args.length}`);
         }
@@ -66,6 +69,42 @@ export abstract class QzaFunction<ReturnType extends QzaType<any>, Args extends 
         await runtime.run();
         const retVal = runtime.popStack(this.returnType) as QzaJSType<InstanceType<ReturnType>>;
 
+        this.argTypes
+        .concat()
+        .reverse()
+        .forEach((argType, i) => {
+            runtime.popStack(argType);
+        });
+        return retVal;
+    }
+
+    callSet(args: QzaJSType<InstanceType<Args[number]>>[] = [], runtime: QzaRuntime = qzaSingleton(QzaRuntime)): void {
+        if(runtime.memory !== this.memory) {
+            throw new Error(`Function ${this.refAddress} is not in the same memory as the runtime`);
+        }
+        if(args.length  !== this.argTypes.length) {
+            throw new Error(`Function ${this.refAddress} expects ${this.argTypes.length} arguments, but got ${args.length}`);
+        }
+        args.reverse();
+        this.argTypes
+            .concat()
+            .reverse()
+            .forEach((argType, i) => {
+                runtime.pushStack(argType, args[i]);
+            });
+
+        const programCounter = runtime.get('programCounter');
+        const framePointer = runtime.get('framePointer');
+        runtime.pushStack(QzaFunctionFrame, {
+            returnAddress: programCounter.js,
+            framePointer: framePointer.js,
+        })
+        framePointer.js = runtime.get('stackPointer').js;
+        programCounter.js = this.refAddress;
+    }
+
+    returnResult(runtime: QzaRuntime = qzaSingleton(QzaRuntime)): QzaJSType<InstanceType<ReturnType>> {
+        const retVal = runtime.popStack(this.returnType) as QzaJSType<InstanceType<ReturnType>>;
         this.argTypes
         .concat()
         .reverse()

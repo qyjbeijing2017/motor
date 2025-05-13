@@ -4,6 +4,8 @@ export { qzaSetFloat8, qzaGetFloat8 } from './utils/float8';
 
 export { QzaOperator } from './il/operator';
 export { QzaILType } from './il/type';
+export { QzaInstruction } from './il/instruction';
+export { QzaFunctionFrame } from './il/function-frame';
 
 export { QzaPushU8, QzaPushU16, QzaPushU32, QzaPushU64, QzaPushI8, QzaPushI16, QzaPushI32, QzaPushI64, QzaPushF8, QzaPushF16, QzaPushF32, QzaPushF64 } from './il/instructions/push';
 export { QzaPopU8, QzaPopU16, QzaPopU32, QzaPopU64, QzaPopI8, QzaPopI16, QzaPopI32, QzaPopI64, QzaPopF8, QzaPopF16, QzaPopF32, QzaPopF64 } from './il/instructions/pop';
@@ -69,11 +71,8 @@ export { QzaString } from './types/string';
 export { QzaList, QzaListType, qzaCreateList } from './types/list';
 export { QzaFunction, QzaFunctionType, qzaCreateFunction } from './types/function';
 
-
-export { QzaInstruction } from './il/instruction';
-
-export { QzaRuntime } from './runtime'
-export { QzaStack } from './stack'
+export { QzaRuntime } from './runtime';
+export { QzaStack } from './stack';
 
 
 
