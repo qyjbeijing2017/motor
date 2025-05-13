@@ -27,8 +27,16 @@ export abstract class QzaList<T extends QzaType<any>> extends QzaReference<QzaJS
         }
     }
 
+    add(value: QzaJSType<T>) {
+        this.js = [...this.js, value];
+    }
+
     at(index: number): InstanceType<T> {
         return new this.type(undefined, this.memory, this.refAddress + index * this.type.size) as InstanceType<T>;
+    }
+
+    clear() {
+        this.size = 0;
     }
 }
 

@@ -3,65 +3,39 @@ import { QzaType } from "./instance";
 import { QzaStack } from "./stack";
 import { QzaStruct } from "./types/struct";
 import { QzaU64 } from "./types/number/u64";
-import { qzaCreateMap } from "./types/map";
 import { QzaString } from "./types/string";
-import { qzaPackageEnvironments } from "./package-environment";
+import { qzaCreateList } from "./types/list";
 
-const PackageMap = qzaCreateMap(
-    QzaString,
-    QzaU64,
-)
+const PackageList = qzaCreateList(QzaString)
 
-export type PackageLoader = (name: string) => Promise<string | void> | string | void;
+export type PackageLoader = (name: string) => Promise<void> | void;
 
 export class QzaRuntime extends QzaStruct<{
     programCounter: typeof QzaU64,
     stackPointer: typeof QzaU64,
     framePointer: typeof QzaU64,
     stack: typeof QzaStack,
-    packageMap: typeof PackageMap,
+    packageMap: typeof PackageList,
 }> {
-    loaders: PackageLoader[] = [
-        async (name: string) => {
-            if (name.startsWith('http://') || name.startsWith('https://')) {
-                try {
-                    const response = await fetch(name);
-                    if (response.ok) {
-                        return await response.text();
-                    }
-                } catch (e) {
-                    console.error(`Error loading package ${name}:`, e);
-                }
-            }
-        },
-    ];
+    loaders: PackageLoader[] = [];
     readonly invokeMap: Map<string, (runtime: QzaRuntime) => void | Promise<void>> = new Map([
         ['print', async (runtime) => {
             const logStr = runtime.popStack(QzaString);
             console.log(logStr);
         }],
         ['import', async (runtime) => {
-            const key = runtime.popStack(QzaString);
-            for (const loader of this.loaders) {
-                const result = await loader(key);
-                if (result) {
-                    const initFunc = new (Object.getPrototypeOf(async function () { }).constructor)(
-                        'runtime',
-                        'targetAddress',
-                        ...Object.keys(qzaPackageEnvironments),
-                        result
-                    );
-                    let targetAddress = 0
-                    targetAddress = await initFunc(
-                        this,
-                        targetAddress,
-                        ...Object.values(qzaPackageEnvironments),
-                    );
-                    this.get('packageMap').set(key, targetAddress ?? 0);
+            const name = runtime.popStack(QzaString);
+            for (const loader of runtime.loaders) {
+                try {
+                    await loader(name);
+                    this.get('packageMap').add(name);
                     return;
+                } catch (e) {
+                    console.error(e);
+                    continue;
                 }
             }
-            throw new Error(`Package ${key} not found`);
+            throw new Error(`Failed to load package ${name}`);
         }],
         ['allocate', async (runtime) => {
             const size = runtime.popStack(QzaU64);
@@ -79,14 +53,14 @@ export class QzaRuntime extends QzaStruct<{
         QzaU64.size +
         QzaU64.size +
         QzaStack.size +
-        PackageMap.size;
+        PackageList.size;
     get type() {
         return {
             programCounter: QzaU64,
             stackPointer: QzaU64,
             framePointer: QzaU64,
             stack: QzaStack,
-            packageMap: PackageMap,
+            packageMap: PackageList,
         };
     }
 
@@ -104,17 +78,6 @@ export class QzaRuntime extends QzaStruct<{
     async init() {
         const packageMap = this.get('packageMap');
         for (let i = 0; i < packageMap.length; i++) {
-            const [key, address] = packageMap.at(i);
-            for (const loader of this.loaders) {
-                const result = await loader(key.js);
-                if (result) {
-                    const initFunc = new Function('runtime', 'targetAddress', result);
-                    const targetAddress = initFunc(this, address.js);
-                    address.js = targetAddress;
-                    continue;
-                }
-            }
-            throw new Error(`Package ${key.js} not found`);
         }
     }
 

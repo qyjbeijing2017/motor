@@ -3,17 +3,14 @@ import { QzaRuntime, QzaI32, qzaCreateFunction, QzaLocalI32, QzaString, QzaPushU
 describe('Package', () => {
     test('import', async () => {
         const runtime = qzaSingleton(QzaRuntime);
-        console.log(QzaI32.name)
         runtime.loaders.push((name) => {
             if (name !== 'test') return;
-            return `
-runtime.invokeMap.set('test.add', (runtime) => {
-    const b = runtime.popStack(QzaI32);
-    const a = runtime.popStack(QzaI32);
-    const result = a + b;
-    runtime.pushStack(QzaF32, result);
-})
-        `
+            runtime.invokeMap.set('test.add', (runtime) => {
+                const b = runtime.popStack(QzaI32);
+                const a = runtime.popStack(QzaI32);
+                const result = a + b;
+                runtime.pushStack(QzaF32, result);
+            })
         })
 
         const FunctionOnTest = qzaCreateFunction(QzaF32, [QzaI32, QzaI32]);
