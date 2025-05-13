@@ -102,9 +102,18 @@ export class QzaRuntime extends QzaStruct<{
         return jsValue;
     }
 
+    private _running = false;
+    get running() {
+        return this._running;
+    }
+
+    stop() {
+        this._running = false;
+    }
+
     async run() {
         const programCounter = this.get('programCounter');
-        while (true) {
+        while (this._running) {
             if (programCounter.js === 0) {
                 break;
             }

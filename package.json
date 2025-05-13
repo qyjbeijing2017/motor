@@ -1,6 +1,6 @@
 {
   "name": "quetzalcoatlus",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "main": "dist/index.cjs",
   "license": "MIT",
   "type": "module",
